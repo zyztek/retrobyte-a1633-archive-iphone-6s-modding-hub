@@ -6,6 +6,7 @@ interface RetroProgressProps {
   label?: string;
   segments?: number;
   className?: string;
+  isIndeterminate?: boolean;
   variant?: 'green' | 'pink' | 'yellow';
 }
 export function RetroProgress({
@@ -14,6 +15,7 @@ export function RetroProgress({
   label,
   segments = 20,
   className,
+  isIndeterminate = false,
   variant = 'green'
 }: RetroProgressProps) {
   const percentage = Math.min(Math.max((current / max) * 100, 0), 100);
@@ -35,13 +37,26 @@ export function RetroProgress({
       </div>
       <div className="flex gap-1 h-5 w-full bg-black/40 border-2 border-neon-green/20 p-1">
         {Array.from({ length: segments }).map((_, i) => (
-          <div
+          <motion.div
             key={i}
+            animate={isIndeterminate ? {
+              opacity: [0.1, 1, 0.1],
+              backgroundColor: [
+                'rgba(255,255,255,0.05)',
+                variant === 'green' ? '#00ff41' : variant === 'pink' ? '#d209fa' : '#facc15',
+                'rgba(255,255,255,0.05)'
+              ]
+            } : {}}
+            transition={isIndeterminate ? {
+              duration: 1,
+              repeat: Infinity,
+              delay: (i / segments) * 1,
+              ease: "easeInOut"
+            } : {}}
             className={cn(
               "flex-1 transition-all duration-300",
-              i < filledSegments 
-                ? colors[variant]
-                : "bg-white/5"
+              !isIndeterminate && (i < filledSegments ? colors[variant] : "bg-white/5"),
+              isIndeterminate && "bg-white/5 shadow-none"
             )}
           />
         ))}

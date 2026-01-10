@@ -2,15 +2,11 @@ import React from 'react';
 import { useUIStore } from '@/store/ui-store';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RetroProgress } from './retro-progress';
-interface LoadingOverlayProps {
-  forcedState?: boolean;
-}
-export function LoadingOverlay({ forcedState = false }: LoadingOverlayProps) {
+export function LoadingOverlay() {
   const isLoading = useUIStore((s) => s.isLoading);
-  const showOverlay = isLoading || forcedState;
   return (
     <AnimatePresence>
-      {showOverlay && (
+      {isLoading && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -30,11 +26,11 @@ export function LoadingOverlay({ forcedState = false }: LoadingOverlayProps) {
               </h2>
             </div>
             <div className="space-y-2">
-              <RetroProgress
-                current={50}
-                max={100}
-                isIndeterminate
-                segments={15}
+              <RetroProgress 
+                current={50} 
+                max={100} 
+                isIndeterminate 
+                segments={15} 
                 className="w-full h-8"
               />
               <div className="flex justify-between text-[10px] font-bold uppercase text-neon-green/60 tracking-widest">
