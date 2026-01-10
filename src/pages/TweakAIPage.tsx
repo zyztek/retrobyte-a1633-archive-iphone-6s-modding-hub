@@ -26,7 +26,6 @@ export function TweakAIPage() {
   const recommendations = useMemo(() => {
     if (!showResult) return [];
     const goal = answers.goal;
-    // Simple logic: filter repository based on user goal
     return MOD_REPOSITORY.filter(mod => {
       if (goal === 'aesthetic') return mod.type === 'UI' || mod.type === 'Tool';
       if (goal === 'gaming') return mod.type === 'System' || mod.type === 'Tool' || mod.type === 'Experimental';
@@ -37,7 +36,7 @@ export function TweakAIPage() {
   const currentQuestion = TWEAK_AI_QUIZ[step];
   return (
     <RetroLayout>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="space-y-8">
         <div className="flex items-center gap-4">
           <Brain className="size-10 text-neon-pink animate-pulse" />
           <div className="flex flex-col">
@@ -107,8 +106,8 @@ export function TweakAIPage() {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link 
-                    to="/repo" 
+                  <Link
+                    to="/repo"
                     className="retro-button flex-1 text-center bg-neon-pink text-white flex items-center justify-center gap-2"
                   >
                     PROCEED_TO_REPO
