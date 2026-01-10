@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers,
-  FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi
+  FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,7 @@ export function AppSidebar(): JSX.Element {
     { title: "Exploit Lab", icon: Activity, path: "/exploit-lab" },
     { title: "Network Arsenal", icon: Wifi, path: "/network-arsenal" },
     { title: "HackCam", icon: Camera, path: "/hack-cam" },
+    { title: "Academy", icon: GraduationCap, path: "/academy" },
     { title: "GodMode", icon: Target, path: "/godmode" },
   ];
   const renderItems = (items: typeof mainNav) => (
