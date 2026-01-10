@@ -23,6 +23,13 @@ export interface QuizQuestion {
     impact: Record<string, number>;
   }[];
 }
+export interface HardwareMod {
+  id: string;
+  title: string;
+  difficulty: 'EASY' | 'MODERATE' | 'HARD' | 'GOD_MODE';
+  tools: string[];
+  steps: string[];
+}
 export const PACKAGE_STORES: PackageStore[] = [
   {
     name: "Sileo",
@@ -88,3 +95,50 @@ export const TWEAK_AI_QUIZ: QuizQuestion[] = [
     ]
   }
 ];
+export const HARDWARE_MODS: HardwareMod[] = [
+  {
+    id: "emmc-swap",
+    title: "eMMC 512GB Upgrade",
+    difficulty: "GOD_MODE",
+    tools: ["Heat Gun (350°C)", "BGA Stencil", "Solder Paste", "JC P7 Pro Programmer"],
+    steps: [
+      "De-solder original NAND chip using precision heat nozzle.",
+      "Clean logic board pads with copper wick and flux.",
+      "Program new 512GB NAND with serial/MAC address data using JC P7.",
+      "Re-ball new NAND chip using specialized stencil.",
+      "Align and reflow NAND chip onto logic board.",
+      "DFU restore system to initialize new partition table."
+    ]
+  },
+  {
+    id: "battery-mod",
+    title: "High-Capacity Cell Swap",
+    difficulty: "MODERATE",
+    tools: ["Spudger", "Taptic Engine removal bits", "New 2200mAh Cell"],
+    steps: [
+      "Power down A1633 and remove pentalobe screws.",
+      "Lift display assembly with suction tool.",
+      "Disconnect battery terminal shield.",
+      "Remove original 1715mAh cell adhesive strips.",
+      "Install high-density 2200mAh aftermarket cell.",
+      "Recalibrate BMS via System Lab dashboard."
+    ]
+  }
+];
+export const SINGULARITY_LOGIC: Record<string, string[]> = {
+  stable: [
+    "PREDICTION: Voltage stability prioritized. Undervolting detected.",
+    "SUGGESTION: Disable Powercuff to maximize single-core burst.",
+    "STATUS: System health nominal for legacy operations."
+  ],
+  gaming: [
+    "PREDICTION: Thermal runaway imminent. CPU Throttling disabled.",
+    "SUGGESTION: Liquid cooling OTG mod recommended for A9 overclocking.",
+    "STATUS: Frame-time variance minimized. Peak performance locked."
+  ],
+  aesthetic: [
+    "PREDICTION: RAM bottleneck detected due to UI assets.",
+    "SUGGESTION: Swap to Cylinder Reborn 'minimalist' profiles.",
+    "STATUS: Visual fidelity exceeding factory specifications."
+  ]
+};

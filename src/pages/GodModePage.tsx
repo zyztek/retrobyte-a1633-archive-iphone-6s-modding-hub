@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle } from 'lucide-react';
+import { Retro3DPhone } from '@/components/Retro3DPhone';
+import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle, Brain, Camera, Activity, Hammer } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
+import { SINGULARITY_LOGIC, HARDWARE_MODS } from '@shared/extended-data';
 interface MissionTask {
   id: string;
   title: string;
@@ -15,6 +18,7 @@ interface MissionProfile {
   tasks: MissionTask[];
 }
 export function GodModePage() {
+  const [activeProfile, setActiveProfile] = useState<string>("overclock");
   const [profiles, setProfiles] = useState<MissionProfile[]>([
     {
       id: "ghost",
@@ -35,6 +39,16 @@ export function GodModePage() {
         { id: "o2", title: "Enable KVM Support", completed: false },
         { id: "o3", title: "Disable CPU Throttling", completed: false },
       ]
+    },
+    {
+      id: "hw-recon",
+      name: "PROFILE: RECONSTRUCTION",
+      icon: Hammer,
+      tasks: [
+        { id: "h1", title: "eMMC 512GB Swap", completed: false },
+        { id: "h2", title: "BGA Re-balling", completed: false },
+        { id: "h3", title: "Voltage Rail Calibration", completed: false },
+      ]
     }
   ]);
   const toggleTask = (profileId: string, taskId: string) => {
@@ -46,69 +60,129 @@ export function GodModePage() {
       };
     }));
   };
+  const aiInsights = useMemo(() => {
+    const key = activeProfile === 'hw-recon' ? 'gaming' : activeProfile === 'ghost' ? 'stable' : 'gaming';
+    return SINGULARITY_LOGIC[key] || [];
+  }, [activeProfile]);
   return (
     <RetroLayout>
       <div className="space-y-12">
-        <div className="flex items-center gap-4">
-          <div className="bg-neon-pink p-3 text-white">
-            <Target className="size-10" />
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter">GodMode Hub</h1>
-            <p className="text-xs text-neon-pink uppercase font-bold">Absolute Authority Command Center</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {profiles.map((profile) => (
-            <RetroCard 
-              key={profile.id} 
-              title={profile.name} 
-              variant="danger" 
-              status={`${profile.tasks.filter(t => t.completed).length}/${profile.tasks.length}_COMPLETE`}
-            >
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 text-neon-pink">
-                  <profile.icon className="size-6" />
-                  <span className="text-sm font-bold uppercase tracking-widest">Loadout Status</span>
-                </div>
-                <div className="space-y-2">
-                  {profile.tasks.map((task) => (
-                    <button
-                      key={task.id}
-                      onClick={() => toggleTask(profile.id, task.id)}
-                      className={cn(
-                        "w-full flex items-center justify-between p-3 border-2 transition-all",
-                        task.completed 
-                          ? "bg-neon-pink/20 border-neon-pink text-neon-pink" 
-                          : "bg-retro-black border-neon-pink/30 text-neon-pink/60 hover:border-neon-pink/60"
-                      )}
-                    >
-                      <span className="text-xs font-bold uppercase tracking-tighter">{task.title}</span>
-                      {task.completed ? <CheckCircle2 className="size-4" /> : <Circle className="size-4" />}
-                    </button>
-                  ))}
-                </div>
-                {profile.tasks.every(t => t.completed) && (
-                  <div className="p-3 bg-neon-pink border-2 border-white/20 text-white text-[10px] font-bold text-center uppercase animate-glitch">
-                    MISSION_ACCOMPLISHED :: SYSTEM_DOMINANCE_ACHIEVED
-                  </div>
-                )}
-              </div>
-            </RetroCard>
-          ))}
-        </div>
-        <RetroCard title="GLOBAL_CONTROL_NOTICE" variant="warning">
-          <div className="flex gap-4 items-start">
-            <AlertCircle className="size-8 text-yellow-400 shrink-0" />
-            <div className="space-y-1">
-              <h4 className="text-sm font-bold uppercase text-yellow-400">Authority Level 5 Required</h4>
-              <p className="text-xs opacity-80 leading-snug">
-                The GodMode Hub provides unchecked access to kernel-level overrides. 
-                Any modification made here is persistent and bypasses standard safety protocols.
-              </p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <div className="flex items-center gap-4">
+            <div className="bg-neon-pink p-3 text-white">
+              <Target className="size-10" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter leading-none">GodMode Hub</h1>
+              <p className="text-xs text-neon-pink uppercase font-bold">Project Singularity :: Command Center</p>
             </div>
           </div>
-        </RetroCard>
+          <div className="flex gap-2">
+            <Link to="/exploit-lab" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px]">
+              <Activity className="size-3" /> EXPLOIT_LAB
+            </Link>
+            <Link to="/hack-cam" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px]">
+              <Camera className="size-3" /> HACK_CAM
+            </Link>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main 3D Hardware View */}
+          <div className="lg:col-span-8 space-y-8">
+            <RetroCard title="HARDWARE_VISUALIZER" status="A1633_SINGULARITY">
+              <Retro3DPhone />
+            </RetroCard>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {profiles.map((profile) => (
+                <RetroCard
+                  key={profile.id}
+                  title={profile.name}
+                  variant={activeProfile === profile.id ? 'danger' : 'default'}
+                  status={`${profile.tasks.filter(t => t.completed).length}/${profile.tasks.length}_SEQ`}
+                  onClick={() => setActiveProfile(profile.id)}
+                  className={cn("cursor-pointer transition-all", activeProfile === profile.id ? "scale-[1.02]" : "opacity-70 hover:opacity-100")}
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 text-neon-pink">
+                      <profile.icon className="size-5" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest">Loadout Integrity</span>
+                    </div>
+                    <div className="space-y-2">
+                      {profile.tasks.map((task) => (
+                        <button
+                          key={task.id}
+                          onClick={(e) => { e.stopPropagation(); toggleTask(profile.id, task.id); }}
+                          className={cn(
+                            "w-full flex items-center justify-between p-2 border transition-all",
+                            task.completed
+                              ? "bg-neon-pink/20 border-neon-pink text-neon-pink"
+                              : "bg-retro-black border-neon-pink/30 text-neon-pink/60 hover:border-neon-pink/60"
+                          )}
+                        >
+                          <span className="text-[9px] font-bold uppercase tracking-tighter">{task.title}</span>
+                          {task.completed ? <CheckCircle2 className="size-3" /> : <Circle className="size-3" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </RetroCard>
+              ))}
+            </div>
+          </div>
+          {/* AI Insights and Tools */}
+          <div className="lg:col-span-4 space-y-8">
+            <RetroCard title="SINGULARITY_AI" status="PREDICTING" variant="danger">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <Brain className="size-10 text-neon-pink animate-pulse" />
+                  <div className="text-[10px] uppercase font-bold text-neon-pink">
+                    Neural Analytics Engine<br/>v4.0_LATEST
+                  </div>
+                </div>
+                <div className="space-y-4 font-mono text-[10px]">
+                  {aiInsights.map((log, i) => (
+                    <div key={i} className="p-2 border border-neon-pink/30 bg-neon-pink/5 leading-tight">
+                      {log}
+                    </div>
+                  ))}
+                </div>
+                <button className="retro-button w-full border-neon-pink text-neon-pink shadow-none text-[10px]">
+                  REFRESH_NEURAL_MAP
+                </button>
+              </div>
+            </RetroCard>
+            <RetroCard title="HARDWARE_MOD_SPEC" status="VITAL">
+              <div className="space-y-4">
+                <div className="text-[10px] uppercase font-bold text-neon-green/60 border-b border-neon-green/20 pb-1">
+                  Active Checklist: eMMC_512GB
+                </div>
+                <ul className="space-y-2 text-[9px] uppercase leading-snug">
+                  {HARDWARE_MODS[0].steps.map((step, i) => (
+                    <li key={i} className="flex gap-2 items-start">
+                      <span className="text-neon-green">[{i+1}]</span>
+                      <span className="opacity-80">{step}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="p-2 bg-yellow-400/10 border border-yellow-400/30 text-[9px] text-yellow-400 uppercase italic">
+                  Critical: High-precision soldering equipment required.
+                </div>
+              </div>
+            </RetroCard>
+            <div className="p-4 border-2 border-red-600 bg-red-600/10 space-y-3 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-red-600/5 animate-pulse" />
+              <div className="relative z-10 flex gap-4 items-start">
+                <AlertCircle className="size-8 text-red-600 shrink-0" />
+                <div className="space-y-1">
+                  <h4 className="text-[10px] font-bold uppercase text-red-600">Final Directive</h4>
+                  <p className="text-[9px] opacity-80 leading-snug uppercase">
+                    Unauthorized hardware modifications will trigger anti-tamper protocols. Persistence is absolute.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </RetroLayout>
   );
