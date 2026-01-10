@@ -142,3 +142,49 @@ export const SINGULARITY_LOGIC: Record<string, string[]> = {
     "STATUS: Visual fidelity exceeding factory specifications."
   ]
 };
+// --- PHASE 13: NETWORK ARSENAL DATA ---
+export const NETWORK_TOOLS = [
+  {
+    id: "datamonitor",
+    name: "DataMonitor V3",
+    desc: "Real-time bandwidth interception and cellular compression for aging A9 antennas.",
+    repo: "https://repo.packix.com/",
+    status: "STABLE"
+  },
+  {
+    id: "wifiscout",
+    name: "WiFiScout",
+    desc: "Advanced wardriving and packet capture suite. Requires MTerminal or NewTerm.",
+    repo: "https://chariz.com/",
+    status: "EXPERIMENTAL"
+  },
+  {
+    id: "vpnforge",
+    name: "VPNForge",
+    desc: "Hardcoded WireGuard profile loader. Bypasses standard system tunnel limitations.",
+    repo: "https://havoc.app/",
+    status: "VERIFIED"
+  }
+];
+export const ETHICAL_DISCLAIMER = [
+  "1. DO NOT access networks without explicit permission from the owner.",
+  "2. Use of these tools for malicious activity is a violation of the RETROBYTE A1633 license.",
+  "3. Packet sniffing may capture sensitive personal data; handle with absolute integrity.",
+  "4. Wardriving data must remain localized and encrypted on-device.",
+  "5. A1633 hardware may overheat during prolonged high-gain WiFi operations."
+];
+export const MOCK_WIFI_NETWORKS = [
+  { ssid: "CENTRAL_HUB_GUEST", signal: -42, security: "WPA2", pwnability: 10, channel: 1 },
+  { ssid: "CORP_SECURE_EXT", signal: -78, security: "WPA3", pwnability: 85, channel: 6 },
+  { ssid: "NETGEAR_DEFAULT_2.4", signal: -65, security: "WEP", pwnability: 5, channel: 11 },
+  { ssid: "HIDDEN_VLAN_88", signal: -92, security: "WPA2-ENT", pwnability: 95, channel: 3 }
+];
+export const MOCK_DATA_USAGE = [
+  { time: '08:00', upload: 2.4, download: 12.1 },
+  { time: '10:00', upload: 5.1, download: 45.3 },
+  { time: '12:00', upload: 1.8, download: 28.7 },
+  { time: '14:00', upload: 12.4, download: 89.2 },
+  { time: '16:00', upload: 4.2, download: 34.5 },
+  { time: '18:00', upload: 3.1, download: 15.8 },
+  { time: '20:00', upload: 0.5, download: 8.2 },
+];

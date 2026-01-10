@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers,
-  FlaskConical, LayoutGrid, Target, Cpu, Brain, Laptop, Camera, Activity
+  FlaskConical, LayoutGrid, Target, Cpu, Brain, Laptop, Camera, Activity, Wifi
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -33,6 +33,7 @@ export function AppSidebar(): JSX.Element {
     { title: "System Lab", icon: FlaskConical, path: "/system-lab" },
     { title: "TweakAI", icon: Brain, path: "/tweak-ai" },
     { title: "Exploit Lab", icon: Activity, path: "/exploit-lab" },
+    { title: "Network Arsenal", icon: Wifi, path: "/network-arsenal" },
     { title: "HackCam", icon: Camera, path: "/hack-cam" },
     { title: "GodMode", icon: Target, path: "/godmode" },
   ];
