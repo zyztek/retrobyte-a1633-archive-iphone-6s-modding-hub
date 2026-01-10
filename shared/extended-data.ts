@@ -11,7 +11,7 @@ export interface Emulator {
   platform: string;
   compatibility: 'STABLE' | 'EXPERIMENTAL' | 'NON-FUNCTIONAL';
   jitRequired: boolean;
-  performanceScore: number; // 1-100
+  performanceScore: number; 
   notes: string;
 }
 export interface QuizQuestion {
@@ -30,6 +30,68 @@ export interface HardwareMod {
   tools: string[];
   steps: string[];
 }
+export interface WikiArticle {
+  id: string;
+  title: string;
+  category: 'KERNEL' | 'HARDWARE' | 'NETWORK' | 'HISTORY';
+  content: string;
+  videoUrl?: string;
+}
+export interface ZeroDayExploit {
+  id: string;
+  name: string;
+  complexity: 'MODERATE' | 'HIGH' | 'EXTREME';
+  description: string;
+  windowSize: number; // 0-100 scale of the hit window
+  speed: number;
+}
+export interface ARMarker {
+  id: string;
+  name: string;
+  specs: string;
+  top: string;
+  left: string;
+}
+export const DOCS_VAULT_CONTENT: WikiArticle[] = [
+  {
+    id: 'a9-architecture',
+    title: 'A9 (N71AP) KERNEL STRUCTURE',
+    category: 'KERNEL',
+    content: 'The Apple A9 SoC utilizes a dual-core 1.85GHz Twister architecture. Memory management is handled by a sophisticated MMU mapping the 2GB LPDDR4 address space. For modders, understanding the bootROM handshake at address 0x10000000 is critical for timing-based exploits.',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+  },
+  {
+    id: 'nand-expansion',
+    title: 'BGA110 STORAGE MAPPING',
+    category: 'HARDWARE',
+    content: 'The A1633 utilizes the BGA110 flash standard. Upgrading involves re-mapping the serial number and calibration data from the original chip to the target 512GB module using a JC-P7 programmer. Failure to sync the WiFi/BT mac addresses will result in a baseband failure.',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+  }
+];
+export const ZERO_DAY_EXPLOITS: ZeroDayExploit[] = [
+  {
+    id: 'trip-wire',
+    name: 'TRIP-WIRE (USB_OOB)',
+    complexity: 'HIGH',
+    description: 'Out-of-bounds memory access via malformed USB descriptors. Requires nanosecond precision.',
+    windowSize: 4,
+    speed: 8
+  },
+  {
+    id: 'nand-collapse',
+    name: 'NAND-COLLAPSE (I/O_RACE)',
+    complexity: 'EXTREME',
+    description: 'Triggering a race condition in the storage controller during initial partition mount.',
+    windowSize: 2,
+    speed: 12
+  }
+];
+export const AR_HARDWARE_MARKERS: ARMarker[] = [
+  { id: 'cpu', name: 'A9 TWISTER CPU', specs: '1.85GHz Dual-Core / 64-bit', top: '35%', left: '48%' },
+  { id: 'ram', name: 'LPDDR4 RAM', specs: '2GB Samsung/SKHynix Stacked', top: '42%', left: '52%' },
+  { id: 'pmic', name: 'POWER MGMT IC', specs: '338S00120 PMU Subsystem', top: '55%', left: '40%' },
+  { id: 'nand', name: 'FLASH STORAGE', specs: 'SKHynix/Toshiba BGA110', top: '65%', left: '45%' }
+];
 export const PACKAGE_STORES: PackageStore[] = [
   {
     name: "Sileo",
@@ -142,7 +204,6 @@ export const SINGULARITY_LOGIC: Record<string, string[]> = {
     "STATUS: Visual fidelity exceeding factory specifications."
   ]
 };
-// --- PHASE 13: NETWORK ARSENAL DATA ---
 export const NETWORK_TOOLS = [
   {
     id: "datamonitor",

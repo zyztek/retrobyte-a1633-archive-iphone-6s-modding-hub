@@ -25,6 +25,7 @@ import { GodModePage } from '@/pages/GodModePage'
 import { ExploitLabPage } from '@/pages/ExploitLabPage'
 import { NetworkArsenalPage } from '@/pages/NetworkArsenalPage'
 import { HackCamPage } from '@/pages/HackCamPage'
+import { DocsVaultPage } from '@/pages/DocsVaultPage'
 import { AcademyPage } from '@/pages/AcademyPage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -101,6 +102,11 @@ const router = createBrowserRouter([
   {
     path: "/academy",
     element: <AcademyPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/docs-vault",
+    element: <DocsVaultPage />,
     errorElement: <RouteErrorBoundary />,
   }
 ]);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { DOCS_VAULT_CONTENT, type WikiArticle } from '@shared/extended-data';
+import { DOCS_VAULT_CONTENT, WikiArticle } from '@shared/extended-data';
 import { Search, Shield, Book, Play, Terminal, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -29,7 +29,7 @@ export function DocsVaultPage() {
   );
   return (
     <RetroLayout>
-      <div className="space-y-8">
+      <div className="space-y-8 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-1">
             <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter flex items-center gap-3">
