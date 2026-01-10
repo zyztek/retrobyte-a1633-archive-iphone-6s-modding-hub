@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers, Book,
-  FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap
+  FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap, ShieldCheck
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -38,6 +38,9 @@ export function AppSidebar(): JSX.Element {
     { title: "Docs Vault", icon: Book, path: "/docs-vault" },
     { title: "Academy", icon: GraduationCap, path: "/academy" },
     { title: "GodMode", icon: Target, path: "/godmode" },
+  ];
+  const devNav = [
+    { title: "Test Center", icon: ShieldCheck, path: "/test-center" },
   ];
   const renderItems = (items: typeof mainNav) => (
     <SidebarMenu>
@@ -94,6 +97,10 @@ export function AppSidebar(): JSX.Element {
         <SidebarGroup>
           <SidebarGroupLabel className="text-[9px] uppercase font-black text-yellow-400/40 mb-2 px-2">Lab_Diagnostics</SidebarGroupLabel>
           {renderItems(labNav)}
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[9px] uppercase font-black text-emerald-400/40 mb-2 px-2">Dev_Intelligence</SidebarGroupLabel>
+          {renderItems(devNav)}
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="border-t-2 border-neon-green p-6 bg-retro-black space-y-4">
