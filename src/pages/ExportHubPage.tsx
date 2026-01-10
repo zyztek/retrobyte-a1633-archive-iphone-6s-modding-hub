@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { Github, Share2, Globe, Rocket, ShieldCheck, CheckCircle2, Copy, ExternalLink, Cloud, Lock, Eye, RefreshCw } from 'lucide-react';
+import { Github, Share2, Globe, Rocket, ShieldCheck, CheckCircle2, Copy, ExternalLink, Cloud, Lock, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/ui-store';
@@ -53,7 +53,7 @@ export function ExportHubPage() {
   };
   return (
     <RetroLayout>
-      <div className="space-y-12">
+      <div className="max-w-7xl mx-auto space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-1">
             <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter flex items-center gap-3">
@@ -103,23 +103,23 @@ export function ExportHubPage() {
                   </div>
                   <div className="pt-4 flex gap-4">
                     {steps[activeStep].action ? (
-                      <a
-                        href={steps[activeStep].action || "#"}
-                        target="_blank"
+                      <a 
+                        href={steps[activeStep].action || "#"} 
+                        target="_blank" 
                         rel="noreferrer"
                         className="retro-button flex items-center gap-2 text-xs"
                       >
                         <ExternalLink className="size-4" /> INITIALIZE_EXTERNAL_LINK
                       </a>
                     ) : (
-                      <button
+                      <button 
                         onClick={() => setActiveStep(0)}
                         className="retro-button flex items-center gap-2 text-xs"
                       >
                         <RefreshCw className="size-4" /> RESTART_SEQUENCE
                       </button>
                     )}
-                    <button
+                    <button 
                       onClick={() => setActiveStep(prev => (prev + 1) % steps.length)}
                       className="retro-button border-neon-pink text-neon-pink shadow-none text-xs"
                     >
@@ -136,9 +136,9 @@ export function ExportHubPage() {
                     Compile all verified modding scripts and guides into a single, offline-ready deployment pack.
                   </p>
                   <div className="bg-black/50 p-3 border border-yellow-400/30 font-mono text-[9px] text-yellow-400 space-y-1">
-                    <div>{">"} BUNDLING: ARCHIVE_V1.2.0</div>
-                    <div>{">"} INCLUDES: SCRIPT_FORGE.PS1</div>
-                    <div>{">"} INCLUDES: KERNEL_INTEL.PDF</div>
+                    <div>> BUNDLING: ARCHIVE_V1.2.0</div>
+                    <div>> INCLUDES: SCRIPT_FORGE.PS1</div>
+                    <div>> INCLUDES: KERNEL_INTEL.PDF</div>
                   </div>
                   <button className="retro-button w-full border-yellow-400 text-yellow-400 shadow-none text-[10px] flex items-center justify-center gap-2">
                     <Share2 className="size-4" /> GENERATE_BUNDLE
@@ -187,7 +187,7 @@ export function ExportHubPage() {
                 <div className="relative">
                   <AnimatePresence>
                     {isPropagating && (
-                      <motion.div
+                      <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: '100%' }}
                         exit={{ opacity: 0 }}
@@ -195,7 +195,7 @@ export function ExportHubPage() {
                       />
                     )}
                   </AnimatePresence>
-                  <button
+                  <button 
                     onClick={handleToggleVisibility}
                     disabled={isPropagating}
                     className={cn(
@@ -231,9 +231,6 @@ export function ExportHubPage() {
                 </div>
                 <div className="space-y-2">
                   {[
-                    { label: 'Linting', status: 'OK' },
-                    { label: 'Type Check', status: 'OK' },
-                    { label: 'Unit Tests', status: '45/45' },
                     { label: 'Linting', status: 'OK' },
                     { label: 'Type Check', status: 'OK' },
                     { label: 'Unit Tests', status: '45/45' },

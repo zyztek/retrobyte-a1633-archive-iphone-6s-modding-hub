@@ -28,6 +28,7 @@ import { HackCamPage } from '@/pages/HackCamPage'
 import { DocsVaultPage } from '@/pages/DocsVaultPage'
 import { AcademyPage } from '@/pages/AcademyPage'
 import { TestCenterPage } from '@/pages/TestCenterPage'
+import { ExportHubPage } from '@/pages/ExportHubPage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -113,6 +114,11 @@ const router = createBrowserRouter([
   {
     path: "/test-center",
     element: <TestCenterPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/export-hub",
+    element: <ExportHubPage />,
     errorElement: <RouteErrorBoundary />,
   }
 ]);

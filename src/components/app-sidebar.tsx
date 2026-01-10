@@ -3,6 +3,7 @@ import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers, Book,
   FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap, ShieldCheck
 } from "lucide-react";
+import { Rocket, Share2 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/store/ui-store";
@@ -47,6 +48,7 @@ export function AppSidebar(): JSX.Element {
   ];
   const devNav = [
     { title: "Test Center", icon: ShieldCheck, path: "/test-center", tip: "Quality assurance suite" },
+    { title: "Export Hub", icon: Rocket, path: "/export-hub", tip: "Deployment & sharing center" },
   ];
   const renderItems = (items: typeof mainNav) => (
     <SidebarMenu>

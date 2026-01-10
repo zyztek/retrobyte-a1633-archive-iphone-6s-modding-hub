@@ -2,9 +2,9 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Retro3DPhone } from '@/components/Retro3DPhone';
-import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle, Brain, Camera, Activity, Hammer, Share2, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle, Brain, Camera, Activity, Hammer, Share2, Rocket } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SINGULARITY_LOGIC, HARDWARE_MODS } from '@shared/extended-data';
 import { useAcademyStore } from '@/store/academy-store';
 import { toast } from 'sonner';
@@ -23,6 +23,7 @@ export function GodModePage() {
   const [activeProfile, setActiveProfile] = useState<string>("overclock");
   const [sysLogs, setSysLogs] = useState<string[]>([]);
   const [isExporting, setIsExporting] = useState(false);
+  const navigate = useNavigate();
   const xp = useAcademyStore(s => s.xp);
   const [profiles, setProfiles] = useState<MissionProfile[]>([
     {
@@ -78,14 +79,13 @@ export function GodModePage() {
   }, [activeProfile]);
   const handleExport = () => {
     setIsExporting(true);
-    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] COMPILING_RESOURCES...`, ...prev].slice(0, 10));
+    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] NAVIGATING_TO_EXPORT_HUB...`, ...prev].slice(0, 10));
     setTimeout(() => {
       setIsExporting(false);
-      toast.success("RESOURCES_COMPILED", {
-        description: "Redirecting to external master-archive on GitHub.",
-        style: { background: '#0a0a0a', color: '#d209fa', border: '1px solid #d209fa' }
+      toast.info("REDIRECTING_TO_HUB", {
+        description: "Initializing deployment workstation..."
       });
-      window.open('https://github.com/topics/iphone-6s-modding', '_blank');
+      navigate('/export-hub');
     }, 1500);
   };
   const syncIntegrity = xp >= 1500 ? 'STABLE' : xp >= 500 ? 'SYNCING' : 'UNSYNCED';
@@ -115,7 +115,7 @@ export function GodModePage() {
               disabled={isExporting}
               className="flex-1 md:flex-none retro-button border-white text-white flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_white] hover:shadow-none disabled:opacity-50 active:translate-y-1"
             >
-              {isExporting ? <Share2 className="size-3 animate-spin" /> : <ExternalLink className="size-3" />} EXPORT_HUB
+              {isExporting ? <Share2 className="size-3 animate-spin" /> : <Rocket className="size-3" />} EXPORT_HUB
             </button>
           </div>
         </div>
