@@ -1,5 +1,5 @@
 import React from "react";
-import { Terminal, Code, BookOpen, Package, Github, Settings } from "lucide-react";
+import { Terminal, Code, BookOpen, Package, Github, Settings, Layers } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
@@ -18,6 +18,7 @@ export function AppSidebar(): JSX.Element {
     { title: "Script Forge", icon: Code, path: "/script-forge" },
     { title: "Archives", icon: BookOpen, path: "/archives" },
     { title: "Repo", icon: Package, path: "/repo" },
+    { title: "Multi-Boot", icon: Layers, path: "/multiboot" },
   ];
   return (
     <Sidebar className="border-r-2 border-neon-green bg-retro-black">

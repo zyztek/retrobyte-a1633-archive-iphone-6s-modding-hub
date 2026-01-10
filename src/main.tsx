@@ -16,6 +16,7 @@ import { ScriptGenPage } from '@/pages/ScriptGenPage'
 import { ArchivesPage } from '@/pages/ArchivesPage'
 import { GuideDetailPage } from '@/pages/GuideDetailPage'
 import { ModRepoPage } from '@/pages/ModRepoPage'
+import { MultiBootPage } from '@/pages/MultiBootPage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
   {
     path: "/repo",
     element: <ModRepoPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/multiboot",
+    element: <MultiBootPage />,
     errorElement: <RouteErrorBoundary />,
   }
 ]);

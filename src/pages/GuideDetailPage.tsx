@@ -3,7 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { ARCHIVE_GUIDES } from '@shared/archive-data';
-import { ChevronLeft, Terminal, ShieldAlert } from 'lucide-react';
+import { ChevronLeft, Terminal, ShieldAlert, Zap } from 'lucide-react';
 export function GuideDetailPage() {
   const { slug } = useParams();
   const guide = ARCHIVE_GUIDES.find(g => g.slug === slug);
@@ -17,8 +17,23 @@ export function GuideDetailPage() {
         >
           <ChevronLeft className="size-4" /> CD .. /ARCHIVES
         </Link>
-        <RetroCard 
-          title={`FILE: ${guide.slug.toUpperCase()}.DAT`} 
+
+        {guide.riskLevel && (
+          <div className="flex gap-2 items-center mb-2">
+            <span className="text-[10px] font-bold uppercase text-neon-pink">DANGER_LEVEL:</span>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <div
+                  key={level}
+                  className={`h-4 w-3 border ${level <= (guide.riskLevel || 0) ? 'bg-neon-pink border-neon-pink animate-crt-flicker' : 'border-neon-pink/30'}`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <RetroCard
+          title={`FILE: ${guide.slug.toUpperCase()}.DAT`}
           variant={guide.clearance === 'SECRET' ? 'danger' : 'default'}
           status={guide.clearance}
         >
