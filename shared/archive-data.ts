@@ -63,6 +63,15 @@ export const ARCHIVE_GUIDES: Guide[] = [
     content: "PostmarketOS (pmOS) targets a sustainable mobile OS. For the A1633, it offers a real mainline Linux kernel experience. \n\nInstructions:\n1. Use pmbootstrap to build the image.\n2. Flash via fastboot-compatible bootloaders.\n3. Experience a pure X11 or Wayland environment on your Apple hardware."
   },
   {
+    title: "Kali Linux: A1633 Penetration Suite",
+    slug: "kali-deployment",
+    category: "Multi-Boot",
+    clearance: "SECRET",
+    riskLevel: 5,
+    targetVersions: ["15.0", "15.8.3"],
+    content: "The Kali Linux deployment on A1633 utilizes a chroot environment over a PostmarketOS base to provide full access to the Kali Rolling repository. \n\nDeployment Path:\n1. Bootstrap PostmarketOS with a stable mainline kernel.\n2. Establish a Kali-rolling arm64 chroot on a dedicated partition.\n3. Mount dev/pts/proc and enter the environment.\n\nCapabilities:\n- WiFi Tools (Aircrack-ng): Functional via external OTG USB adapters (MT7601U/RT5370).\n- Ethernet: Functional via lightning-to-USB OTG.\n- GUI (X11): ALPHA STATE. Significant screen tearing and no hardware acceleration.\n\nWARNING: Running rolling-release databases on aging A9 NAND storage significantly accelerates cell degradation."
+  },
+  {
     title: "TrollStore: The Permasigned Revolution",
     slug: "trollstore-guide",
     category: "Post-Install",

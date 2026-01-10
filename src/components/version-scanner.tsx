@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RetroCard } from './ui/retro-card';
-import { Search, Terminal, Cpu, ShieldCheck } from 'lucide-react';
+import { Search, Terminal, Cpu, ShieldCheck, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 export function VersionScanner() {
   const [isScanning, setIsScanning] = useState(false);
@@ -13,7 +13,7 @@ export function VersionScanner() {
     "ACCESSING_NAND_BLOCK_0...",
     "IDENTIFYING_KERN_VERSION...",
     "DETECTING_SILEO_RESIDUE...",
-    "ANALYZING_CORETRUST_INTEGRITY...",
+    "DETECTING_KALI_CHROOT_VIABILITY...",
     "SCAN_COMPLETE"
   ];
   // Cleanup effect
@@ -86,8 +86,13 @@ export function VersionScanner() {
               </div>
               <div className="text-4xl font-bold text-neon-pink mb-1">iOS {detectedVer}</div>
               <div className="text-[10px] uppercase opacity-70">Model: iPhone 6s (A1633)</div>
-              <div className="mt-4 flex items-center gap-2 text-xs font-bold text-neon-green">
-                <ShieldCheck className="size-4" /> SYSTEM_VULNERABLE
+              <div className="mt-4 flex flex-col gap-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-neon-green">
+                  <ShieldCheck className="size-4" /> SYSTEM_VULNERABLE
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-bold text-neon-pink animate-pulse">
+                  <Zap className="size-3" /> KALI_READY
+                </div>
               </div>
             </motion.div>
           )}
