@@ -3,7 +3,6 @@ import { ScriptOptions } from '@/lib/script-templates';
 interface ScriptState {
   options: ScriptOptions;
   toggleOption: (key: keyof ScriptOptions) => void;
-  setOptions: (newOptions: ScriptOptions) => void;
   resetOptions: () => void;
 }
 const defaultOptions: ScriptOptions = {
@@ -13,10 +12,6 @@ const defaultOptions: ScriptOptions = {
   downloadCheckra1n: false,
   fetchIPSW: false,
   backupDevice: false,
-  genGitHubWorkflow: false,
-  genDevContainer: false,
-  includeReadmeGuides: false,
-  setupCodespaceProxy: false,
 };
 export const useScriptStore = create<ScriptState>((set) => ({
   options: defaultOptions,
@@ -26,6 +21,5 @@ export const useScriptStore = create<ScriptState>((set) => ({
       [key]: !state.options[key]
     }
   })),
-  setOptions: (newOptions) => set({ options: newOptions }),
   resetOptions: () => set({ options: defaultOptions }),
 }));
