@@ -8,8 +8,10 @@ interface ActionLog {
 interface UIState {
   isVerbose: boolean;
   isLoading: boolean;
+  isPublic: boolean;
   actionLogs: ActionLog[];
   toggleVerbose: () => void;
+  togglePublic: () => void;
   setLoading: (loading: boolean) => void;
   addLog: (message: string) => void;
   clearLogs: () => void;
@@ -19,8 +21,10 @@ export const useUIStore = create<UIState>()(
     (set) => ({
       isVerbose: true,
       isLoading: false,
+      isPublic: false,
       actionLogs: [],
       toggleVerbose: () => set((state) => ({ isVerbose: !state.isVerbose })),
+      togglePublic: () => set((state) => ({ isPublic: !state.isPublic })),
       setLoading: (loading) => set({ isLoading: loading }),
       addLog: (message) => set((state) => {
         const newLog: ActionLog = {
@@ -36,7 +40,7 @@ export const useUIStore = create<UIState>()(
     }),
     {
       name: 'a1633-ui-storage',
-      partialize: (state) => ({ isVerbose: state.isVerbose }),
+      partialize: (state) => ({ isVerbose: state.isVerbose, isPublic: state.isPublic }),
     }
   )
 );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { Cpu, Smartphone, Database, Zap, Target, Lock, Activity, Wifi, GraduationCap } from 'lucide-react';
+import { Cpu, Smartphone, Database, Zap, Target, Lock, Activity, Wifi, GraduationCap, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { SecretVault } from '@/components/SecretVault';
@@ -255,6 +255,19 @@ export function HomePage() {
                 </TooltipTrigger>
                 <TooltipContent side="left" className="bg-retro-black border border-neon-pink text-neon-pink uppercase text-[10px] rounded-none z-[100]">
                   Identify Firmware Vulnerabilities
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    to="/export-hub"
+                    className="retro-button w-full flex items-center justify-center gap-2 border-white text-white shadow-[4px_4px_0px_white] hover:shadow-none"
+                  >
+                    <Share2 className="w-4 h-4" /> EXPORT_SYSTEM
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="bg-retro-black border border-white text-white uppercase text-[10px] rounded-none z-[100]">
+                  Deploy Archive to Global Grid
                 </TooltipContent>
               </Tooltip>
             </div>
