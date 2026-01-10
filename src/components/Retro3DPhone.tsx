@@ -35,7 +35,7 @@ export function Retro3DPhone() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
   return (
-    <div className="relative w-full h-[500px] flex items-center justify-center perspective-[1000px] bg-retro-black/40 overflow-hidden">
+    <div className="relative w-full h-[500px] flex items-center justify-center [perspective:1000px] bg-retro-black/40 overflow-hidden">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="text-[8px] opacity-10 font-mono absolute top-4 left-4 whitespace-pre">
           {Array.from({ length: 20 }).map((_, i) => (

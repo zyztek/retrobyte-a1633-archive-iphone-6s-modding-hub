@@ -66,7 +66,7 @@ export function HackCamPage() {
             </div>
           </div>
           {/* Center Reticle */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 border-2 border-neon-green/30 border-dashed rounded-full flex items-center justify-center animate-spin-slow">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 border-2 border-neon-green/30 border-dashed rounded-full flex items-center justify-center animate-spin-slow backdrop-blur-[1px]">
             <Target className="size-12 text-neon-green/50" />
             <div className="absolute inset-0 border-t-2 border-neon-pink/40 rounded-full" />
           </div>

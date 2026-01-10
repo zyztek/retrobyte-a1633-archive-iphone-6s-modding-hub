@@ -54,6 +54,10 @@ export default {
         'marquee-vertical': {
           '0%': { transform: 'translateY(0%)' },
           '100%': { transform: 'translateY(-50%)' }
+        },
+        'spin-slow': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
         }
   		},
   		animation: {
@@ -62,6 +66,7 @@ export default {
   			'scanline': 'scanline 8s linear infinite',
         'marquee': 'marquee 30s linear infinite',
         'marquee-vertical': 'marquee-vertical 20s linear infinite',
+        'spin-slow': 'spin-slow 8s linear infinite',
   		}
   	}
   },
