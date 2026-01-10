@@ -1,9 +1,10 @@
 import React from "react";
 import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers, Book,
-  FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap, ShieldCheck
+  FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap, ShieldCheck,
+  Globe
 } from "lucide-react";
-import { Rocket, Share2, Usb } from "lucide-react";
+import { Rocket, Usb } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/store/ui-store";

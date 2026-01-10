@@ -2,10 +2,10 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Retro3DPhone } from '@/components/Retro3DPhone';
-import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle, Brain, Camera, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, Target, Zap, CheckCircle2, Circle, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Link, useNavigate } from 'react-router-dom';
-import { SINGULARITY_LOGIC, HARDWARE_MODS, SYSTEM_AUDIT_METRICS } from '@shared/extended-data';
+import { useNavigate } from 'react-router-dom';
+import { SINGULARITY_LOGIC, SYSTEM_AUDIT_METRICS } from '@shared/extended-data';
 import { useAcademyStore } from '@/store/academy-store';
 import { toast } from 'sonner';
 interface MissionTask {
@@ -76,11 +76,26 @@ export function GodModePage() {
   };
   const handleAudit = () => {
     setIsAuditing(true);
-    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] INITIATING_DEEP_SYSTEM_AUDIT...`, ...prev]);
-    setTimeout(() => {
-      setIsAuditing(false);
-      toast.success("AUDIT_COMPLETE", { description: "Hardware subsystems verified." });
-    }, 2500);
+    const auditSteps = [
+      "INITIATING_DEEP_SYSTEM_AUDIT...",
+      "SAMPLING_BMS_DRIFT: " + SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value,
+      "CALIBRATING_I2S_BUS: " + SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value,
+      "SNIFFING_LTE_ATTENUATION: " + SYSTEM_AUDIT_METRICS.find(m => m.id === 'lte-baseband')?.value,
+      "COMPARING_N71AP_SIGNATURES...",
+      "AUDIT_SUCCESSFUL: HARDWARE_SECURE"
+    ];
+    auditSteps.forEach((step, i) => {
+      setTimeout(() => {
+        setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] ${step}`, ...prev].slice(0, 10));
+        if (i === auditSteps.length - 1) {
+          setIsAuditing(false);
+          toast.success("AUDIT_COMPLETE", { 
+            description: "Hardware subsystems verified for A1633.",
+            style: { background: '#0a0a0a', color: '#00ff41', border: '1px solid #00ff41' }
+          });
+        }
+      }, i * 400);
+    });
   };
   const aiInsights = useMemo(() => {
     const key = activeProfile === 'hw-recon' ? 'gaming' : activeProfile === 'ghost' ? 'stable' : 'gaming';
@@ -92,13 +107,13 @@ export function GodModePage() {
     setTimeout(() => {
       setIsExporting(false);
       navigate('/export-hub');
-    }, 1500);
+    }, 1200);
   };
   const syncIntegrity = xp >= 1500 ? 'STABLE' : xp >= 500 ? 'SYNCING' : 'UNSYNCED';
   const syncColor = xp >= 1500 ? 'text-neon-pink' : xp >= 500 ? 'text-yellow-400' : 'text-neon-pink/40';
   return (
     <RetroLayout>
-      <div className="space-y-12">
+      <div className="space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-4">
             <div className="bg-neon-pink p-3 text-white shadow-[0_0_20px_rgba(210,9,250,0.4)] animate-pulse">
@@ -113,7 +128,7 @@ export function GodModePage() {
             <button
               onClick={handleAudit}
               disabled={isAuditing}
-              className="flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none active:translate-y-1"
+              className="flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none active:translate-y-1 disabled:opacity-50"
             >
               {isAuditing ? <Activity className="size-3 animate-spin" /> : <ShieldAlert className="size-3" />} FULL_AUDIT
             </button>
@@ -128,26 +143,26 @@ export function GodModePage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-8">
-            <RetroCard title="HARDWARE_VISUALIZER" status="A1633_SINGULARITY" className="min-h-[400px] md:min-h-[550px] flex flex-col p-0 overflow-hidden">
-              <div className="flex-1 w-full relative">
+            <RetroCard title="HARDWARE_VISUALIZER" status="A1633_SINGULARITY" className="min-h-[450px] md:min-h-[550px] flex flex-col p-0 overflow-hidden">
+              <div className="flex-1 w-full relative h-full">
                 <Retro3DPhone />
               </div>
             </RetroCard>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <RetroCard title="AUDIO_AUDIT (I2S)" variant="default" className="text-center">
                 <Volume2 className="size-8 mx-auto mb-2 text-neon-green" />
-                <div className="text-[10px] font-black">JITTER: 1.2ns</div>
-                <div className="text-[8px] opacity-40">DAC_SYNC: LOCKED</div>
+                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value}</div>
+                <div className="text-[8px] opacity-40 uppercase">DAC_SYNC: LOCKED</div>
               </RetroCard>
               <RetroCard title="BATTERY_AUDIT (BMS)" variant="warning" className="text-center">
                 <Battery className="size-8 mx-auto mb-2 text-yellow-400" />
-                <div className="text-[10px] font-black">DRIFT: -4.2%</div>
-                <div className="text-[8px] opacity-40">CYCLES: 842</div>
+                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value}</div>
+                <div className="text-[8px] opacity-40 uppercase">STATUS: DEGRADED</div>
               </RetroCard>
               <RetroCard title="LTE_AUDIT (BB)" variant="default" className="text-center">
                 <Radio className="size-8 mx-auto mb-2 text-neon-green" />
-                <div className="text-[10px] font-black">-82dBm</div>
-                <div className="text-[8px] opacity-40">BAND: 12 (700MHz)</div>
+                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'lte-baseband')?.value}</div>
+                <div className="text-[8px] opacity-40 uppercase">BAND_LOCK: ACTIVE</div>
               </RetroCard>
             </div>
           </div>
@@ -157,7 +172,7 @@ export function GodModePage() {
                 <div className="flex items-center gap-4">
                   <div className="relative shrink-0">
                     <div className={cn("absolute inset-0 blur-xl animate-pulse opacity-40", syncIntegrity === 'STABLE' ? 'bg-neon-pink' : 'bg-yellow-400')} />
-                    <div className={cn("size-12 border-2 flex items-center justify-center font-bold text-[10px]", syncIntegrity === 'STABLE' ? 'border-neon-pink text-neon-pink' : 'border-yellow-400 text-yellow-400')}>
+                    <div className={cn("size-12 border-2 flex items-center justify-center font-bold text-[10px] relative z-10 bg-retro-black", syncIntegrity === 'STABLE' ? 'border-neon-pink text-neon-pink' : 'border-yellow-400 text-yellow-400')}>
                       {Math.floor((xp / 2500) * 100)}%
                     </div>
                   </div>
@@ -179,8 +194,8 @@ export function GodModePage() {
               <div className="space-y-4">
                 {profiles.map((profile) => (
                   <div key={profile.id} className={cn(
-                    "p-3 border-2 cursor-pointer transition-all",
-                    activeProfile === profile.id ? "border-neon-pink bg-neon-pink/10" : "border-neon-pink/20"
+                    "p-3 border-2 cursor-pointer transition-all hover:bg-neon-pink/5",
+                    activeProfile === profile.id ? "border-neon-pink bg-neon-pink/10 shadow-[inset_0_0_10px_rgba(210,9,250,0.2)]" : "border-neon-pink/20 opacity-60"
                   )} onClick={() => setActiveProfile(profile.id)}>
                     <div className="flex items-center gap-2 mb-3">
                       <profile.icon className="size-4 text-neon-pink" />
@@ -188,9 +203,9 @@ export function GodModePage() {
                     </div>
                     <div className="space-y-2">
                       {profile.tasks.map((task) => (
-                        <div key={task.id} className="flex justify-between items-center text-[8px] font-bold uppercase" onClick={(e) => { e.stopPropagation(); toggleTask(profile.id, task.id); }}>
+                        <div key={task.id} className="flex justify-between items-center text-[8px] font-bold uppercase cursor-pointer hover:text-white" onClick={(e) => { e.stopPropagation(); toggleTask(profile.id, task.id); }}>
                           <span className={task.completed ? "text-neon-pink" : "opacity-30"}>{task.title}</span>
-                          {task.completed ? <CheckCircle2 className="size-3" /> : <Circle className="size-3" />}
+                          {task.completed ? <CheckCircle2 className="size-3 text-neon-pink" /> : <Circle className="size-3" />}
                         </div>
                       ))}
                     </div>
@@ -200,12 +215,13 @@ export function GodModePage() {
             </RetroCard>
             <RetroCard title="SYSLOG_STREAM" status="LIVE">
               <div className="bg-black/80 border border-neon-green/30 p-3 h-48 overflow-y-auto font-mono text-[9px] text-neon-green/80 space-y-1.5 scrollbar-thin">
+                {sysLogs.length === 0 && <div className="opacity-20 uppercase italic">Awaiting telemetry...</div>}
                 {sysLogs.map((log, i) => (
-                  <div key={i} className="animate-in fade-in slide-in-from-bottom-1 duration-200 border-l border-neon-green/20 pl-2">
+                  <div key={i} className="animate-in fade-in slide-in-from-bottom-1 duration-200 border-l border-neon-green/20 pl-2 break-all">
                     {log}
                   </div>
                 ))}
-                {isAuditing && <div className="animate-pulse">_</div>}
+                {isAuditing && <div className="animate-pulse text-neon-pink">_AUDIT_IN_PROGRESS</div>}
               </div>
             </RetroCard>
           </div>
