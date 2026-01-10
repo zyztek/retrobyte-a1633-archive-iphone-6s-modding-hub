@@ -30,6 +30,7 @@ import { AcademyPage } from '@/pages/AcademyPage'
 import { TestCenterPage } from '@/pages/TestCenterPage'
 import { ExportHubPage } from '@/pages/ExportHubPage'
 import { USBForgePage } from '@/pages/USBForgePage'
+import { RemoteUSBPage } from '@/pages/RemoteUSBPage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -125,6 +126,11 @@ const router = createBrowserRouter([
   {
     path: "/usb-forge",
     element: <USBForgePage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/remote-ops",
+    element: <RemoteUSBPage />,
     errorElement: <RouteErrorBoundary />,
   }
 ]);

@@ -11,7 +11,7 @@ export interface Emulator {
   platform: string;
   compatibility: 'STABLE' | 'EXPERIMENTAL' | 'NON-FUNCTIONAL';
   jitRequired: boolean;
-  performanceScore: number; 
+  performanceScore: number;
   notes: string;
 }
 export interface QuizQuestion {
@@ -51,6 +51,20 @@ export interface ARMarker {
   specs: string;
   top: string;
   left: string;
+}
+export interface RemoteTool {
+  id: string;
+  name: string;
+  description: string;
+  platform: 'WINDOWS' | 'MACOS' | 'LINUX' | 'IOS';
+  command: string;
+}
+export interface SystemAudit {
+  id: string;
+  subsystem: string;
+  metric: string;
+  status: 'STABLE' | 'DEGRADED' | 'UNSYNCED';
+  value: string;
 }
 export const DOCS_VAULT_CONTENT: WikiArticle[] = [
   {
@@ -92,6 +106,42 @@ export const AR_HARDWARE_MARKERS: ARMarker[] = [
   { id: 'pmic', name: 'POWER MGMT IC', specs: '338S00120 PMU Subsystem', top: '55%', left: '40%' },
   { id: 'nand', name: 'FLASH STORAGE', specs: 'SKHynix/Toshiba BGA110', top: '65%', left: '45%' }
 ];
+export const REMOTE_OPS_TOOLS: RemoteTool[] = [
+  {
+    id: 'libimobiledevice',
+    name: 'libimobiledevice',
+    description: 'Cross-platform protocol library to communicate with iOS devices natively.',
+    platform: 'LINUX',
+    command: 'ideviceinfo -u <udid>'
+  },
+  {
+    id: 'newterm',
+    name: 'NewTerm 3',
+    description: 'Versatile terminal emulator for iOS. Required for on-device SSH orchestration.',
+    platform: 'IOS',
+    command: 'ssh root@localhost'
+  },
+  {
+    id: 'veency',
+    name: 'Veency',
+    description: 'VNC server for jailbroken iOS. Allows full remote GUI control.',
+    platform: 'IOS',
+    command: 'vnc-server --start'
+  }
+];
+export const SYSTEM_AUDIT_METRICS: SystemAudit[] = [
+  { id: 'audio-i2s', subsystem: 'AUDIO (I2S)', metric: 'Jitter', status: 'STABLE', value: '1.2ns' },
+  { id: 'battery-bms', subsystem: 'BATTERY (BMS)', metric: 'Drift', status: 'DEGRADED', value: '-4.2%' },
+  { id: 'lte-baseband', subsystem: 'LTE (BASEBAND)', metric: 'Attenuation', status: 'STABLE', value: '-82dBm' }
+];
+export const CODESPACES_PROXY_GUIDE = {
+  title: 'socat Port Forwarding',
+  steps: [
+    'Install socat: sudo apt install socat',
+    'Forward usbmuxd: socat TCP-LISTEN:27015,fork UNIX-CONNECT:/var/run/usbmuxd',
+    'Bridge to Codespace: gh codespace ports forward 27015:27015'
+  ]
+};
 export const PACKAGE_STORES: PackageStore[] = [
   {
     name: "Sileo",

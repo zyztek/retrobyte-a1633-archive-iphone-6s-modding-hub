@@ -35,6 +35,7 @@ export function AppSidebar(): JSX.Element {
   const softwareNav = [
     { title: "Software Hub", icon: LayoutGrid, path: "/stores", tip: "Package store alternatives" },
     { title: "EmuVault", icon: Laptop, path: "/emuvault", tip: "Virtualization environment" },
+    { title: "Remote Ops", icon: Globe, path: "/remote-ops", tip: "SSH, VNC & Cloud Proxy Hub" },
   ];
   const labNav = [
     { title: "System Lab", icon: FlaskConical, path: "/system-lab", tip: "Hardware diagnostics" },
