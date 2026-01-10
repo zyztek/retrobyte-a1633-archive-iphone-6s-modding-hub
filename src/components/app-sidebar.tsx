@@ -3,7 +3,7 @@ import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers, Book,
   FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap, ShieldCheck
 } from "lucide-react";
-import { Rocket, Share2 } from "lucide-react";
+import { Rocket, Share2, Usb } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useUIStore } from "@/store/ui-store";
@@ -41,6 +41,7 @@ export function AppSidebar(): JSX.Element {
     { title: "TweakAI", icon: Brain, path: "/tweak-ai", tip: "Neural recommendation engine" },
     { title: "Exploit Lab", icon: Activity, path: "/exploit-lab", tip: "Race-condition simulator" },
     { title: "Network Arsenal", icon: Wifi, path: "/network-arsenal", tip: "RF & Tunneling suite" },
+    { title: "USB Forge", icon: Usb, path: "/usb-forge", tip: "Bootable media & hardware hub" },
     { title: "HackCam", icon: Camera, path: "/hack-cam", tip: "AR Hardware recon" },
     { title: "Docs Vault", icon: Book, path: "/docs-vault", tip: "Classified technical specs" },
     { title: "Academy", icon: GraduationCap, path: "/academy", tip: "Ascension knowledge base" },

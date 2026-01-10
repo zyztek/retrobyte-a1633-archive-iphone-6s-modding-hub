@@ -29,6 +29,7 @@ import { DocsVaultPage } from '@/pages/DocsVaultPage'
 import { AcademyPage } from '@/pages/AcademyPage'
 import { TestCenterPage } from '@/pages/TestCenterPage'
 import { ExportHubPage } from '@/pages/ExportHubPage'
+import { USBForgePage } from '@/pages/USBForgePage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -119,6 +120,11 @@ const router = createBrowserRouter([
   {
     path: "/export-hub",
     element: <ExportHubPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/usb-forge",
+    element: <USBForgePage />,
     errorElement: <RouteErrorBoundary />,
   }
 ]);
