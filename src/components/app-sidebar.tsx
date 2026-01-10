@@ -19,11 +19,11 @@ import {
 } from "@/components/ui/sidebar";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { BrandLogo } from "@/components/ui/brand-logo";
 export function AppSidebar(): JSX.Element {
   const location = useLocation();
   const isVerbose = useUIStore(s => s.isVerbose);
   const toggleVerbose = useUIStore(s => s.toggleVerbose);
-
   const mainNav = [
     { title: "Terminal", icon: Terminal, path: "/", tip: "Main system interface" },
     { title: "Script Forge", icon: Code, path: "/script-forge", tip: "Automation script generator" },
@@ -91,14 +91,8 @@ export function AppSidebar(): JSX.Element {
   );
   return (
     <Sidebar className="border-r-2 border-neon-green bg-retro-black flex-shrink-0">
-      <SidebarHeader className="border-b-2 border-neon-green p-5 bg-retro-black">
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 bg-neon-green flex items-center justify-center text-retro-black font-black text-2xl shadow-[0_0_15px_rgba(0,255,65,0.6)] border-2 border-white/20">A</div>
-          <div className="flex flex-col">
-            <span className="text-[13px] font-black leading-none tracking-tighter text-neon-green">RETROBYTE</span>
-            <span className="text-[9px] text-neon-pink font-bold uppercase tracking-[0.15em]">A1633_ARCHIVE</span>
-          </div>
-        </div>
+      <SidebarHeader className="border-b-2 border-neon-green p-6 bg-retro-black">
+        <BrandLogo size="lg" />
       </SidebarHeader>
       <SidebarContent className="p-3 space-y-4 overflow-y-auto scrollbar-none bg-retro-black">
         <SidebarGroup>
@@ -123,8 +117,8 @@ export function AppSidebar(): JSX.Element {
           <SidebarGroupLabel className="text-[9px] uppercase font-black text-neon-pink/40 mb-4">System_Config</SidebarGroupLabel>
           <div className="flex items-center justify-between px-2">
             <span className="text-[10px] font-bold text-neon-pink uppercase">Verbose_Mode</span>
-            <Switch 
-              checked={isVerbose} 
+            <Switch
+              checked={isVerbose}
               onCheckedChange={toggleVerbose}
               className="data-[state=checked]:bg-neon-pink rounded-none"
             />
@@ -135,7 +129,7 @@ export function AppSidebar(): JSX.Element {
           <Settings className="size-5 cursor-pointer text-neon-green/60 hover:text-neon-pink transition-colors" />
         </div>
         <div className="text-[8px] text-center text-neon-green/40 font-bold uppercase tracking-widest leading-loose">
-          Unauthorized Access Prohibited<br/>(C) 1997 RETROBYTE SYSTEMS
+          Unauthorized Access Prohibited<br/>(C) 2024 SOLUCIONES 646
         </div>
       </SidebarFooter>
     </Sidebar>

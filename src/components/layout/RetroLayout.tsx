@@ -4,7 +4,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LoadingOverlay } from "@/components/ui/loading-overlay";
 import { VerboseHUD } from "@/components/ui/verbose-hud";
-import { Shield } from "lucide-react";
+import { BrandLogo } from "@/components/ui/brand-logo";
 interface RetroLayoutProps {
   children: React.ReactNode;
 }
@@ -17,7 +17,9 @@ export function RetroLayout({ children }: RetroLayoutProps) {
     return () => clearInterval(interval);
   }, []);
   const memAddress = useMemo(() => {
-    return "0x" + Math.floor(Math.random() * 0xFFFFFFFF).toString(16).toUpperCase().padStart(8, '0');
+    // Incorporate memSeed to ensure value changes and fix ESLint warning
+    const base = Math.floor(Math.random() * 0xFFFFFFFF) ^ memSeed;
+    return "0x" + (base >>> 0).toString(16).toUpperCase().padStart(8, '0');
   }, [memSeed]);
   const marqueeText = "WARNING: VOIDING WARRANTY IS REVERSIBLE BUT RISKY. PROCEED WITH CAUTION. | A1633 ARCHIVE V1.1.0 | SECURE CONNECTION ESTABLISHED... | EXPLOIT STAGE 2: PAYLOAD_INJECTED | INTEGRITY_CHECK_COMPLETE :: ALL_SYSTEMS_OPERATIONAL | "
   return (
@@ -31,31 +33,28 @@ export function RetroLayout({ children }: RetroLayoutProps) {
         <SidebarInset className="bg-transparent flex flex-col min-h-screen relative overflow-hidden">
           <header className="h-14 md:h-12 border-b-2 border-neon-green flex items-center justify-between px-3 md:px-6 bg-retro-black/90 backdrop-blur-md z-50">
             <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
-              <SidebarTrigger 
-                className="text-neon-green hover:bg-neon-green hover:text-retro-black border-2 border-neon-green rounded-none transition-all h-9 w-9 md:h-8 md:w-8 shrink-0" 
+              <SidebarTrigger
+                className="text-neon-green hover:bg-neon-green hover:text-retro-black border-2 border-neon-green rounded-none transition-all h-9 w-9 md:h-8 md:w-8 shrink-0"
                 aria-label="Toggle System Menu"
               />
-              <div className="flex items-center gap-2 shrink-0">
-                <Shield className="size-5 text-neon-green animate-pulse hidden xs:block" />
-                <span className="text-xs font-black text-neon-green tracking-tighter hidden sm:block">RB_SYS</span>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 leading-none overflow-hidden">
+              <BrandLogo size="sm" className="hidden xs:flex shrink-0" />
+              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 leading-none overflow-hidden border-l-2 border-neon-green/20 pl-2 md:pl-4">
                 <span className="text-[9px] md:text-xs animate-pulse text-neon-green font-bold shrink-0">● SYS_UP</span>
-                <span className="text-[8px] md:text-[10px] text-neon-pink font-mono opacity-80 truncate max-w-[60px] md:max-w-none">{memAddress}</span>
+                <span className="text-[8px] md:text-[10px] text-neon-pink font-mono opacity-80 truncate max-w-[60px] md:max-w-none retro-glow">{memAddress}</span>
                 <div className="hidden xs:flex items-center gap-2 border-l-2 border-neon-green/20 pl-4 shrink-0">
                   <span className="text-[8px] uppercase opacity-50">Build</span>
-                  <span className="text-[8px] bg-neon-green text-retro-black px-1 font-bold">PASSING</span>
+                  <span className="text-[8px] bg-neon-green text-retro-black px-1 font-bold retro-glow">PASSING</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2 md:gap-6 shrink-0">
               <div className="hidden sm:flex flex-col text-right">
                 <span className="text-[8px] uppercase opacity-50">Coverage</span>
-                <span className="text-[10px] text-neon-pink font-bold">98.4%</span>
+                <span className="text-[10px] text-neon-pink font-bold retro-glow">98.4%</span>
               </div>
               <div className="hidden lg:flex flex-col text-right">
                 <span className="text-[8px] uppercase opacity-50">Frame_Lock</span>
-                <span className="text-[10px] text-neon-green">60.00 FPS</span>
+                <span className="text-[10px] text-neon-green retro-glow">60.00 FPS</span>
               </div>
               <ThemeToggle className="static" />
               <div className="text-[9px] md:text-xs tabular-nums font-bold border-l-2 border-neon-green/30 pl-2 md:pl-4 whitespace-nowrap">
@@ -77,8 +76,8 @@ export function RetroLayout({ children }: RetroLayoutProps) {
                 <span className="px-8 font-bold text-neon-green/90">{marqueeText}</span>
               </div>
               <div className="absolute right-0 h-full bg-retro-black border-l-2 border-neon-green px-4 flex items-center gap-2 z-10">
-                <Shield className="size-3 text-neon-pink" />
-                <span className="text-[8px] font-black text-neon-pink tracking-widest hidden xs:block">RETROBYTE_A1633</span>
+                <BrandLogo size="sm" showText={false} iconClassName="text-neon-pink" />
+                <span className="text-[8px] font-black text-neon-pink tracking-widest hidden xs:block retro-glow">SOLUCIONES_646</span>
               </div>
             </div>
           </footer>
