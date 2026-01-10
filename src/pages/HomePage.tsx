@@ -9,15 +9,15 @@ import { useAcademyStore, getRankByXp } from '@/store/academy-store';
 import { useUIStore } from '@/store/ui-store';
 import { RetroProgress } from '@/components/ui/retro-progress';
 import { cn } from '@/lib/utils';
-import { ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { motion } from 'framer-motion';
 export function HomePage() {
   const [vaultOpen, setVaultOpen] = useState(false);
   const [asciiClicks, setAsciiClicks] = useState(0);
   const addLog = useUIStore(s => s.addLog);
   const setLoading = useUIStore(s => s.setLoading);
   const isVerbose = useUIStore(s => s.isVerbose);
-
   const handleBindTerminal = () => {
     addLog("HANDSHAKE_INITIATED: Contacting A9 BootROM...");
     toast.success("TERMINAL_LINKED: Secure handshake complete.", {
@@ -30,13 +30,11 @@ export function HomePage() {
     });
     addLog("CONNECTION_STABLE: Mainframe identity verified.");
   };
-
   const handleAction = (label: string) => {
     addLog(`CMD_EXEC: ${label.toUpperCase()}...`);
     setLoading(true);
     setTimeout(() => setLoading(false), 800);
   };
-
   const handleAsciiClick = () => {
     const newCount = asciiClicks + 1;
     setAsciiClicks(newCount);
@@ -213,7 +211,6 @@ export function HomePage() {
                   Establish DO-Durable Handshake
                 </TooltipContent>
               </Tooltip>
-
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -228,7 +225,6 @@ export function HomePage() {
                   Access RF Scanning Tools
                 </TooltipContent>
               </Tooltip>
-
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -243,7 +239,6 @@ export function HomePage() {
                   Check NAND and Kernel Health
                 </TooltipContent>
               </Tooltip>
-
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -258,18 +253,6 @@ export function HomePage() {
                   Identify Firmware Vulnerabilities
                 </TooltipContent>
               </Tooltip>
-              <Link
-                to="/system-lab"
-                className="retro-button w-full flex items-center justify-center gap-2 border-yellow-400 text-yellow-400 shadow-[4px_4px_0px_rgba(250,204,21,1)] hover:shadow-none"
-              >
-                <Database className="w-4 h-4" /> SYSTEM_DIAGS
-              </Link>
-              <Link
-                to="/multiboot"
-                className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none"
-              >
-                <Smartphone className="w-4 h-4" /> SCAN_DEVICE
-              </Link>
             </div>
           </RetroCard>
           <RetroCard title="SECURE_VAULT" status="LOCKED">

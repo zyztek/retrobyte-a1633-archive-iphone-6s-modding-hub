@@ -25,17 +25,11 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(
-      rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.15) 50%
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255, 0, 0, 0.05),
-      rgba(0, 255, 0, 0.02),
-      rgba(0, 0, 255, 0.05)
-    );
-    background-size: 100% 4px, 4px 100%;
+    background: 
+      radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.4) 100%),
+      linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+      linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+    background-size: 100% 100%, 100% 4px, 4px 100%;
     pointer-events: none;
     z-index: 9999;
   }
@@ -50,14 +44,14 @@
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(0, 255, 65, 0.05) 50%,
+      rgba(0, 255, 65, 0.03) 50%,
       transparent 100%
     );
     height: 100px;
     width: 100%;
     z-index: 10001;
     pointer-events: none;
-    animation: scanline 6s linear infinite;
+    animation: scanline 10s linear infinite;
   }
   .crt-overlay::after {
     content: " ";
@@ -67,11 +61,19 @@
     left: 0;
     bottom: 0;
     right: 0;
-    background: rgba(18, 16, 16, 0.1);
+    background: rgba(18, 16, 16, 0.05);
     opacity: 0;
     z-index: 10000;
     pointer-events: none;
-    animation: crt-flicker 0.15s infinite;
+    animation: crt-flicker 0.2s infinite;
+  }
+  .screen-glow {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    box-shadow: inset 0 0 100px rgba(0, 255, 65, 0.05);
+    opacity: 0.5;
   }
   .retro-glow {
     text-shadow: 0 0 8px rgba(0, 255, 65, 0.8), 0 0 15px rgba(0, 255, 65, 0.4);

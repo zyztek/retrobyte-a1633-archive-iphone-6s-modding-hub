@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { cn } from "@/lib/utils";
 import { LoadingOverlay } from "@/components/ui/loading-overlay";
 import { VerboseHUD } from "@/components/ui/verbose-hud";
 import { Shield } from "lucide-react";
@@ -10,17 +9,21 @@ interface RetroLayoutProps {
   children: React.ReactNode;
 }
 export function RetroLayout({ children }: RetroLayoutProps) {
-  const [memAddress, setMemAddress] = useState("0x00000000");
+  const [memSeed, setMemSeed] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {
-      setMemAddress("0x" + Math.floor(Math.random() * 0xFFFFFFFF).toString(16).toUpperCase().padStart(8, '0'));
-    }, 2000);
+      setMemSeed(prev => prev + 1);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
+  const memAddress = useMemo(() => {
+    return "0x" + Math.floor(Math.random() * 0xFFFFFFFF).toString(16).toUpperCase().padStart(8, '0');
+  }, [memSeed]);
   const marqueeText = "WARNING: VOIDING WARRANTY IS REVERSIBLE BUT RISKY. PROCEED WITH CAUTION. | A1633 ARCHIVE V1.1.0 | SECURE CONNECTION ESTABLISHED... | EXPLOIT STAGE 2: PAYLOAD_INJECTED | INTEGRITY_CHECK_COMPLETE :: ALL_SYSTEMS_OPERATIONAL | "
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="crt-overlay" />
+      <div className="screen-glow" />
       <LoadingOverlay />
       <VerboseHUD />
       <div className="relative min-h-screen w-full bg-retro-black flex font-mono overflow-hidden">
@@ -28,7 +31,10 @@ export function RetroLayout({ children }: RetroLayoutProps) {
         <SidebarInset className="bg-transparent flex flex-col min-h-screen relative overflow-hidden">
           <header className="h-14 md:h-12 border-b-2 border-neon-green flex items-center justify-between px-3 md:px-6 bg-retro-black/90 backdrop-blur-md z-50">
             <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
-              <SidebarTrigger className="text-neon-green hover:bg-neon-green hover:text-retro-black border-2 border-neon-green rounded-none transition-all h-9 w-9 md:h-8 md:w-8 shrink-0" />
+              <SidebarTrigger 
+                className="text-neon-green hover:bg-neon-green hover:text-retro-black border-2 border-neon-green rounded-none transition-all h-9 w-9 md:h-8 md:w-8 shrink-0" 
+                aria-label="Toggle System Menu"
+              />
               <div className="flex items-center gap-2 shrink-0">
                 <Shield className="size-5 text-neon-green animate-pulse hidden xs:block" />
                 <span className="text-xs font-black text-neon-green tracking-tighter hidden sm:block">RB_SYS</span>

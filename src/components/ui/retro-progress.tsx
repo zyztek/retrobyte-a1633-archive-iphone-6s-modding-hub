@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 interface RetroProgressProps {
   current: number;
   max: number;
@@ -25,6 +26,7 @@ export function RetroProgress({
     pink: 'bg-neon-pink shadow-[0_0_10px_rgba(210,9,250,0.5)]',
     yellow: 'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.5)]'
   };
+  const targetColor = variant === 'green' ? '#00ff41' : variant === 'pink' ? '#d209fa' : '#facc15';
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex justify-between items-end">
@@ -32,7 +34,7 @@ export function RetroProgress({
           {label || 'XP_PROGRESSION'}
         </span>
         <span className="text-[10px] font-mono font-bold">
-          {current} / {max}
+          {isIndeterminate ? 'SCANNING...' : `${current} / ${max}`}
         </span>
       </div>
       <div className="flex gap-1 h-5 w-full bg-black/40 border-2 border-neon-green/20 p-1">
@@ -43,14 +45,14 @@ export function RetroProgress({
               opacity: [0.1, 1, 0.1],
               backgroundColor: [
                 'rgba(255,255,255,0.05)',
-                variant === 'green' ? '#00ff41' : variant === 'pink' ? '#d209fa' : '#facc15',
+                targetColor,
                 'rgba(255,255,255,0.05)'
               ]
             } : {}}
             transition={isIndeterminate ? {
-              duration: 1,
+              duration: 1.2,
               repeat: Infinity,
-              delay: (i / segments) * 1,
+              delay: (i / segments) * 1.5,
               ease: "easeInOut"
             } : {}}
             className={cn(
