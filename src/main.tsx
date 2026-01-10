@@ -17,6 +17,11 @@ import { ArchivesPage } from '@/pages/ArchivesPage'
 import { GuideDetailPage } from '@/pages/GuideDetailPage'
 import { ModRepoPage } from '@/pages/ModRepoPage'
 import { MultiBootPage } from '@/pages/MultiBootPage'
+import { PackageStoresPage } from '@/pages/PackageStoresPage'
+import { EmuVaultPage } from '@/pages/EmuVaultPage'
+import { TweakAIPage } from '@/pages/TweakAIPage'
+import { SystemLabPage } from '@/pages/SystemLabPage'
+import { GodModePage } from '@/pages/GodModePage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -47,6 +52,31 @@ const router = createBrowserRouter([
   {
     path: "/multiboot",
     element: <MultiBootPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/stores",
+    element: <PackageStoresPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/emuvault",
+    element: <EmuVaultPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/tweak-ai",
+    element: <TweakAIPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/system-lab",
+    element: <SystemLabPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/godmode",
+    element: <GodModePage />,
     errorElement: <RouteErrorBoundary />,
   }
 ]);
