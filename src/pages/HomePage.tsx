@@ -1,138 +1,93 @@
-// Home page of the app.
-// Currently a demo placeholder "please wait" screen.
-// Replace this file with your actual app UI. Do not delete it to use some other file as homepage. Simply replace the entire contents of this file.
-
-import { useEffect, useMemo, useState } from 'react'
-import { Sparkles } from 'lucide-react'
-
-import { ThemeToggle } from '@/components/ThemeToggle'
-import { HAS_TEMPLATE_DEMO, TemplateDemo } from '@/components/TemplateDemo'
-import { Button } from '@/components/ui/button'
-import { Toaster, toast } from '@/components/ui/sonner'
-
-function formatDuration(ms: number): string {
-  const total = Math.max(0, Math.floor(ms / 1000))
-  const m = Math.floor(total / 60)
-  const s = total % 60
-  return `${m}:${s.toString().padStart(2, '0')}`
-}
-
+import React from 'react';
+import { RetroLayout } from '@/components/layout/RetroLayout';
+import { RetroCard } from '@/components/ui/retro-card';
+import { Cpu, Smartphone, Database, Zap } from 'lucide-react';
 export function HomePage() {
-  const [coins, setCoins] = useState(0)
-  const [isRunning, setIsRunning] = useState(false)
-  const [startedAt, setStartedAt] = useState<number | null>(null)
-  const [elapsedMs, setElapsedMs] = useState(0)
-
-  useEffect(() => {
-    if (!isRunning || startedAt === null) return
-
-    const t = setInterval(() => {
-      setElapsedMs(Date.now() - startedAt)
-    }, 250)
-
-    return () => clearInterval(t)
-  }, [isRunning, startedAt])
-
-  const formatted = useMemo(() => formatDuration(elapsedMs), [elapsedMs])
-
-  const onPleaseWait = () => {
-    setCoins((c) => c + 1)
-
-    if (!isRunning) {
-      // Resume from the current elapsed time
-      setStartedAt(Date.now() - elapsedMs)
-      setIsRunning(true)
-      toast.success('Building your app…', {
-        description: "Hang tight — we're setting everything up.",
-      })
-      return
-    }
-
-    setIsRunning(false)
-    toast.info('Still working…', {
-      description: 'You can come back in a moment.',
-    })
-  }
-
-  const onReset = () => {
-    setCoins(0)
-    setIsRunning(false)
-    setStartedAt(null)
-    setElapsedMs(0)
-    toast('Reset complete')
-  }
-
-  const onAddCoin = () => {
-    setCoins((c) => c + 1)
-    toast('Coin added')
-  }
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 overflow-hidden relative">
-      <ThemeToggle />
-      <div className="absolute inset-0 bg-gradient-rainbow opacity-10 dark:opacity-20 pointer-events-none" />
-
-      <div className="text-center space-y-8 relative z-10 animate-fade-in w-full">
-        <div className="flex justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-primary floating">
-            <Sparkles className="w-8 h-8 text-white rotating" />
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <h1 className="text-5xl md:text-7xl font-display font-bold text-balance leading-tight">
-            Creating your <span className="text-gradient">app</span>
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto text-pretty">
-            Your application would be ready soon.
-          </p>
-        </div>
-
-        {HAS_TEMPLATE_DEMO ? (
-          <div className="max-w-5xl mx-auto text-left">
-            <TemplateDemo />
-          </div>
-        ) : (
-          <>
-            <div className="flex justify-center gap-4">
-              <Button
-                size="lg"
-                onClick={onPleaseWait}
-                className="btn-gradient px-8 py-4 text-lg font-semibold hover:-translate-y-0.5 transition-all duration-200"
-                aria-live="polite"
-              >
-                Please Wait
-              </Button>
-            </div>
-
-            <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
-              <div>
-                Time elapsed:{' '}
-                <span className="font-medium tabular-nums text-foreground">{formatted}</span>
-              </div>
-              <div>
-                Coins:{' '}
-                <span className="font-medium tabular-nums text-foreground">{coins}</span>
+    <RetroLayout>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
+          <RetroCard title="SYSTEM_OVERVIEW" status="READY">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl font-bold retro-glow">RETROBYTE A1633</h1>
+              <p className="text-xl text-neon-green/80">
+                Core mainframe for iPhone 6s modding and legacy preservation.
+              </p>
+              <pre className="text-[10px] leading-none text-neon-green/40 mt-4 overflow-hidden select-none">
+{`        .------------------------.
+        | [ ................... ] |
+        | [ ................... ] |
+        | [      A 1 6 3 3      ] |
+        | [ ................... ] |
+        | [ ................... ] |
+        | [_____________________] |
+        |           (_)           |
+        '-------------------------'`}
+              </pre>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                <div className="border border-neon-green/30 p-3 flex gap-3 items-center">
+                  <Cpu className="w-5 h-5" />
+                  <div>
+                    <div className="text-[10px] uppercase opacity-50">Processor</div>
+                    <div className="text-sm">Apple A9 (64-bit)</div>
+                  </div>
+                </div>
+                <div className="border border-neon-green/30 p-3 flex gap-3 items-center">
+                  <Database className="w-5 h-5" />
+                  <div>
+                    <div className="text-[10px] uppercase opacity-50">Memory</div>
+                    <div className="text-sm">2GB LPDDR4</div>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div className="flex justify-center gap-2">
-              <Button variant="outline" size="sm" onClick={onReset}>
-                Reset
-              </Button>
-              <Button variant="outline" size="sm" onClick={onAddCoin}>
-                Add Coin
-              </Button>
+          </RetroCard>
+          <RetroCard title="ARCHIVE_LOG" className="font-mono text-sm">
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <span className="text-neon-pink">[08:22:11]</span>
+                <span>Initializing boot sequence...</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="text-neon-pink">[08:22:12]</span>
+                <span>Detected iPhone 6s (N71AP/N71mAP).</span>
+              </div>
+              <div className="flex gap-2 text-neon-pink">
+                <span className="animate-pulse">_</span>
+                <span>Awaiting user command...</span>
+              </div>
             </div>
-          </>
-        )}
+          </RetroCard>
+        </div>
+        <div className="space-y-6">
+          <RetroCard title="DEVICE_STATS" status="LIVE">
+            <div className="space-y-4 text-sm">
+              <div className="flex justify-between border-b border-neon-green/20 pb-2">
+                <span className="opacity-70">MAX_OFFICIAL_OS</span>
+                <span className="font-bold">iOS 15.8.3</span>
+              </div>
+              <div className="flex justify-between border-b border-neon-green/20 pb-2">
+                <span className="opacity-70">JAILBREAK_STATUS</span>
+                <span className="text-neon-pink font-bold">COMPATIBLE</span>
+              </div>
+              <div className="flex justify-between border-b border-neon-green/20 pb-2">
+                <span className="opacity-70">METHOD</span>
+                <span>Paler1n / Checkra1n</span>
+              </div>
+            </div>
+          </RetroCard>
+          <RetroCard title="QUICK_ACTIONS">
+            <div className="space-y-3">
+              <button className="retro-button w-full flex items-center justify-center gap-2">
+                <Zap className="w-4 h-4" /> BIND_TERMINAL
+              </button>
+              <button className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-neon-pink">
+                <Smartphone className="w-4 h-4" /> SCAN_DEVICE
+              </button>
+            </div>
+          </RetroCard>
+        </div>
       </div>
-
-      <footer className="absolute bottom-8 text-center text-muted-foreground/80">
-        <p>Powered by Cloudflare</p>
-      </footer>
-
-      <Toaster richColors closeButton />
-    </div>
-  )
+    </RetroLayout>
+  );
 }
