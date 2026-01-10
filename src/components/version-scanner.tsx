@@ -14,6 +14,7 @@ export function VersionScanner() {
     "IDENTIFYING_KERN_VERSION...",
     "DETECTING_SILEO_RESIDUE...",
     "DETECTING_KALI_CHROOT_VIABILITY...",
+    "DETECTING_EMU_VIABILITY...",
     "SCAN_COMPLETE"
   ];
   // Cleanup effect
@@ -89,6 +90,9 @@ export function VersionScanner() {
               <div className="mt-4 flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-xs font-bold text-neon-green">
                   <ShieldCheck className="size-4" /> SYSTEM_VULNERABLE
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-bold text-neon-pink animate-pulse">
+                  <Zap className="size-3" /> EMU_READY
                 </div>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-neon-pink animate-pulse">
                   <Zap className="size-3" /> KALI_READY

@@ -45,6 +45,15 @@ export const ARCHIVE_GUIDES: Guide[] = [
     content: "To host multiple operating systems, the APFS container must be manually segmented. \n\n1. Use `diskutil` via SSH or MTerminal to identify the main container.\n2. Add a new APFS volume named 'Linux' or 'Android'.\n3. Ensure at least 10GB is allocated. \n\nWARNING: Miscalculating the partition boundary on A9 hardware can lead to NAND corruption requiring a full DFU restore."
   },
   {
+    title: "Windows 11: The Virtualization Frontier",
+    slug: "windows-emulation",
+    category: "Multi-Boot",
+    clearance: "SECRET",
+    riskLevel: 5,
+    targetVersions: ["15.0", "15.8.3"],
+    content: "Native booting of Windows 11 ARM on Apple A9 (A1633) is currently impossible due to proprietary bootloader locks and lack of ACPI drivers. However, virtualization via QEMU on a PostmarketOS (Linux) base provides a path to execution.\n\nRequirements:\n1. PostmarketOS installed on a dedicated 32GB+ partition.\n2. QEMU-AARCH64-SYSTEM binaries.\n3. Windows 11 ARM64 ISO and a pre-allocated VHDX.\n\nExecution Block:\n$ qemu-system-aarch64 -m 1G -smp 2 -cpu host -accel kvm \\\n  -drive file=win11.vhdx,if=virtio -net nic -net user \\\n  -device usb-ehci -device usb-kbd -device usb-tablet \\\n  -display sdl,gl=on\n\nPerformance Warning:\n- GPU Acceleration: 0% (Software Rasterization Only)\n- Boot Time: 8-12 Minutes\n- Power Usage: 4.5W+ (Continuous thermal throttling expected)\n- Usage: Demonstrative proof-of-concept only. Continuous operation will damage battery chemistry."
+  },
+  {
     title: "Project Sandcastle: Android on A1633",
     slug: "android-sandcastle",
     category: "Multi-Boot",
