@@ -27,17 +27,37 @@
     height: 100vh;
     background: linear-gradient(
       rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.1) 50%
+      rgba(0, 0, 0, 0.15) 50%
     ),
     linear-gradient(
       90deg,
-      rgba(255, 0, 0, 0.03),
-      rgba(0, 255, 0, 0.01),
-      rgba(0, 0, 255, 0.03)
+      rgba(255, 0, 0, 0.05),
+      rgba(0, 255, 0, 0.02),
+      rgba(0, 0, 255, 0.05)
     );
-    background-size: 100% 3px, 3px 100%;
+    background-size: 100% 4px, 4px 100%;
     pointer-events: none;
     z-index: 9999;
+  }
+  .crt-overlay::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 65, 0.05) 50%,
+      transparent 100%
+    );
+    height: 100px;
+    width: 100%;
+    z-index: 10001;
+    pointer-events: none;
+    animation: scanline 6s linear infinite;
   }
   .crt-overlay::after {
     content: " ";
@@ -51,10 +71,10 @@
     opacity: 0;
     z-index: 10000;
     pointer-events: none;
-    animation: crt-flicker 0.12s infinite;
+    animation: crt-flicker 0.15s infinite;
   }
   .retro-glow {
-    text-shadow: 0 0 5px rgba(0, 255, 65, 0.7), 0 0 10px rgba(0, 255, 65, 0.5);
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.8), 0 0 15px rgba(0, 255, 65, 0.4);
   }
   .retro-border {
     border: 2px solid theme('colors.neon-green');
@@ -64,14 +84,13 @@
     @apply px-4 py-2 border-2 border-neon-green bg-transparent text-neon-green hover:bg-neon-green hover:text-retro-black transition-all active:translate-y-1 active:shadow-none uppercase font-bold tracking-widest;
     box-shadow: 4px 4px 0px theme('colors.neon-green');
   }
-  /* Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-retro-black;
+    @apply bg-retro-black border-l-2 border-neon-green/20;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-neon-green;
+    @apply bg-neon-green shadow-[inset_0_0_10px_rgba(0,0,0,0.5)];
   }
 }

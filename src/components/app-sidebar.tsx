@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers,
-  FlaskConical, LayoutGrid, Target, Cpu, Brain, Laptop, Camera, Activity, Wifi
+  FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -41,20 +41,27 @@ export function AppSidebar(): JSX.Element {
     <SidebarMenu>
       {items.map((item) => {
         const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
+        const isGodMode = item.path === '/godmode';
         return (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton
               asChild
               isActive={isActive}
               className={cn(
-                "hover:bg-neon-green hover:text-retro-black rounded-none h-11 transition-colors border-2 border-transparent",
+                "hover:bg-neon-green hover:text-retro-black rounded-none h-11 transition-all duration-200 border-2 border-transparent",
                 isActive && "border-neon-green text-neon-green bg-neon-green/10",
-                item.path === '/godmode' && "border-neon-pink text-neon-pink hover:bg-neon-pink"
+                isActive && isGodMode && "border-neon-pink text-neon-pink bg-neon-pink/10",
+                isGodMode && "hover:bg-neon-pink hover:animate-glitch group/god"
               )}
             >
               <Link to={item.path} className="flex items-center gap-3 w-full">
-                <item.icon className="size-4" />
-                <span className="uppercase text-[11px] font-bold tracking-widest">{item.title}</span>
+                <item.icon className={cn("size-4 shrink-0 transition-transform group-hover:scale-110", isGodMode && "text-neon-pink group-hover/god:text-white")} />
+                <span className={cn(
+                  "uppercase text-[11px] font-black tracking-widest",
+                  isGodMode && "text-neon-pink group-hover/god:text-white"
+                )}>
+                  {item.title}
+                </span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -63,37 +70,37 @@ export function AppSidebar(): JSX.Element {
     </SidebarMenu>
   );
   return (
-    <Sidebar className="border-r-2 border-neon-green bg-retro-black">
-      <SidebarHeader className="border-b-2 border-neon-green p-4">
+    <Sidebar className="border-r-2 border-neon-green bg-retro-black flex-shrink-0">
+      <SidebarHeader className="border-b-2 border-neon-green p-5 bg-retro-black">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 bg-neon-green flex items-center justify-center text-retro-black font-bold text-xl shadow-[0_0_10px_rgba(0,255,65,0.5)]">A</div>
+          <div className="h-9 w-9 bg-neon-green flex items-center justify-center text-retro-black font-black text-2xl shadow-[0_0_15px_rgba(0,255,65,0.6)] border-2 border-white/20">A</div>
           <div className="flex flex-col">
-            <span className="text-xs font-bold leading-none tracking-tighter">RETROBYTE</span>
-            <span className="text-[10px] text-neon-pink font-bold uppercase tracking-widest">A1633_SYSTEM</span>
+            <span className="text-[13px] font-black leading-none tracking-tighter text-neon-green">RETROBYTE</span>
+            <span className="text-[9px] text-neon-pink font-bold uppercase tracking-[0.15em]">A1633_ARCHIVE</span>
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="p-2 space-y-2 overflow-y-auto">
+      <SidebarContent className="p-3 space-y-4 overflow-y-auto scrollbar-none bg-retro-black">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[9px] uppercase font-bold text-neon-green/50">Core_Mainframe</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[9px] uppercase font-black text-neon-green/40 mb-2 px-2">Core_Mainframe</SidebarGroupLabel>
           {renderItems(mainNav)}
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[9px] uppercase font-bold text-neon-pink/50">Software_Sector</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[9px] uppercase font-black text-neon-pink/40 mb-2 px-2">Software_Sector</SidebarGroupLabel>
           {renderItems(softwareNav)}
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[9px] uppercase font-bold text-yellow-400/50">Lab_Diagnostics</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[9px] uppercase font-black text-yellow-400/40 mb-2 px-2">Lab_Diagnostics</SidebarGroupLabel>
           {renderItems(labNav)}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t-2 border-neon-green p-4 space-y-4">
-        <div className="flex justify-around items-center">
-          <Github className="size-5 cursor-pointer hover:text-neon-pink transition-colors" />
-          <Settings className="size-5 cursor-pointer hover:text-neon-pink transition-colors" />
+      <SidebarFooter className="border-t-2 border-neon-green p-6 bg-retro-black space-y-4">
+        <div className="flex justify-around items-center border-b border-neon-green/10 pb-4">
+          <Github className="size-5 cursor-pointer text-neon-green/60 hover:text-neon-pink transition-colors" />
+          <Settings className="size-5 cursor-pointer text-neon-green/60 hover:text-neon-pink transition-colors" />
         </div>
-        <div className="text-[8px] text-center opacity-50 uppercase tracking-tighter leading-tight">
-          Unauthorized Access Prohibited<br/>(C) 1997 RETROBYTE
+        <div className="text-[8px] text-center text-neon-green/40 font-bold uppercase tracking-widest leading-loose">
+          Unauthorized Access Prohibited<br/>(C) 1997 RETROBYTE SYSTEMS
         </div>
       </SidebarFooter>
     </Sidebar>
