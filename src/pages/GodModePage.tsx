@@ -24,7 +24,6 @@ export function GodModePage() {
   const [sysLogs, setSysLogs] = useState<string[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const xp = useAcademyStore(s => s.xp);
-
   const [profiles, setProfiles] = useState<MissionProfile[]>([
     {
       id: "ghost",
@@ -65,7 +64,7 @@ export function GodModePage() {
         tasks: p.tasks.map(t => {
           if (t.id === taskId) {
             const newStatus = !t.completed;
-            setSysLogs(prevLogs => [`[${new Date().toLocaleTimeString()}] TASK_${t.id} -> ${newStatus ? 'ACK' : 'RESET'}`, ...prevLogs].slice(0, 8));
+            setSysLogs(prevLogs => [`[${new Date().toLocaleTimeString()}] TASK_${t.id} -> ${newStatus ? 'ACK' : 'RESET'}`, ...prevLogs].slice(0, 10));
             return { ...t, completed: newStatus };
           }
           return t;
@@ -79,7 +78,7 @@ export function GodModePage() {
   }, [activeProfile]);
   const handleExport = () => {
     setIsExporting(true);
-    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] COMPILING_RESOURCES...`, ...prev].slice(0, 8));
+    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] COMPILING_RESOURCES...`, ...prev].slice(0, 10));
     setTimeout(() => {
       setIsExporting(false);
       toast.success("RESOURCES_COMPILED", {
@@ -87,33 +86,34 @@ export function GodModePage() {
         style: { background: '#0a0a0a', color: '#d209fa', border: '1px solid #d209fa' }
       });
       window.open('https://github.com/topics/iphone-6s-modding', '_blank');
-    }, 2000);
+    }, 1500);
   };
-
+  const syncIntegrity = xp >= 1500 ? 'STABLE' : xp >= 500 ? 'SYNCING' : 'UNSYNCED';
+  const syncColor = xp >= 1500 ? 'text-neon-pink' : xp >= 500 ? 'text-yellow-400' : 'text-neon-pink/40';
   return (
     <RetroLayout>
       <div className="space-y-12">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-4">
-            <div className="bg-neon-pink p-3 text-white shadow-[0_0_20px_rgba(210,9,250,0.4)]">
-              <Target className="size-10" />
+            <div className="bg-neon-pink p-3 text-white shadow-[0_0_20px_rgba(210,9,250,0.4)] animate-pulse">
+              <Target className="size-8 md:size-10" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter leading-none text-neon-pink">GodMode Hub</h1>
-              <p className="text-[10px] md:text-xs text-neon-pink uppercase font-bold tracking-[0.2em]">Project Singularity :: Command Center</p>
+              <h1 className="text-3xl md:text-4xl font-bold retro-glow uppercase tracking-tighter leading-none text-neon-pink">GodMode Hub</h1>
+              <p className="text-[10px] md:text-xs text-neon-pink uppercase font-bold tracking-[0.2em] opacity-80">Singularity :: Command_Center</p>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Link to="/exploit-lab" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none">
+          <div className="flex flex-wrap gap-2 w-full md:w-auto">
+            <Link to="/exploit-lab" className="flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none active:translate-y-1">
               <Activity className="size-3" /> EXPLOIT_LAB
             </Link>
-            <Link to="/hack-cam" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none">
+            <Link to="/hack-cam" className="flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none active:translate-y-1">
               <Camera className="size-3" /> HACK_CAM
             </Link>
-            <button 
+            <button
               onClick={handleExport}
               disabled={isExporting}
-              className="retro-button border-white text-white flex items-center gap-2 text-[10px] shadow-[4px_4px_0px_white] hover:shadow-none disabled:opacity-50"
+              className="flex-1 md:flex-none retro-button border-white text-white flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_white] hover:shadow-none disabled:opacity-50 active:translate-y-1"
             >
               {isExporting ? <Share2 className="size-3 animate-spin" /> : <ExternalLink className="size-3" />} EXPORT_HUB
             </button>
@@ -121,28 +121,30 @@ export function GodModePage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-8">
-            <RetroCard title="HARDWARE_VISUALIZER" status="A1633_SINGULARITY" className="min-h-[500px] flex flex-col">
-              <div className="flex-1 w-full h-full min-h-[400px]">
+            <RetroCard title="HARDWARE_VISUALIZER" status="A1633_SINGULARITY" className="min-h-[400px] md:min-h-[550px] flex flex-col p-0 overflow-hidden">
+              <div className="flex-1 w-full relative">
                 <Retro3DPhone />
               </div>
             </RetroCard>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {profiles.map((profile) => (
                 <RetroCard
                   key={profile.id}
                   title={profile.name}
                   variant={activeProfile === profile.id ? 'danger' : 'default'}
-                  status={`${profile.tasks.filter(t => t.completed).length}/${profile.tasks.length}_SEQ`}
+                  status={`${profile.tasks.filter(t => t.completed).length}/${profile.tasks.length}`}
                   onClick={() => setActiveProfile(profile.id)}
                   className={cn(
-                    "cursor-pointer transition-all duration-300", 
-                    activeProfile === profile.id ? "scale-[1.02] border-neon-pink shadow-[0_0_30px_rgba(210,9,250,0.2)]" : "opacity-70 hover:opacity-100"
+                    "cursor-pointer transition-all duration-300 transform",
+                    activeProfile === profile.id 
+                      ? "scale-[1.02] border-neon-pink shadow-[0_0_30px_rgba(210,9,250,0.15)] z-10" 
+                      : "opacity-60 hover:opacity-100 hover:scale-[1.01]"
                   )}
                 >
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 text-neon-pink">
-                      <profile.icon className="size-5" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest">Loadout Integrity</span>
+                      <profile.icon className={cn("size-5", activeProfile === profile.id && "animate-pulse")} />
+                      <span className="text-[10px] font-bold uppercase tracking-widest">Mission Status</span>
                     </div>
                     <div className="space-y-2">
                       {profile.tasks.map((task) => (
@@ -150,14 +152,14 @@ export function GodModePage() {
                           key={task.id}
                           onClick={(e) => { e.stopPropagation(); toggleTask(profile.id, task.id); }}
                           className={cn(
-                            "w-full flex items-center justify-between p-2 border transition-all",
+                            "w-full flex items-center justify-between p-2.5 border transition-all text-[9px] font-bold uppercase tracking-tighter",
                             task.completed
                               ? "bg-neon-pink/20 border-neon-pink text-neon-pink"
-                              : "bg-retro-black border-neon-pink/30 text-neon-pink/60 hover:border-neon-pink/60"
+                              : "bg-retro-black border-neon-pink/20 text-neon-pink/40 hover:border-neon-pink/60"
                           )}
                         >
-                          <span className="text-[9px] font-bold uppercase tracking-tighter">{task.title}</span>
-                          {task.completed ? <CheckCircle2 className="size-3" /> : <Circle className="size-3" />}
+                          <span className="truncate mr-2">{task.title}</span>
+                          {task.completed ? <CheckCircle2 className="size-3 shrink-0" /> : <Circle className="size-3 shrink-0" />}
                         </button>
                       ))}
                     </div>
@@ -169,68 +171,75 @@ export function GodModePage() {
           <div className="lg:col-span-4 space-y-8">
             <RetroCard title="SINGULARITY_AI" status="PREDICTING" variant="danger">
               <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-neon-pink/20 blur-xl animate-pulse" />
-                    <div className="size-10 border-2 border-neon-pink flex items-center justify-center font-bold text-[8px] text-neon-pink">
+                <div className="flex items-center gap-4">
+                  <div className="relative shrink-0">
+                    <div className={cn("absolute inset-0 blur-xl animate-pulse opacity-40", syncIntegrity === 'STABLE' ? 'bg-neon-pink' : 'bg-yellow-400')} />
+                    <div className={cn("size-12 border-2 flex items-center justify-center font-bold text-[10px]", syncIntegrity === 'STABLE' ? 'border-neon-pink text-neon-pink' : 'border-yellow-400 text-yellow-400')}>
                       {Math.floor((xp / 2500) * 100)}%
                     </div>
                   </div>
-                  <div className="text-[10px] uppercase font-bold text-neon-pink leading-tight">
-                    Docs_Sync Integrity<br/>{xp >= 1500 ? 'STABLE' : 'UNSYNCED'}
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] uppercase font-bold text-neon-pink/60 leading-none">Docs_Sync Integrity</span>
+                    <span className={cn("text-xs font-black uppercase tracking-widest", syncColor)}>{syncIntegrity}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Brain className="size-10 text-neon-pink animate-pulse" />
-                  <div className="text-[10px] uppercase font-bold text-neon-pink leading-tight">
-                    Neural Analytics Engine<br/>v4.0_LATEST
+                <div className="flex items-center gap-3 border-y border-neon-pink/10 py-4">
+                  <Brain className="size-10 text-neon-pink animate-pulse shrink-0" />
+                  <div className="text-[10px] uppercase font-bold text-neon-pink/80 leading-tight">
+                    Neural Analytics Engine<br/><span className="text-white opacity-40">Loadout Analysis Active</span>
                   </div>
                 </div>
                 <div className="space-y-3 font-mono text-[9px]">
                   {aiInsights.map((log, i) => (
-                    <div key={i} className="p-2 border border-neon-pink/30 bg-neon-pink/5 leading-tight animate-in fade-in slide-in-from-left-2 duration-300">
+                    <div key={i} className="p-2.5 border border-neon-pink/30 bg-neon-pink/5 leading-tight animate-in fade-in slide-in-from-left-2 duration-300 italic">
                       {log}
                     </div>
                   ))}
                 </div>
-                <button className="retro-button w-full border-neon-pink text-neon-pink shadow-none text-[10px] hover:bg-neon-pink hover:text-white transition-colors">
+                <button className="retro-button w-full border-neon-pink text-neon-pink shadow-none text-[10px] hover:bg-neon-pink hover:text-white transition-all uppercase font-black">
                   REFRESH_NEURAL_MAP
                 </button>
               </div>
             </RetroCard>
             <RetroCard title="SYSLOG_STREAM" status="VITAL">
               <div className="space-y-4">
-                <div className="bg-black/60 border border-neon-green/30 p-3 h-40 overflow-y-auto font-mono text-[9px] text-neon-green/80 space-y-1">
+                <div className="flex items-center gap-2 text-[10px] font-bold text-neon-green/60 uppercase mb-1">
+                  <div className="size-1.5 bg-neon-green animate-ping rounded-full" />
+                  Realtime_Telemetery
+                </div>
+                <div className="bg-black/80 border border-neon-green/30 p-3 h-48 overflow-y-auto font-mono text-[9px] text-neon-green/80 space-y-1.5 scrollbar-thin">
                   {sysLogs.length === 0 ? (
-                    <div className="opacity-30 italic">AWAITING_INPUT_SEQUENCE...</div>
+                    <div className="opacity-30 italic p-2 text-center">AWAITING_INPUT_SEQUENCE...</div>
                   ) : (
                     sysLogs.map((log, i) => (
-                      <div key={i} className="animate-in fade-in slide-in-from-bottom-1 duration-200">{log}</div>
+                      <div key={i} className="animate-in fade-in slide-in-from-bottom-1 duration-200 border-l border-neon-green/20 pl-2">
+                        {log}
+                      </div>
                     ))
                   )}
                 </div>
-                <div className="p-2 bg-neon-pink/10 border border-neon-pink/30 text-[9px] text-neon-pink uppercase italic text-center">
+                <div className="p-2.5 bg-neon-pink/10 border border-neon-pink/30 text-[9px] text-neon-pink uppercase italic text-center font-bold tracking-tighter">
                   DIRECTIVE_OVERRIDE_ENABLED
                 </div>
               </div>
             </RetroCard>
-            <RetroCard title="HARDWARE_MOD_SPEC" status="VITAL">
+            <RetroCard title="MOD_SPECIFICATIONS" status="VITAL" variant="warning">
               <div className="space-y-4">
-                <div className="text-[10px] uppercase font-bold text-neon-green/60 border-b border-neon-green/20 pb-1">
-                  Active Checklist: eMMC_512GB
+                <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-yellow-400 border-b border-yellow-400/20 pb-2">
+                  <Hammer className="size-3" /> Target: eMMC_512GB_SWAP
                 </div>
-                <ul className="space-y-2 text-[9px] uppercase leading-snug">
-                  {HARDWARE_MODS[0].steps.map((step, i) => (
-                    <li key={i} className="flex gap-2 items-start">
-                      <span className="text-neon-green font-bold">[{i+1}]</span>
-                      <span className="opacity-80">{step}</span>
+                <ul className="space-y-3 text-[9px] uppercase leading-tight font-bold">
+                  {HARDWARE_MODS[0].steps.slice(0, 4).map((step, i) => (
+                    <li key={i} className="flex gap-3 items-start group">
+                      <span className="text-yellow-400 font-black shrink-0">0{i+1}_</span>
+                      <span className="opacity-80 group-hover:opacity-100 transition-opacity">{step}</span>
                     </li>
                   ))}
                 </ul>
                 <div className="p-3 border-2 border-red-600 bg-red-600/10 flex gap-3 items-center">
-                  <AlertCircle className="size-5 text-red-600 shrink-0" />
+                  <AlertCircle className="size-5 text-red-600 shrink-0 animate-pulse" />
                   <p className="text-[9px] font-bold text-red-600 uppercase leading-tight">
-                    CRITICAL: Anti-tamper protocols may engage if voltage spike is detected.
+                    VOLTAGE_WARNING: ANTI-TAMPER ACTIVE
                   </p>
                 </div>
               </div>
