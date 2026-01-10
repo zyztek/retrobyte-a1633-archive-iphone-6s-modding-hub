@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 export function AcademyPage() {
   const xp = useAcademyStore(s => s.xp);
   const addXp = useAcademyStore(s => s.addXp);
@@ -16,10 +17,12 @@ export function AcademyPage() {
   const completeModule = useAcademyStore(s => s.completeModule);
   const unlockedTiers = useAcademyStore(s => s.unlockedTiers);
   const unlockTier = useAcademyStore(s => s.unlockTier);
+  const isMobile = useIsMobile();
   const [activeVideo, setActiveVideo] = useState<Module | null>(null);
   const [activeQuiz, setActiveQuiz] = useState<QuizQuestion | null>(null);
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
   const rank = getRankByXp(xp);
+  const displayXp = Math.floor(xp);
   const handleCompleteModule = (mod: Module) => {
     if (completedModules.includes(mod.id)) return;
     completeModule(mod.id);
@@ -153,9 +156,9 @@ export function AcademyPage() {
           </RetroCard>
         </div>
         <RetroProgress
-          current={xp}
+          current={displayXp}
           max={2500}
-          segments={window.innerWidth < 768 ? 15 : 25}
+          segments={isMobile ? 12 : 30}
           label="Knowledge_Depth_Index"
           variant={xp >= 1500 ? 'pink' : xp >= 500 ? 'yellow' : 'green'}
           className="max-w-4xl"
@@ -176,7 +179,6 @@ export function AcademyPage() {
           <TabsContent value="PRO" className="relative focus-visible:outline-none">{renderTierModules('PRO')}</TabsContent>
           <TabsContent value="GOD" className="relative focus-visible:outline-none">{renderTierModules('GOD')}</TabsContent>
         </Tabs>
-        {/* Video Player */}
         <Dialog open={!!activeVideo} onOpenChange={() => setActiveVideo(null)}>
           <DialogContent className="max-w-4xl bg-retro-black border-4 border-neon-green text-neon-green rounded-none p-0 overflow-hidden outline-none">
             <div className="bg-neon-green text-retro-black px-4 py-1.5 flex justify-between items-center font-bold text-xs uppercase">
@@ -193,7 +195,6 @@ export function AcademyPage() {
             </div>
           </DialogContent>
         </Dialog>
-        {/* Quiz Modal */}
         <Dialog open={!!activeQuiz} onOpenChange={() => setActiveQuiz(null)}>
           <DialogContent className="max-w-lg w-[95vw] bg-retro-black border-4 border-neon-pink text-neon-pink rounded-none p-6 md:p-8 max-h-[90vh] overflow-y-auto scrollbar-thin outline-none">
             <DialogHeader className="space-y-4">
