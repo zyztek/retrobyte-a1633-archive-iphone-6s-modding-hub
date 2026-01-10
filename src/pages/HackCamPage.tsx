@@ -4,13 +4,15 @@ import { Camera, ShieldAlert, Target, Database, Terminal, Cpu } from 'lucide-rea
 import { toast } from 'sonner';
 export function HackCamPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
   const [scanning, setScanning] = useState(true);
   useEffect(() => {
+    let currentStream: MediaStream | null = null;
     async function startCamera() {
       try {
-        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        setStream(s);
+        const s = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'environment' } 
+        });
+        currentStream = s;
         if (videoRef.current) {
           videoRef.current.srcObject = s;
         }
@@ -21,7 +23,9 @@ export function HackCamPage() {
     }
     startCamera();
     return () => {
-      stream?.getTracks().forEach(t => t.stop());
+      if (currentStream) {
+        currentStream.getTracks().forEach(t => t.stop());
+      }
     };
   }, []);
   return (
