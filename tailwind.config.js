@@ -46,12 +46,17 @@ export default {
   			'scanline': {
   				'0%': { transform: 'translateY(0)' },
   				'100%': { transform: 'translateY(100vh)' }
-  			}
+  			},
+        'marquee': {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' }
+        }
   		},
   		animation: {
   			glitch: 'glitch 0.2s ease-in-out infinite',
   			'crt-flicker': 'crt-flicker 0.15s infinite',
   			'scanline': 'scanline 8s linear infinite',
+        'marquee': 'marquee 30s linear infinite',
   		}
   	}
   },

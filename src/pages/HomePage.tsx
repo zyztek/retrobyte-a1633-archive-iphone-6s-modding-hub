@@ -2,7 +2,19 @@ import React from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Cpu, Smartphone, Database, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 export function HomePage() {
+  const handleBindTerminal = () => {
+    toast.success("TERMINAL_LINKED: Secure handshake complete.", {
+      description: "A1633 mainframe is now receiving commands.",
+      style: {
+        background: '#0a0a0a',
+        color: '#00ff41',
+        border: '1px solid #00ff41'
+      }
+    });
+  };
   return (
     <RetroLayout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -78,12 +90,18 @@ export function HomePage() {
           </RetroCard>
           <RetroCard title="QUICK_ACTIONS">
             <div className="space-y-3">
-              <button className="retro-button w-full flex items-center justify-center gap-2">
+              <button 
+                onClick={handleBindTerminal}
+                className="retro-button w-full flex items-center justify-center gap-2"
+              >
                 <Zap className="w-4 h-4" /> BIND_TERMINAL
               </button>
-              <button className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-neon-pink">
+              <Link 
+                to="/multiboot"
+                className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-neon-pink hover:bg-neon-pink hover:text-white"
+              >
                 <Smartphone className="w-4 h-4" /> SCAN_DEVICE
-              </button>
+              </Link>
             </div>
           </RetroCard>
         </div>
