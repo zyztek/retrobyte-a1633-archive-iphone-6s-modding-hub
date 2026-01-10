@@ -2,10 +2,12 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Retro3DPhone } from '@/components/Retro3DPhone';
-import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle, Brain, Camera, Activity, Hammer } from 'lucide-react';
+import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle, Brain, Camera, Activity, Hammer, Share2, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { SINGULARITY_LOGIC, HARDWARE_MODS } from '@shared/extended-data';
+import { useAcademyStore } from '@/store/academy-store';
+import { toast } from 'sonner';
 interface MissionTask {
   id: string;
   title: string;
@@ -20,6 +22,9 @@ interface MissionProfile {
 export function GodModePage() {
   const [activeProfile, setActiveProfile] = useState<string>("overclock");
   const [sysLogs, setSysLogs] = useState<string[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const xp = useAcademyStore(s => s.xp);
+
   const [profiles, setProfiles] = useState<MissionProfile[]>([
     {
       id: "ghost",
@@ -72,6 +77,19 @@ export function GodModePage() {
     const key = activeProfile === 'hw-recon' ? 'gaming' : activeProfile === 'ghost' ? 'stable' : 'gaming';
     return SINGULARITY_LOGIC[key] || [];
   }, [activeProfile]);
+  const handleExport = () => {
+    setIsExporting(true);
+    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] COMPILING_RESOURCES...`, ...prev].slice(0, 8));
+    setTimeout(() => {
+      setIsExporting(false);
+      toast.success("RESOURCES_COMPILED", {
+        description: "Redirecting to external master-archive on GitHub.",
+        style: { background: '#0a0a0a', color: '#d209fa', border: '1px solid #d209fa' }
+      });
+      window.open('https://github.com/topics/iphone-6s-modding', '_blank');
+    }, 2000);
+  };
+
   return (
     <RetroLayout>
       <div className="space-y-12">
@@ -92,6 +110,13 @@ export function GodModePage() {
             <Link to="/hack-cam" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none">
               <Camera className="size-3" /> HACK_CAM
             </Link>
+            <button 
+              onClick={handleExport}
+              disabled={isExporting}
+              className="retro-button border-white text-white flex items-center gap-2 text-[10px] shadow-[4px_4px_0px_white] hover:shadow-none disabled:opacity-50"
+            >
+              {isExporting ? <Share2 className="size-3 animate-spin" /> : <ExternalLink className="size-3" />} EXPORT_HUB
+            </button>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -144,6 +169,17 @@ export function GodModePage() {
           <div className="lg:col-span-4 space-y-8">
             <RetroCard title="SINGULARITY_AI" status="PREDICTING" variant="danger">
               <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-neon-pink/20 blur-xl animate-pulse" />
+                    <div className="size-10 border-2 border-neon-pink flex items-center justify-center font-bold text-[8px] text-neon-pink">
+                      {Math.floor((xp / 2500) * 100)}%
+                    </div>
+                  </div>
+                  <div className="text-[10px] uppercase font-bold text-neon-pink leading-tight">
+                    Docs_Sync Integrity<br/>{xp >= 1500 ? 'STABLE' : 'UNSYNCED'}
+                  </div>
+                </div>
                 <div className="flex items-center gap-3">
                   <Brain className="size-10 text-neon-pink animate-pulse" />
                   <div className="text-[10px] uppercase font-bold text-neon-pink leading-tight">

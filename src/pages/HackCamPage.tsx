@@ -1,10 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
-import { Camera, ShieldAlert, Target, Database, Terminal, Cpu } from 'lucide-react';
+import { Camera, ShieldAlert, Target, Database, Terminal, Cpu, Info } from 'lucide-react';
 import { toast } from 'sonner';
+import { AR_HARDWARE_MARKERS } from '@shared/extended-data';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 export function HackCamPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [scanning, setScanning] = useState(true);
+  const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
   useEffect(() => {
     let currentStream: MediaStream | null = null;
     async function startCamera() {
@@ -30,7 +34,7 @@ export function HackCamPage() {
   }, []);
   return (
     <RetroLayout>
-      <div className="relative h-[calc(100vh-160px)] w-full overflow-hidden border-2 border-neon-green shadow-[0_0_30px_rgba(0,255,65,0.2)]">
+      <div className="relative h-[calc(100vh-160px)] w-full overflow-hidden border-2 border-neon-green shadow-[0_0_30px_rgba(0,255,65,0.2)] bg-black">
         {/* Live Feed with Filter */}
         <div className="absolute inset-0 z-0">
           <video
@@ -43,6 +47,52 @@ export function HackCamPage() {
           <div className="absolute inset-0 bg-neon-green/20 mix-blend-overlay pointer-events-none" />
           <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.1),rgba(0,0,0,0.1)_2px,transparent_2px,transparent_4px)] pointer-events-none" />
         </div>
+
+        {/* AR Markers Overlay */}
+        <div className="absolute inset-0 z-20 pointer-events-none">
+          <AnimatePresence>
+            {AR_HARDWARE_MARKERS.map((marker) => (
+              <motion.div
+                key={marker.id}
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  x: [0, Math.random() * 4 - 2, 0],
+                  y: [0, Math.random() * 4 - 2, 0]
+                }}
+                transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                style={{ top: marker.top, left: marker.left }}
+                className="absolute pointer-events-auto"
+                onMouseEnter={() => setHoveredMarker(marker.id)}
+                onMouseLeave={() => setHoveredMarker(null)}
+              >
+                <div className={cn(
+                  "size-6 border-2 flex items-center justify-center transition-all cursor-help",
+                  hoveredMarker === marker.id ? "border-neon-pink bg-neon-pink/20 scale-125" : "border-neon-green bg-neon-green/10"
+                )}>
+                  <div className={cn("size-2 rounded-full", hoveredMarker === marker.id ? "bg-neon-pink animate-pulse" : "bg-neon-green")} />
+                </div>
+                {hoveredMarker === marker.id && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute top-8 left-0 min-w-[180px] bg-retro-black border-2 border-neon-pink p-3 shadow-[8px_8px_0px_rgba(210,9,250,1)] z-50"
+                  >
+                    <div className="text-[11px] font-bold text-neon-pink uppercase border-b border-neon-pink/30 mb-1">{marker.name}</div>
+                    <div className="text-[9px] text-white/80 font-mono leading-tight">{marker.specs}</div>
+                  </motion.div>
+                )}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {/* Scanning Bios Effect Overlay */}
+        <div className="absolute inset-0 z-30 pointer-events-none opacity-20">
+          <div className="absolute top-0 w-full h-1 bg-neon-green shadow-[0_0_15px_rgba(0,255,65,1)] animate-scanline" />
+        </div>
+
         {/* HUD Overlay */}
         <div className="absolute inset-0 z-10 p-4 md:p-8 flex flex-col justify-between pointer-events-none">
           <div className="flex justify-between items-start">

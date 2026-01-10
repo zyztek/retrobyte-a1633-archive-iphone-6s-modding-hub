@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Terminal, Code, BookOpen, Package, Github, Settings, Layers,
+  Terminal, Code, BookOpen, Package, Github, Settings, Layers, Book,
   FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -35,6 +35,7 @@ export function AppSidebar(): JSX.Element {
     { title: "Exploit Lab", icon: Activity, path: "/exploit-lab" },
     { title: "Network Arsenal", icon: Wifi, path: "/network-arsenal" },
     { title: "HackCam", icon: Camera, path: "/hack-cam" },
+    { title: "Docs Vault", icon: Book, path: "/docs-vault" },
     { title: "Academy", icon: GraduationCap, path: "/academy" },
     { title: "GodMode", icon: Target, path: "/godmode" },
   ];
