@@ -78,7 +78,8 @@ function updateWranglerJsonc() {
 
 function runSetupCommands() {
     const commands = [
-    "bun install vitest"
+    "bun install vitest",
+    "bun add vitest @vitest/ui -D"
 ];
     
     if (commands.length === 0) {
