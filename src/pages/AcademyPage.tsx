@@ -4,9 +4,10 @@ import { RetroCard } from '@/components/ui/retro-card';
 import { RetroProgress } from '@/components/ui/retro-progress';
 import { useAcademyStore, getRankByXp } from '@/store/academy-store';
 import { ACADEMY_MODULES, ACADEMY_QUIZZES, Module, QuizQuestion, AcademyTier } from '@shared/academy-data';
-import { GraduationCap, Play, Lock, CheckCircle2, Trophy, BrainCircuit, X, Tool, Terminal as TerminalIcon } from 'lucide-react';
+import { GraduationCap, Play, Lock, CheckCircle2, Trophy, BrainCircuit, X, Wrench, Terminal as TerminalIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -83,7 +84,7 @@ export function AcademyPage() {
                 <p className="text-[11px] md:text-sm opacity-80 flex-1 leading-snug uppercase font-bold">{mod.description}</p>
                 {mod.requiresHardware && (
                   <div className="flex items-center gap-1.5 text-[9px] font-black text-yellow-400 uppercase bg-yellow-400/10 px-2 py-0.5 border border-yellow-400/20 w-max">
-                    <Tool className="size-2.5" /> Hardware_Required
+                    <Wrench className="size-2.5" /> Hardware_Required
                   </div>
                 )}
                 <div className="flex items-center justify-between pt-3 border-t border-neon-green/10">
@@ -160,7 +161,6 @@ export function AcademyPage() {
             </div>
           </RetroCard>
         </div>
-
         {(unlockedTiers.includes('PRO') || unlockedTiers.includes('GOD')) && (
           <RetroCard title="PRO_HARDWARE_WORKSTATION" variant="warning" status="LOCKED_TO_PRO+">
             <div className="flex flex-col md:flex-row items-center gap-6">
@@ -170,12 +170,12 @@ export function AcademyPage() {
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-xl font-bold uppercase text-yellow-400 tracking-tighter">USB Forge Ecosystem</h3>
                 <p className="text-[10px] md:text-xs opacity-70 uppercase font-bold leading-tight mt-1">
-                  Access specialized tools for Palen1x media, DFU cable probes, and JC-P7 NAND protocols. 
+                  Access specialized tools for Palen1x media, DFU cable probes, and JC-P7 NAND protocols.
                   Essential for students moving beyond software emulation.
                 </p>
               </div>
-              <Link 
-                to="/usb-forge" 
+              <Link
+                to="/usb-forge"
                 className="retro-button w-full md:w-auto border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black shadow-none font-black flex items-center justify-center gap-2"
               >
                 ENTER_USB_FORGE
@@ -183,7 +183,6 @@ export function AcademyPage() {
             </div>
           </RetroCard>
         )}
-
         <RetroProgress
           current={displayXp}
           max={2500}

@@ -2,10 +2,10 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Retro3DPhone } from '@/components/Retro3DPhone';
-import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle, Brain, Camera, Activity, Hammer, Share2, Rocket } from 'lucide-react';
+import { ShieldCheck, Target, Zap, CheckCircle2, Circle, AlertCircle, Brain, Camera, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
-import { SINGULARITY_LOGIC, HARDWARE_MODS } from '@shared/extended-data';
+import { SINGULARITY_LOGIC, HARDWARE_MODS, SYSTEM_AUDIT_METRICS } from '@shared/extended-data';
 import { useAcademyStore } from '@/store/academy-store';
 import { toast } from 'sonner';
 interface MissionTask {
@@ -23,6 +23,7 @@ export function GodModePage() {
   const [activeProfile, setActiveProfile] = useState<string>("overclock");
   const [sysLogs, setSysLogs] = useState<string[]>([]);
   const [isExporting, setIsExporting] = useState(false);
+  const [isAuditing, setIsAuditing] = useState(false);
   const navigate = useNavigate();
   const xp = useAcademyStore(s => s.xp);
   const [profiles, setProfiles] = useState<MissionProfile[]>([
@@ -42,7 +43,7 @@ export function GodModePage() {
       icon: Zap,
       tasks: [
         { id: "o1", title: "Install Powercuff", completed: true },
-        { id: "o2", title: "Enable KVM Support", completed: false },
+        { id: "o2", title: "Audit System Integrity", completed: false },
         { id: "o3", title: "Disable CPU Throttling", completed: false },
       ]
     },
@@ -73,6 +74,14 @@ export function GodModePage() {
       };
     }));
   };
+  const handleAudit = () => {
+    setIsAuditing(true);
+    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] INITIATING_DEEP_SYSTEM_AUDIT...`, ...prev]);
+    setTimeout(() => {
+      setIsAuditing(false);
+      toast.success("AUDIT_COMPLETE", { description: "Hardware subsystems verified." });
+    }, 2500);
+  };
   const aiInsights = useMemo(() => {
     const key = activeProfile === 'hw-recon' ? 'gaming' : activeProfile === 'ghost' ? 'stable' : 'gaming';
     return SINGULARITY_LOGIC[key] || [];
@@ -82,9 +91,6 @@ export function GodModePage() {
     setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] NAVIGATING_TO_EXPORT_HUB...`, ...prev].slice(0, 10));
     setTimeout(() => {
       setIsExporting(false);
-      toast.info("REDIRECTING_TO_HUB", {
-        description: "Initializing deployment workstation..."
-      });
       navigate('/export-hub');
     }, 1500);
   };
@@ -104,12 +110,13 @@ export function GodModePage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
-            <Link to="/exploit-lab" className="flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none active:translate-y-1">
-              <Activity className="size-3" /> EXPLOIT_LAB
-            </Link>
-            <Link to="/hack-cam" className="flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none active:translate-y-1">
-              <Camera className="size-3" /> HACK_CAM
-            </Link>
+            <button
+              onClick={handleAudit}
+              disabled={isAuditing}
+              className="flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none active:translate-y-1"
+            >
+              {isAuditing ? <Activity className="size-3 animate-spin" /> : <ShieldAlert className="size-3" />} FULL_AUDIT
+            </button>
             <button
               onClick={handleExport}
               disabled={isExporting}
@@ -126,46 +133,22 @@ export function GodModePage() {
                 <Retro3DPhone />
               </div>
             </RetroCard>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {profiles.map((profile) => (
-                <RetroCard
-                  key={profile.id}
-                  title={profile.name}
-                  variant={activeProfile === profile.id ? 'danger' : 'default'}
-                  status={`${profile.tasks.filter(t => t.completed).length}/${profile.tasks.length}`}
-                  onClick={() => setActiveProfile(profile.id)}
-                  className={cn(
-                    "cursor-pointer transition-all duration-300 transform",
-                    activeProfile === profile.id 
-                      ? "scale-[1.02] border-neon-pink shadow-[0_0_30px_rgba(210,9,250,0.15)] z-10" 
-                      : "opacity-60 hover:opacity-100 hover:scale-[1.01]"
-                  )}
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 text-neon-pink">
-                      <profile.icon className={cn("size-5", activeProfile === profile.id && "animate-pulse")} />
-                      <span className="text-[10px] font-bold uppercase tracking-widest">Mission Status</span>
-                    </div>
-                    <div className="space-y-2">
-                      {profile.tasks.map((task) => (
-                        <button
-                          key={task.id}
-                          onClick={(e) => { e.stopPropagation(); toggleTask(profile.id, task.id); }}
-                          className={cn(
-                            "w-full flex items-center justify-between p-2.5 border transition-all text-[9px] font-bold uppercase tracking-tighter",
-                            task.completed
-                              ? "bg-neon-pink/20 border-neon-pink text-neon-pink"
-                              : "bg-retro-black border-neon-pink/20 text-neon-pink/40 hover:border-neon-pink/60"
-                          )}
-                        >
-                          <span className="truncate mr-2">{task.title}</span>
-                          {task.completed ? <CheckCircle2 className="size-3 shrink-0" /> : <Circle className="size-3 shrink-0" />}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </RetroCard>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <RetroCard title="AUDIO_AUDIT (I2S)" variant="default" className="text-center">
+                <Volume2 className="size-8 mx-auto mb-2 text-neon-green" />
+                <div className="text-[10px] font-black">JITTER: 1.2ns</div>
+                <div className="text-[8px] opacity-40">DAC_SYNC: LOCKED</div>
+              </RetroCard>
+              <RetroCard title="BATTERY_AUDIT (BMS)" variant="warning" className="text-center">
+                <Battery className="size-8 mx-auto mb-2 text-yellow-400" />
+                <div className="text-[10px] font-black">DRIFT: -4.2%</div>
+                <div className="text-[8px] opacity-40">CYCLES: 842</div>
+              </RetroCard>
+              <RetroCard title="LTE_AUDIT (BB)" variant="default" className="text-center">
+                <Radio className="size-8 mx-auto mb-2 text-neon-green" />
+                <div className="text-[10px] font-black">-82dBm</div>
+                <div className="text-[8px] opacity-40">BAND: 12 (700MHz)</div>
+              </RetroCard>
             </div>
           </div>
           <div className="lg:col-span-4 space-y-8">
@@ -183,12 +166,6 @@ export function GodModePage() {
                     <span className={cn("text-xs font-black uppercase tracking-widest", syncColor)}>{syncIntegrity}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 border-y border-neon-pink/10 py-4">
-                  <Brain className="size-10 text-neon-pink animate-pulse shrink-0" />
-                  <div className="text-[10px] uppercase font-bold text-neon-pink/80 leading-tight">
-                    Neural Analytics Engine<br/><span className="text-white opacity-40">Loadout Analysis Active</span>
-                  </div>
-                </div>
                 <div className="space-y-3 font-mono text-[9px]">
                   {aiInsights.map((log, i) => (
                     <div key={i} className="p-2.5 border border-neon-pink/30 bg-neon-pink/5 leading-tight animate-in fade-in slide-in-from-left-2 duration-300 italic">
@@ -196,52 +173,39 @@ export function GodModePage() {
                     </div>
                   ))}
                 </div>
-                <button className="retro-button w-full border-neon-pink text-neon-pink shadow-none text-[10px] hover:bg-neon-pink hover:text-white transition-all uppercase font-black">
-                  REFRESH_NEURAL_MAP
-                </button>
               </div>
             </RetroCard>
-            <RetroCard title="SYSLOG_STREAM" status="VITAL">
+            <RetroCard title="MISSION_PROFILES" status="VITAL" variant="danger">
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-[10px] font-bold text-neon-green/60 uppercase mb-1">
-                  <div className="size-1.5 bg-neon-green animate-ping rounded-full" />
-                  Realtime_Telemetery
-                </div>
-                <div className="bg-black/80 border border-neon-green/30 p-3 h-48 overflow-y-auto font-mono text-[9px] text-neon-green/80 space-y-1.5 scrollbar-thin">
-                  {sysLogs.length === 0 ? (
-                    <div className="opacity-30 italic p-2 text-center">AWAITING_INPUT_SEQUENCE...</div>
-                  ) : (
-                    sysLogs.map((log, i) => (
-                      <div key={i} className="animate-in fade-in slide-in-from-bottom-1 duration-200 border-l border-neon-green/20 pl-2">
-                        {log}
-                      </div>
-                    ))
-                  )}
-                </div>
-                <div className="p-2.5 bg-neon-pink/10 border border-neon-pink/30 text-[9px] text-neon-pink uppercase italic text-center font-bold tracking-tighter">
-                  DIRECTIVE_OVERRIDE_ENABLED
-                </div>
+                {profiles.map((profile) => (
+                  <div key={profile.id} className={cn(
+                    "p-3 border-2 cursor-pointer transition-all",
+                    activeProfile === profile.id ? "border-neon-pink bg-neon-pink/10" : "border-neon-pink/20"
+                  )} onClick={() => setActiveProfile(profile.id)}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <profile.icon className="size-4 text-neon-pink" />
+                      <span className="text-[10px] font-black text-neon-pink uppercase">{profile.name}</span>
+                    </div>
+                    <div className="space-y-2">
+                      {profile.tasks.map((task) => (
+                        <div key={task.id} className="flex justify-between items-center text-[8px] font-bold uppercase" onClick={(e) => { e.stopPropagation(); toggleTask(profile.id, task.id); }}>
+                          <span className={task.completed ? "text-neon-pink" : "opacity-30"}>{task.title}</span>
+                          {task.completed ? <CheckCircle2 className="size-3" /> : <Circle className="size-3" />}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             </RetroCard>
-            <RetroCard title="MOD_SPECIFICATIONS" status="VITAL" variant="warning">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-yellow-400 border-b border-yellow-400/20 pb-2">
-                  <Hammer className="size-3" /> Target: eMMC_512GB_SWAP
-                </div>
-                <ul className="space-y-3 text-[9px] uppercase leading-tight font-bold">
-                  {HARDWARE_MODS[0].steps.slice(0, 4).map((step, i) => (
-                    <li key={i} className="flex gap-3 items-start group">
-                      <span className="text-yellow-400 font-black shrink-0">0{i+1}_</span>
-                      <span className="opacity-80 group-hover:opacity-100 transition-opacity">{step}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="p-3 border-2 border-red-600 bg-red-600/10 flex gap-3 items-center">
-                  <AlertCircle className="size-5 text-red-600 shrink-0 animate-pulse" />
-                  <p className="text-[9px] font-bold text-red-600 uppercase leading-tight">
-                    VOLTAGE_WARNING: ANTI-TAMPER ACTIVE
-                  </p>
-                </div>
+            <RetroCard title="SYSLOG_STREAM" status="LIVE">
+              <div className="bg-black/80 border border-neon-green/30 p-3 h-48 overflow-y-auto font-mono text-[9px] text-neon-green/80 space-y-1.5 scrollbar-thin">
+                {sysLogs.map((log, i) => (
+                  <div key={i} className="animate-in fade-in slide-in-from-bottom-1 duration-200 border-l border-neon-green/20 pl-2">
+                    {log}
+                  </div>
+                ))}
+                {isAuditing && <div className="animate-pulse">_</div>}
               </div>
             </RetroCard>
           </div>
