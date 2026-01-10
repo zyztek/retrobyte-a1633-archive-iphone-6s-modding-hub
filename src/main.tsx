@@ -13,6 +13,9 @@ import { RouteErrorBoundary } from '@/components/RouteErrorBoundary';
 import '@/index.css'
 import { HomePage } from '@/pages/HomePage'
 import { ScriptGenPage } from '@/pages/ScriptGenPage'
+import { ArchivesPage } from '@/pages/ArchivesPage'
+import { GuideDetailPage } from '@/pages/GuideDetailPage'
+import { ModRepoPage } from '@/pages/ModRepoPage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -23,6 +26,21 @@ const router = createBrowserRouter([
   {
     path: "/script-forge",
     element: <ScriptGenPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/archives",
+    element: <ArchivesPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/archives/:slug",
+    element: <GuideDetailPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/repo",
+    element: <ModRepoPage />,
     errorElement: <RouteErrorBoundary />,
   }
 ]);
