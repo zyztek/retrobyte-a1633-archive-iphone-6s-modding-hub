@@ -2,7 +2,7 @@ export interface VersionStats {
   version: string;
   jailbreak: 'EXPLOITED' | 'VULNERABLE' | 'PATCHED';
   trollStore: 'NATIVE' | 'INDIRECT' | 'NONE';
-  multiboot: 'READY' | 'EXPERIMENTAL' | 'LOCKED';
+  multiboot: string;
   riskScore: number;
   notes: string;
 }

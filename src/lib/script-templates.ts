@@ -18,6 +18,16 @@ if (!(Test-Path $modPath)) {
 }
 Set-Location $modPath
 `;
+  if (options.backupDevice) {
+    script += `Write-Host "[+] Initializing Backup Directory..." -ForegroundColor Cyan
+$backupPath = Join-Path $modPath "Backups"
+if (!(Test-Path $backupPath)) {
+    New-Item -ItemType Directory -Path $backupPath
+}
+Write-Host "    [!] IMPORTANT: Please use iTunes or 'idevicebackup2' to secure your SHSH blobs and data." -ForegroundColor Yellow
+Write-Host "    [!] Manual backup target: $backupPath" -ForegroundColor Yellow
+\n`;
+  }
   if (options.installiTunes) {
     script += `Write-Host "[+] Installing iTunes (x64) via Winget..." -ForegroundColor Cyan
 winget install Apple.iTunes --silent
