@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Retro3DPhone } from '@/components/Retro3DPhone';
@@ -19,6 +19,7 @@ interface MissionProfile {
 }
 export function GodModePage() {
   const [activeProfile, setActiveProfile] = useState<string>("overclock");
+  const [sysLogs, setSysLogs] = useState<string[]>([]);
   const [profiles, setProfiles] = useState<MissionProfile[]>([
     {
       id: "ghost",
@@ -56,7 +57,14 @@ export function GodModePage() {
       if (p.id !== profileId) return p;
       return {
         ...p,
-        tasks: p.tasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t)
+        tasks: p.tasks.map(t => {
+          if (t.id === taskId) {
+            const newStatus = !t.completed;
+            setSysLogs(prevLogs => [`[${new Date().toLocaleTimeString()}] TASK_${t.id} -> ${newStatus ? 'ACK' : 'RESET'}`, ...prevLogs].slice(0, 8));
+            return { ...t, completed: newStatus };
+          }
+          return t;
+        })
       };
     }));
   };
@@ -69,28 +77,29 @@ export function GodModePage() {
       <div className="space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div className="flex items-center gap-4">
-            <div className="bg-neon-pink p-3 text-white">
+            <div className="bg-neon-pink p-3 text-white shadow-[0_0_20px_rgba(210,9,250,0.4)]">
               <Target className="size-10" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter leading-none">GodMode Hub</h1>
-              <p className="text-xs text-neon-pink uppercase font-bold">Project Singularity :: Command Center</p>
+              <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter leading-none text-neon-pink">GodMode Hub</h1>
+              <p className="text-[10px] md:text-xs text-neon-pink uppercase font-bold tracking-[0.2em]">Project Singularity :: Command Center</p>
             </div>
           </div>
           <div className="flex gap-2">
-            <Link to="/exploit-lab" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px]">
+            <Link to="/exploit-lab" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none">
               <Activity className="size-3" /> EXPLOIT_LAB
             </Link>
-            <Link to="/hack-cam" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px]">
+            <Link to="/hack-cam" className="retro-button border-neon-pink text-neon-pink flex items-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none">
               <Camera className="size-3" /> HACK_CAM
             </Link>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main 3D Hardware View */}
           <div className="lg:col-span-8 space-y-8">
-            <RetroCard title="HARDWARE_VISUALIZER" status="A1633_SINGULARITY">
-              <Retro3DPhone />
+            <RetroCard title="HARDWARE_VISUALIZER" status="A1633_SINGULARITY" className="min-h-[500px] flex flex-col">
+              <div className="flex-1 w-full h-full min-h-[400px]">
+                <Retro3DPhone />
+              </div>
             </RetroCard>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {profiles.map((profile) => (
@@ -100,7 +109,10 @@ export function GodModePage() {
                   variant={activeProfile === profile.id ? 'danger' : 'default'}
                   status={`${profile.tasks.filter(t => t.completed).length}/${profile.tasks.length}_SEQ`}
                   onClick={() => setActiveProfile(profile.id)}
-                  className={cn("cursor-pointer transition-all", activeProfile === profile.id ? "scale-[1.02]" : "opacity-70 hover:opacity-100")}
+                  className={cn(
+                    "cursor-pointer transition-all duration-300", 
+                    activeProfile === profile.id ? "scale-[1.02] border-neon-pink shadow-[0_0_30px_rgba(210,9,250,0.2)]" : "opacity-70 hover:opacity-100"
+                  )}
                 >
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 text-neon-pink">
@@ -129,26 +141,41 @@ export function GodModePage() {
               ))}
             </div>
           </div>
-          {/* AI Insights and Tools */}
           <div className="lg:col-span-4 space-y-8">
             <RetroCard title="SINGULARITY_AI" status="PREDICTING" variant="danger">
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
                   <Brain className="size-10 text-neon-pink animate-pulse" />
-                  <div className="text-[10px] uppercase font-bold text-neon-pink">
+                  <div className="text-[10px] uppercase font-bold text-neon-pink leading-tight">
                     Neural Analytics Engine<br/>v4.0_LATEST
                   </div>
                 </div>
-                <div className="space-y-4 font-mono text-[10px]">
+                <div className="space-y-3 font-mono text-[9px]">
                   {aiInsights.map((log, i) => (
-                    <div key={i} className="p-2 border border-neon-pink/30 bg-neon-pink/5 leading-tight">
+                    <div key={i} className="p-2 border border-neon-pink/30 bg-neon-pink/5 leading-tight animate-in fade-in slide-in-from-left-2 duration-300">
                       {log}
                     </div>
                   ))}
                 </div>
-                <button className="retro-button w-full border-neon-pink text-neon-pink shadow-none text-[10px]">
+                <button className="retro-button w-full border-neon-pink text-neon-pink shadow-none text-[10px] hover:bg-neon-pink hover:text-white transition-colors">
                   REFRESH_NEURAL_MAP
                 </button>
+              </div>
+            </RetroCard>
+            <RetroCard title="SYSLOG_STREAM" status="VITAL">
+              <div className="space-y-4">
+                <div className="bg-black/60 border border-neon-green/30 p-3 h-40 overflow-y-auto font-mono text-[9px] text-neon-green/80 space-y-1">
+                  {sysLogs.length === 0 ? (
+                    <div className="opacity-30 italic">AWAITING_INPUT_SEQUENCE...</div>
+                  ) : (
+                    sysLogs.map((log, i) => (
+                      <div key={i} className="animate-in fade-in slide-in-from-bottom-1 duration-200">{log}</div>
+                    ))
+                  )}
+                </div>
+                <div className="p-2 bg-neon-pink/10 border border-neon-pink/30 text-[9px] text-neon-pink uppercase italic text-center">
+                  DIRECTIVE_OVERRIDE_ENABLED
+                </div>
               </div>
             </RetroCard>
             <RetroCard title="HARDWARE_MOD_SPEC" status="VITAL">
@@ -159,28 +186,19 @@ export function GodModePage() {
                 <ul className="space-y-2 text-[9px] uppercase leading-snug">
                   {HARDWARE_MODS[0].steps.map((step, i) => (
                     <li key={i} className="flex gap-2 items-start">
-                      <span className="text-neon-green">[{i+1}]</span>
+                      <span className="text-neon-green font-bold">[{i+1}]</span>
                       <span className="opacity-80">{step}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="p-2 bg-yellow-400/10 border border-yellow-400/30 text-[9px] text-yellow-400 uppercase italic">
-                  Critical: High-precision soldering equipment required.
-                </div>
-              </div>
-            </RetroCard>
-            <div className="p-4 border-2 border-red-600 bg-red-600/10 space-y-3 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-red-600/5 animate-pulse" />
-              <div className="relative z-10 flex gap-4 items-start">
-                <AlertCircle className="size-8 text-red-600 shrink-0" />
-                <div className="space-y-1">
-                  <h4 className="text-[10px] font-bold uppercase text-red-600">Final Directive</h4>
-                  <p className="text-[9px] opacity-80 leading-snug uppercase">
-                    Unauthorized hardware modifications will trigger anti-tamper protocols. Persistence is absolute.
+                <div className="p-3 border-2 border-red-600 bg-red-600/10 flex gap-3 items-center">
+                  <AlertCircle className="size-5 text-red-600 shrink-0" />
+                  <p className="text-[9px] font-bold text-red-600 uppercase leading-tight">
+                    CRITICAL: Anti-tamper protocols may engage if voltage spike is detected.
                   </p>
                 </div>
               </div>
-            </div>
+            </RetroCard>
           </div>
         </div>
       </div>
