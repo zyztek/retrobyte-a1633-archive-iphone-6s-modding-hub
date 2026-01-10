@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { Cpu, Smartphone, Database, Zap, Target, Lock, Activity, Wifi } from 'lucide-react';
+import { Cpu, Smartphone, Database, Zap, Target, Lock, Activity, Wifi, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { SecretVault } from '@/components/SecretVault';
 import { useAcademyStore, getRankByXp } from '@/store/academy-store';
 import { RetroProgress } from '@/components/ui/retro-progress';
+import { cn } from '@/lib/utils';
 export function HomePage() {
   const [vaultOpen, setVaultOpen] = useState(false);
   const [asciiClicks, setAsciiClicks] = useState(0);
@@ -32,10 +33,8 @@ export function HomePage() {
       });
     }
   };
-
   const xp = useAcademyStore(s => s.xp);
   const rank = getRankByXp(xp);
-
   return (
     <RetroLayout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -127,7 +126,6 @@ export function HomePage() {
               </Link>
             </div>
           </RetroCard>
-
           <RetroCard title="DEVICE_STATS" status="LIVE">
             <div className="space-y-4 text-sm">
               <div className="flex justify-between border-b border-neon-green/20 pb-2">
