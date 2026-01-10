@@ -13,7 +13,7 @@ export function RetroLayout({ children }: RetroLayoutProps) {
     }, 2000);
     return () => clearInterval(interval);
   }, []);
-  const marqueeText = "WARNING: VOIDING WARRANTY IS REVERSIBLE BUT RISKY. PROCEED WITH CAUTION. | A1633 ARCHIVE V1.1.0 | SECURE CONNECTION ESTABLISHED... | EXPLOIT STAGE 2: PAYLOAD_INJECTED | KERNEL_ADDR: 0xFFFF0000 | "
+  const marqueeText = "WARNING: VOIDING WARRANTY IS REVERSIBLE BUT RISKY. PROCEED WITH CAUTION. | A1633 ARCHIVE V1.1.0 | SECURE CONNECTION ESTABLISHED... | EXPLOIT STAGE 2: PAYLOAD_INJECTED | INTEGRITY_CHECK_COMPLETE :: ALL_SYSTEMS_OPERATIONAL | "
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="crt-overlay" />
@@ -26,9 +26,17 @@ export function RetroLayout({ children }: RetroLayoutProps) {
               <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 leading-none">
                 <span className="text-[9px] md:text-xs animate-pulse text-neon-green font-bold">● SYSTEM_UP</span>
                 <span className="text-[8px] md:text-[10px] text-neon-pink font-mono opacity-80">{memAddress}</span>
+                <div className="hidden sm:flex items-center gap-2 border-l-2 border-neon-green/20 pl-4">
+                  <span className="text-[8px] uppercase opacity-50">Build</span>
+                  <span className="text-[8px] bg-neon-green text-retro-black px-1 font-bold">PASSING</span>
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-3 md:gap-6">
+              <div className="hidden md:flex flex-col text-right">
+                <span className="text-[8px] uppercase opacity-50">Coverage</span>
+                <span className="text-[10px] text-neon-pink font-bold">98.4%</span>
+              </div>
               <div className="hidden lg:flex flex-col text-right">
                 <span className="text-[8px] uppercase opacity-50">Frame_Lock</span>
                 <span className="text-[10px] text-neon-green">60.00 FPS</span>

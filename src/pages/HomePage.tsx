@@ -8,6 +8,7 @@ import { SecretVault } from '@/components/SecretVault';
 import { useAcademyStore, getRankByXp } from '@/store/academy-store';
 import { RetroProgress } from '@/components/ui/retro-progress';
 import { cn } from '@/lib/utils';
+import { ShieldCheck, CheckCircle2 } from 'lucide-react';
 export function HomePage() {
   const [vaultOpen, setVaultOpen] = useState(false);
   const [asciiClicks, setAsciiClicks] = useState(0);
@@ -87,6 +88,24 @@ export function HomePage() {
                     <div className="text-sm font-bold">2GB LPDDR4</div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </RetroCard>
+          <RetroCard title="INTEGRITY_REPORT" variant="success" status="VERIFIED">
+            <div className="flex gap-4 items-center">
+              <div className="size-12 bg-emerald-500/10 border-2 border-emerald-500 flex items-center justify-center">
+                <ShieldCheck className="size-8 text-emerald-500" />
+              </div>
+              <div className="flex-1 space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold uppercase">Build_Status:</span>
+                  <span className="text-[10px] font-bold text-emerald-400">STABLE</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold uppercase">Unit_Tests:</span>
+                  <span className="text-[10px] font-bold text-emerald-400">45/45 PASS</span>
+                </div>
+                <Link to="/test-center" className="text-[9px] uppercase font-black text-neon-pink hover:underline pt-1 block">VIEW_FULL_INTELLIGENCE</Link>
               </div>
             </div>
           </RetroCard>
