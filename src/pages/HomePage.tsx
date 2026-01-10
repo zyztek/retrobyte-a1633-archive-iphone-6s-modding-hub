@@ -5,6 +5,8 @@ import { Cpu, Smartphone, Database, Zap, Target, Lock, Activity, Wifi } from 'lu
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { SecretVault } from '@/components/SecretVault';
+import { useAcademyStore, getRankByXp } from '@/store/academy-store';
+import { RetroProgress } from '@/components/ui/retro-progress';
 export function HomePage() {
   const [vaultOpen, setVaultOpen] = useState(false);
   const [asciiClicks, setAsciiClicks] = useState(0);
@@ -30,6 +32,10 @@ export function HomePage() {
       });
     }
   };
+
+  const xp = useAcademyStore(s => s.xp);
+  const rank = getRankByXp(xp);
+
   return (
     <RetroLayout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -104,6 +110,24 @@ export function HomePage() {
           </RetroCard>
         </div>
         <div className="space-y-6">
+          <RetroCard title="ACADEMY_RANK" status="PROGRESSING">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className={cn("size-8 border flex items-center justify-center", rank.color.replace('text', 'border'))}>
+                  <GraduationCap className={cn("size-4", rank.color)} />
+                </div>
+                <div className="flex flex-col">
+                  <span className={cn("text-sm font-black uppercase tracking-tighter", rank.color)}>{rank.title}</span>
+                  <span className="text-[9px] opacity-50 uppercase font-bold">{xp} TOTAL_XP</span>
+                </div>
+              </div>
+              <RetroProgress current={xp} max={2500} segments={10} className="mt-2" />
+              <Link to="/academy" className="retro-button w-full text-center block text-[10px] py-1">
+                CONTINUE_LEARNING
+              </Link>
+            </div>
+          </RetroCard>
+
           <RetroCard title="DEVICE_STATS" status="LIVE">
             <div className="space-y-4 text-sm">
               <div className="flex justify-between border-b border-neon-green/20 pb-2">

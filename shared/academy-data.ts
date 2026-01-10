@@ -6,7 +6,6 @@ export interface Module {
   description: string;
   xpValue: number;
   videoUrl: string;
-  requiresHardware?: boolean;
 }
 export interface QuizQuestion {
   id: string;
@@ -23,7 +22,7 @@ export const ACADEMY_MODULES: Module[] = [
     title: 'DFU_HANDSHAKE_101',
     description: 'Master the rhythmic sequence required to enter Device Firmware Upgrade mode on A9 hardware.',
     xpValue: 100,
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' // Mock
   },
   {
     id: 'itunes-drivers',
@@ -43,24 +42,6 @@ export const ACADEMY_MODULES: Module[] = [
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
   },
   {
-    id: 'palen1x-creation',
-    tier: 'PRO',
-    title: 'USB_FORGE: PALEN1X_MEDIA',
-    description: 'Creating bootable Palen1x environments using Rufus or Ventoy for BIOS/UEFI execution.',
-    xpValue: 200,
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    requiresHardware: true
-  },
-  {
-    id: 'dfu-cable-verify',
-    tier: 'PRO',
-    title: 'HARDWARE: CABLE_DIAGNOSTICS',
-    description: 'Verifying DFU/Purple mode data lines in Lightning cables for reliable exploit injection.',
-    xpValue: 150,
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    requiresHardware: true
-  },
-  {
     id: 'sileo-repos',
     tier: 'PRO',
     title: 'REPOS_AND_ROOTLESS',
@@ -76,24 +57,6 @@ export const ACADEMY_MODULES: Module[] = [
     description: 'Utilizing KVM on a Linux-based A1633 environment to virtualize ARM64 guest operating systems.',
     xpValue: 500,
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-  },
-  {
-    id: 'emmc-programmer-jcp7',
-    tier: 'GOD',
-    title: 'USB_FORGE: JC-P7_PROTOCOLS',
-    description: 'Interfacing with BGA110 programmers via USB to read/write raw NAND syscfg data.',
-    xpValue: 400,
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    requiresHardware: true
-  },
-  {
-    id: 'kali-otg-stack',
-    tier: 'GOD',
-    title: 'HARDWARE: KALI_OTG_NETWORKING',
-    description: 'Configuring external MT7601U/RT5370 chipsets via Lightning OTG for packet injection.',
-    xpValue: 350,
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    requiresHardware: true
   },
   {
     id: 'emmc-reball',
@@ -132,12 +95,12 @@ export const ACADEMY_QUIZZES: QuizQuestion[] = [
   {
     id: 'q-god-1',
     tier: 'GOD',
-    question: 'What is a critical requirement for using the JC-P7 programmer for NAND expansion?',
+    question: 'Why is GPU acceleration missing in Windows 11 ARM on A9?',
     options: [
-      'iTunes must be open',
-      'Syncing original WiFi/BT MAC addresses to the new chip',
-      'Using a standard 5V USB 2.0 port only',
-      'Disabling the iPhone Passcode'
+      'Insufficient RAM (2GB)',
+      'Lack of proprietary ACPI and DX12 drivers',
+      'CPU clock speed too low',
+      'iOS 15 sandbox restriction'
     ],
     correctIndex: 1
   }
