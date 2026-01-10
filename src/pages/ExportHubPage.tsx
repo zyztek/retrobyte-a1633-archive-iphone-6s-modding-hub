@@ -53,7 +53,7 @@ export function ExportHubPage() {
   };
   return (
     <RetroLayout>
-      <div className="max-w-7xl mx-auto space-y-12">
+      <div className="space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-1">
             <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter flex items-center gap-3">
@@ -231,6 +231,9 @@ export function ExportHubPage() {
                 </div>
                 <div className="space-y-2">
                   {[
+                    { label: 'Linting', status: 'OK' },
+                    { label: 'Type Check', status: 'OK' },
+                    { label: 'Unit Tests', status: '45/45' },
                     { label: 'Linting', status: 'OK' },
                     { label: 'Type Check', status: 'OK' },
                     { label: 'Unit Tests', status: '45/45' },

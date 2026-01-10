@@ -29,7 +29,7 @@ export function DocsVaultPage() {
   );
   return (
     <RetroLayout>
-      <div className="space-y-8 max-w-7xl mx-auto">
+      <div className="space-y-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-1">
             <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter flex items-center gap-3">

@@ -89,7 +89,7 @@ export function GodModePage() {
         setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] ${step}`, ...prev].slice(0, 10));
         if (i === auditSteps.length - 1) {
           setIsAuditing(false);
-          toast.success("AUDIT_COMPLETE", { 
+          toast.success("AUDIT_COMPLETE", {
             description: "Hardware subsystems verified for A1633.",
             style: { background: '#0a0a0a', color: '#00ff41', border: '1px solid #00ff41' }
           });
@@ -113,7 +113,7 @@ export function GodModePage() {
   const syncColor = xp >= 1500 ? 'text-neon-pink' : xp >= 500 ? 'text-yellow-400' : 'text-neon-pink/40';
   return (
     <RetroLayout>
-      <div className="space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-4">
             <div className="bg-neon-pink p-3 text-white shadow-[0_0_20px_rgba(210,9,250,0.4)] animate-pulse">
