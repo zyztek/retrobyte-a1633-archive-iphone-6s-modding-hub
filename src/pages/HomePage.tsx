@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { Cpu, Smartphone, Database, Zap } from 'lucide-react';
+import { Cpu, Smartphone, Database, Zap, Target, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { SecretVault } from '@/components/SecretVault';
 export function HomePage() {
+  const [vaultOpen, setVaultOpen] = useState(false);
+  const [asciiClicks, setAsciiClicks] = useState(0);
   const handleBindTerminal = () => {
     toast.success("TERMINAL_LINKED: Secure handshake complete.", {
       description: "A1633 mainframe is now receiving commands.",
@@ -14,6 +17,18 @@ export function HomePage() {
         border: '1px solid #00ff41'
       }
     });
+  };
+  const handleAsciiClick = () => {
+    const newCount = asciiClicks + 1;
+    setAsciiClicks(newCount);
+    if (newCount >= 3) {
+      setVaultOpen(true);
+      setAsciiClicks(0);
+      toast.error("WARNING: BREACH DETECTED", {
+        description: "Accessing Forbidden_Sector...",
+        style: { background: '#7f1d1d', color: '#fff' }
+      });
+    }
   };
   return (
     <RetroLayout>
@@ -26,7 +41,10 @@ export function HomePage() {
               <p className="text-lg md:text-xl text-neon-green/80">
                 Core mainframe for iPhone 6s modding and legacy preservation.
               </p>
-              <div className="bg-black/40 p-2 md:p-4 border border-neon-green/10 inline-block w-full">
+              <div 
+                className="bg-black/40 p-2 md:p-4 border border-neon-green/10 inline-block w-full cursor-help hover:border-neon-pink transition-colors"
+                onClick={handleAsciiClick}
+              >
                 <pre className="text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] leading-none text-neon-green/40 overflow-hidden select-none flex justify-center py-4">
 {`        .------------------------.
         | [ ................... ] |
@@ -57,23 +75,20 @@ export function HomePage() {
               </div>
             </div>
           </RetroCard>
-          <RetroCard title="ARCHIVE_LOG" className="font-mono text-xs md:text-sm">
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <span className="text-neon-pink">[08:22:11]</span>
-                <span>Initializing boot sequence...</span>
+          <RetroCard title="GODMODE_PROFILES" variant="danger">
+            <div className="flex flex-col md:flex-row gap-6 items-center">
+              <div className="size-16 bg-neon-pink/20 flex items-center justify-center border-2 border-neon-pink">
+                <Target className="size-10 text-neon-pink" />
               </div>
-              <div className="flex gap-2 text-neon-green/90">
-                <span className="text-neon-pink">[08:22:12]</span>
-                <span>Detected iPhone 6s (N71AP/N71mAP).</span>
-              </div>
-              <div className="flex gap-2 text-neon-green/90">
-                <span className="text-neon-pink">[08:22:13]</span>
-                <span>Kernel version 21.6.0 (Darwin) confirmed.</span>
-              </div>
-              <div className="flex gap-2 text-neon-pink">
-                <span className="animate-pulse">_</span>
-                <span className="font-bold">Awaiting user command...</span>
+              <div className="flex-1 space-y-2 text-center md:text-left">
+                <h3 className="text-xl font-bold uppercase text-neon-pink">Authority Override Enabled</h3>
+                <p className="text-xs opacity-80 uppercase tracking-tighter">
+                  One-click mission profiles for automation. 
+                  Access verified paths for Jailbreak, Multiboot, and Pentesting.
+                </p>
+                <Link to="/godmode" className="retro-button border-neon-pink text-neon-pink mt-2 inline-block">
+                  ENTER_GODMODE_HUB
+                </Link>
               </div>
             </div>
           </RetroCard>
@@ -82,15 +97,15 @@ export function HomePage() {
           <RetroCard title="DEVICE_STATS" status="LIVE">
             <div className="space-y-4 text-sm">
               <div className="flex justify-between border-b border-neon-green/20 pb-2">
-                <span className="opacity-70">MAX_OFFICIAL_OS</span>
+                <span className="opacity-70 uppercase text-[10px]">MAX_OFFICIAL_OS</span>
                 <span className="font-bold">iOS 15.8.3</span>
               </div>
               <div className="flex justify-between border-b border-neon-green/20 pb-2">
-                <span className="opacity-70">JAILBREAK_STATUS</span>
+                <span className="opacity-70 uppercase text-[10px]">JAILBREAK_STATUS</span>
                 <span className="text-neon-pink font-bold">COMPATIBLE</span>
               </div>
               <div className="flex justify-between border-b border-neon-green/20 pb-2">
-                <span className="opacity-70">METHOD</span>
+                <span className="opacity-70 uppercase text-[10px]">METHOD</span>
                 <span className="font-bold">Paler1n / Checkra1n</span>
               </div>
             </div>
@@ -104,6 +119,12 @@ export function HomePage() {
                 <Zap className="w-4 h-4" /> BIND_TERMINAL
               </button>
               <Link
+                to="/system-lab"
+                className="retro-button w-full flex items-center justify-center gap-2 border-yellow-400 text-yellow-400 shadow-none hover:bg-yellow-400 hover:text-black transition-all"
+              >
+                <Database className="w-4 h-4" /> SYSTEM_DIAGS
+              </Link>
+              <Link
                 to="/multiboot"
                 className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-none hover:bg-neon-pink hover:text-white transition-all"
               >
@@ -111,8 +132,15 @@ export function HomePage() {
               </Link>
             </div>
           </RetroCard>
+          <RetroCard title="SECURE_VAULT" status="LOCKED">
+             <div className="flex items-center gap-3 opacity-30 grayscale">
+               <Lock className="size-5" />
+               <span className="text-[10px] uppercase font-bold italic">Forbidden data detected. Multi-signature clearance required.</span>
+             </div>
+          </RetroCard>
         </div>
       </div>
+      <SecretVault isOpen={vaultOpen} onClose={() => setVaultOpen(false)} />
     </RetroLayout>
   );
 }
