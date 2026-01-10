@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { cn } from "@/lib/utils";
 interface RetroLayoutProps {
   children: React.ReactNode;
 }
@@ -20,20 +21,20 @@ export function RetroLayout({ children }: RetroLayoutProps) {
       <div className="relative min-h-screen w-full bg-retro-black flex font-mono overflow-hidden">
         <AppSidebar />
         <SidebarInset className="bg-transparent flex flex-col min-h-screen relative overflow-hidden">
-          <header className="h-14 md:h-12 border-b-2 border-neon-green flex items-center justify-between px-4 md:px-6 bg-retro-black/90 backdrop-blur-md z-50">
-            <div className="flex items-center gap-3 md:gap-4">
-              <SidebarTrigger className="text-neon-green hover:bg-neon-green hover:text-retro-black border-2 border-neon-green rounded-none transition-all h-9 w-9 md:h-8 md:w-8" />
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 leading-none">
-                <span className="text-[9px] md:text-xs animate-pulse text-neon-green font-bold">● SYSTEM_UP</span>
-                <span className="text-[8px] md:text-[10px] text-neon-pink font-mono opacity-80">{memAddress}</span>
-                <div className="hidden sm:flex items-center gap-2 border-l-2 border-neon-green/20 pl-4">
+          <header className="h-14 md:h-12 border-b-2 border-neon-green flex items-center justify-between px-3 md:px-6 bg-retro-black/90 backdrop-blur-md z-50">
+            <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
+              <SidebarTrigger className="text-neon-green hover:bg-neon-green hover:text-retro-black border-2 border-neon-green rounded-none transition-all h-9 w-9 md:h-8 md:w-8 shrink-0" />
+              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 leading-none overflow-hidden">
+                <span className="text-[9px] md:text-xs animate-pulse text-neon-green font-bold shrink-0">● SYSTEM_UP</span>
+                <span className="text-[8px] md:text-[10px] text-neon-pink font-mono opacity-80 truncate max-w-[60px] md:max-w-none">{memAddress}</span>
+                <div className="hidden xs:flex items-center gap-2 border-l-2 border-neon-green/20 pl-4 shrink-0">
                   <span className="text-[8px] uppercase opacity-50">Build</span>
                   <span className="text-[8px] bg-neon-green text-retro-black px-1 font-bold">PASSING</span>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3 md:gap-6">
-              <div className="hidden md:flex flex-col text-right">
+            <div className="flex items-center gap-2 md:gap-6 shrink-0">
+              <div className="hidden sm:flex flex-col text-right">
                 <span className="text-[8px] uppercase opacity-50">Coverage</span>
                 <span className="text-[10px] text-neon-pink font-bold">98.4%</span>
               </div>
@@ -42,8 +43,8 @@ export function RetroLayout({ children }: RetroLayoutProps) {
                 <span className="text-[10px] text-neon-green">60.00 FPS</span>
               </div>
               <ThemeToggle className="static" />
-              <div className="text-[10px] md:text-xs tabular-nums font-bold border-l-2 border-neon-green/30 pl-3 md:pl-4">
-                {new Date().toLocaleTimeString()}
+              <div className="text-[9px] md:text-xs tabular-nums font-bold border-l-2 border-neon-green/30 pl-2 md:pl-4 whitespace-nowrap">
+                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </div>
             </div>
           </header>
