@@ -6,13 +6,20 @@ import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { SecretVault } from '@/components/SecretVault';
 import { useAcademyStore, getRankByXp } from '@/store/academy-store';
+import { useUIStore } from '@/store/ui-store';
 import { RetroProgress } from '@/components/ui/retro-progress';
 import { cn } from '@/lib/utils';
 import { ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 export function HomePage() {
   const [vaultOpen, setVaultOpen] = useState(false);
   const [asciiClicks, setAsciiClicks] = useState(0);
+  const addLog = useUIStore(s => s.addLog);
+  const setLoading = useUIStore(s => s.setLoading);
+  const isVerbose = useUIStore(s => s.isVerbose);
+
   const handleBindTerminal = () => {
+    addLog("HANDSHAKE_INITIATED: Contacting A9 BootROM...");
     toast.success("TERMINAL_LINKED: Secure handshake complete.", {
       description: "A1633 mainframe is now receiving commands.",
       style: {
@@ -21,7 +28,15 @@ export function HomePage() {
         border: '1px solid #00ff41'
       }
     });
+    addLog("CONNECTION_STABLE: Mainframe identity verified.");
   };
+
+  const handleAction = (label: string) => {
+    addLog(`CMD_EXEC: ${label.toUpperCase()}...`);
+    setLoading(true);
+    setTimeout(() => setLoading(false), 800);
+  };
+
   const handleAsciiClick = () => {
     const newCount = asciiClicks + 1;
     setAsciiClicks(newCount);
@@ -37,7 +52,8 @@ export function HomePage() {
   const xp = useAcademyStore(s => s.xp);
   const rank = getRankByXp(xp);
   return (
-    <RetroLayout>
+    <TooltipProvider>
+      <RetroLayout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <RetroCard title="SYSTEM_OVERVIEW" status="READY" className="relative overflow-hidden">
@@ -51,7 +67,23 @@ export function HomePage() {
                 className="bg-black/40 p-2 md:p-4 border border-neon-green/10 inline-block w-full cursor-help hover:border-neon-pink group transition-colors"
                 onClick={handleAsciiClick}
               >
-                <pre className="text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] leading-none text-neon-green/40 group-hover:text-neon-pink group-hover:animate-glitch overflow-hidden select-none flex justify-center py-4">
+                <div className="flex justify-center relative">
+                  {isVerbose && (
+                    <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-neon-pink opacity-40 flex flex-col items-end">
+                      <span>PULSE_SYNC_ACTIVE</span>
+                      <div className="flex gap-0.5 mt-1">
+                        {Array.from({ length: 8 }).map((_, i) => (
+                          <motion.div
+                            key={i}
+                            animate={{ height: [4, 12, 4] }}
+                            transition={{ duration: 1, repeat: Infinity, delay: i * 0.1 }}
+                            className="w-0.5 bg-neon-pink"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <pre className="text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] leading-none text-neon-green/40 group-hover:text-neon-pink group-hover:animate-glitch overflow-hidden select-none flex justify-center py-4">
 {`        .------------------------.
         | [ ................... ] |
         | [ ................... ] |
@@ -61,7 +93,8 @@ export function HomePage() {
         | [_____________________] |
         |           (_)           |
         '-------------------------'`}
-                </pre>
+                  </pre>
+                </div>
               </div>
               <div className="space-y-2 mt-4">
                 <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-neon-green/60">
@@ -167,18 +200,64 @@ export function HomePage() {
           </RetroCard>
           <RetroCard title="QUICK_ACTIONS">
             <div className="space-y-3">
-              <button
-                onClick={handleBindTerminal}
-                className="retro-button w-full flex items-center justify-center gap-2"
-              >
-                <Zap className="w-4 h-4" /> BIND_TERMINAL
-              </button>
-              <Link
-                to="/network-arsenal"
-                className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none"
-              >
-                <Wifi className="w-4 h-4" /> NETWORK_ARSENAL
-              </Link>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleBindTerminal}
+                    className="retro-button w-full flex items-center justify-center gap-2"
+                  >
+                    <Zap className="w-4 h-4" /> BIND_TERMINAL
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="bg-retro-black border border-neon-green text-neon-green uppercase text-[10px] rounded-none">
+                  Establish DO-Durable Handshake
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    to="/network-arsenal"
+                    onClick={() => handleAction('NetArsenal')}
+                    className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none"
+                  >
+                    <Wifi className="w-4 h-4" /> NETWORK_ARSENAL
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="bg-retro-black border border-neon-pink text-neon-pink uppercase text-[10px] rounded-none">
+                  Access RF Scanning Tools
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    to="/system-lab"
+                    onClick={() => handleAction('SysLab')}
+                    className="retro-button w-full flex items-center justify-center gap-2 border-yellow-400 text-yellow-400 shadow-[4px_4px_0px_rgba(250,204,21,1)] hover:shadow-none"
+                  >
+                    <Database className="w-4 h-4" /> SYSTEM_DIAGS
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="bg-retro-black border border-yellow-400 text-yellow-400 uppercase text-[10px] rounded-none">
+                  Check NAND and Kernel Health
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    to="/multiboot"
+                    onClick={() => handleAction('ScanDevice')}
+                    className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none"
+                  >
+                    <Smartphone className="w-4 h-4" /> SCAN_DEVICE
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="bg-retro-black border border-neon-pink text-neon-pink uppercase text-[10px] rounded-none">
+                  Identify Firmware Vulnerabilities
+                </TooltipContent>
+              </Tooltip>
               <Link
                 to="/system-lab"
                 className="retro-button w-full flex items-center justify-center gap-2 border-yellow-400 text-yellow-400 shadow-[4px_4px_0px_rgba(250,204,21,1)] hover:shadow-none"
@@ -203,5 +282,6 @@ export function HomePage() {
       </div>
       <SecretVault isOpen={vaultOpen} onClose={() => setVaultOpen(false)} />
     </RetroLayout>
+    </TooltipProvider>
   );
 }
