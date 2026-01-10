@@ -1,11 +1,9 @@
 export interface Guide {
   title: string;
   slug: string;
-  category: 'Initial Setup' | 'Jailbreaking' | 'Post-Install' | 'Multi-Boot';
+  category: 'Initial Setup' | 'Jailbreaking' | 'Post-Install';
   clearance: 'UNCLASSIFIED' | 'CONFIDENTIAL' | 'SECRET';
   content: string;
-  riskLevel?: number; // 1-5 scale
-  targetVersions?: string[];
 }
 export interface Mod {
   name: string;
@@ -13,7 +11,7 @@ export interface Mod {
   version: string;
   compatibility: string;
   author: string;
-  type: 'System' | 'UI' | 'Battery' | 'Experimental' | 'Tool';
+  type: 'System' | 'UI' | 'Battery' | 'Experimental';
   rating: number; // 1-10
 }
 export const ARCHIVE_GUIDES: Guide[] = [
@@ -22,8 +20,6 @@ export const ARCHIVE_GUIDES: Guide[] = [
     slug: "hardware-overview",
     category: "Initial Setup",
     clearance: "UNCLASSIFIED",
-    riskLevel: 1,
-    targetVersions: ["15.0", "15.8.3"],
     content: "The iPhone 6s (A1633) is the last of its kind. Featuring the A9 chip and 2GB of LPDDR4 RAM, it remains the minimum viable entry for iOS 15.8.3. Before modding, ensure your battery health is above 80% to avoid CPU throttling during the jailbreak process."
   },
   {
@@ -31,75 +27,17 @@ export const ARCHIVE_GUIDES: Guide[] = [
     slug: "paler1n-guide",
     category: "Jailbreaking",
     clearance: "SECRET",
-    riskLevel: 3,
-    targetVersions: ["15.0", "15.8.3"],
     content: "Palera1n is a work-in-progress jailbreak for checkm8-vulnerable devices running iOS 15+. \n\n1. Connect device in DFU mode.\n2. Execute `palera1n -c -v` to create the fakefs.\n3. Wait for the reboot and then re-run `palera1n -v` to boot into jailbroken state."
   },
   {
-    title: "Multiboot Prep: Partitioning the Void",
-    slug: "multiboot-prep",
-    category: "Multi-Boot",
-    clearance: "SECRET",
-    riskLevel: 4,
-    targetVersions: ["15.0", "15.8.3"],
-    content: "To host multiple operating systems, the APFS container must be manually segmented. \n\n1. Use `diskutil` via SSH or MTerminal to identify the main container.\n2. Add a new APFS volume named 'Linux' or 'Android'.\n3. Ensure at least 10GB is allocated. \n\nWARNING: Miscalculating the partition boundary on A9 hardware can lead to NAND corruption requiring a full DFU restore."
-  },
-  {
-    title: "Windows 11: The Virtualization Frontier",
-    slug: "windows-emulation",
-    category: "Multi-Boot",
-    clearance: "SECRET",
-    riskLevel: 5,
-    targetVersions: ["15.0", "15.8.3"],
-    content: "Native booting of Windows 11 ARM on Apple A9 (A1633) is currently impossible due to proprietary bootloader locks and lack of ACPI drivers. However, virtualization via QEMU on a PostmarketOS (Linux) base provides a path to execution.\n\nRequirements:\n1. PostmarketOS installed on a dedicated 32GB+ partition.\n2. QEMU-AARCH64-SYSTEM binaries.\n3. Windows 11 ARM64 ISO and a pre-allocated VHDX.\n\nExecution Block:\n$ qemu-system-aarch64 -m 1G -smp 2 -cpu host -accel kvm \\\n  -drive file=win11.vhdx,if=virtio -net nic -net user \\\n  -device usb-ehci -device usb-kbd -device usb-tablet \\\n  -display sdl,gl=on\n\nPerformance Warning:\n- GPU Acceleration: 0% (Software Rasterization Only)\n- Boot Time: 8-12 Minutes\n- Power Usage: 4.5W+ (Continuous thermal throttling expected)\n- Usage: Demonstrative proof-of-concept only. Continuous operation will damage battery chemistry."
-  },
-  {
-    title: "Project Sandcastle: Android on A1633",
-    slug: "android-sandcastle",
-    category: "Multi-Boot",
-    clearance: "SECRET",
-    riskLevel: 5,
-    targetVersions: ["15.0", "15.7"],
-    content: "Project Sandcastle brings Android to the iPhone. While functional, it is highly experimental. \n\nHardware Status:\n- CPU: Functional\n- RAM: Functional\n- GPU: NO ACCELERATION\n- Audio: NOT WORKING\n- WiFi: PARTIAL\n\nInstallation requires a Linux host and the checkra1n exploit to bootstrap the Android kernel."
-  },
-  {
-    title: "PostmarketOS: True Linux Freedom",
-    slug: "linux-pmos",
-    category: "Multi-Boot",
-    clearance: "SECRET",
-    riskLevel: 4,
-    targetVersions: ["15.0", "15.8.3"],
-    content: "PostmarketOS (pmOS) targets a sustainable mobile OS. For the A1633, it offers a real mainline Linux kernel experience. \n\nInstructions:\n1. Use pmbootstrap to build the image.\n2. Flash via fastboot-compatible bootloaders.\n3. Experience a pure X11 or Wayland environment on your Apple hardware."
-  },
-  {
-    title: "Kali Linux: A1633 Penetration Suite",
-    slug: "kali-deployment",
-    category: "Multi-Boot",
-    clearance: "SECRET",
-    riskLevel: 5,
-    targetVersions: ["15.0", "15.8.3"],
-    content: "The Kali Linux deployment on A1633 utilizes a chroot environment over a PostmarketOS base to provide full access to the Kali Rolling repository. \n\nDeployment Path:\n1. Bootstrap PostmarketOS with a stable mainline kernel.\n2. Establish a Kali-rolling arm64 chroot on a dedicated partition.\n3. Mount dev/pts/proc and enter the environment.\n\nCapabilities:\n- WiFi Tools (Aircrack-ng): Functional via external OTG USB adapters (MT7601U/RT5370).\n- Ethernet: Functional via lightning-to-USB OTG.\n- GUI (X11): ALPHA STATE. Significant screen tearing and no hardware acceleration.\n\nWARNING: Running rolling-release databases on aging A9 NAND storage significantly accelerates cell degradation."
-  },
-  {
-    title: "TrollStore: The Permasigned Revolution",
-    slug: "trollstore-guide",
+    title: "Legacy Optimization: Sileo & Procursus",
+    slug: "post-install-opt",
     category: "Post-Install",
     clearance: "CONFIDENTIAL",
-    riskLevel: 2,
-    targetVersions: ["15.0", "15.4.1", "15.5", "16.6.1"],
-    content: "TrollStore leverages the CoreTrust bug to permanently sign IPAs. \n\nOn A9 devices:\n- 15.0 to 15.4.1: Direct installation via GTA Car Tracker exploit.\n- 15.5 and above: Requires a jailbreak (Palera1n) to install the helper, though the apps remain signed in non-jailbroken state once installed."
+    content: "Once jailbroken, migrate from Cydia to Sileo for modern package management. Add the Procursus repo to access up-to-date terminal tools like ZSH, Vim, and OpenSSH. Disable launch daemons for GameCenter and OTA updates to reclaim 15% system resources."
   }
 ];
 export const MOD_REPOSITORY: Mod[] = [
-  {
-    name: "TrollStore Helper",
-    description: "Permanent IPA installer. No revokes, ever.",
-    version: "2.0.12",
-    compatibility: "iOS 14.0 - 17.0",
-    author: "Opa334",
-    type: "Tool",
-    rating: 10
-  },
   {
     name: "Cylinder Reborn",
     description: "Icon scroll animations for the nostalgic soul.",

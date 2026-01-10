@@ -16,8 +16,8 @@ export function AppSidebar(): JSX.Element {
   const menuItems = [
     { title: "Terminal", icon: Terminal, path: "/" },
     { title: "Script Forge", icon: Code, path: "/script-forge" },
-    { title: "Archives", icon: BookOpen, path: "#" },
-    { title: "Repo", icon: Package, path: "#" },
+    { title: "Archives", icon: BookOpen, path: "/archives" },
+    { title: "Repo", icon: Package, path: "/repo" },
   ];
   return (
     <Sidebar className="border-r-2 border-neon-green bg-retro-black">
@@ -32,23 +32,26 @@ export function AppSidebar(): JSX.Element {
       </SidebarHeader>
       <SidebarContent className="p-2 space-y-4">
         <SidebarMenu>
-          {menuItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton 
-                asChild 
-                isActive={location.pathname === item.path}
-                className={cn(
-                  "hover:bg-neon-green hover:text-retro-black rounded-none h-12 transition-colors border-2 border-transparent",
-                  location.pathname === item.path && "border-neon-green text-neon-green bg-neon-green/10"
-                )}
-              >
-                <Link to={item.path} className="flex items-center gap-3 w-full">
-                  <item.icon className="size-5" />
-                  <span className="uppercase text-sm font-bold tracking-widest">{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  className={cn(
+                    "hover:bg-neon-green hover:text-retro-black rounded-none h-12 transition-colors border-2 border-transparent",
+                    isActive && "border-neon-green text-neon-green bg-neon-green/10"
+                  )}
+                >
+                  <Link to={item.path} className="flex items-center gap-3 w-full">
+                    <item.icon className="size-5" />
+                    <span className="uppercase text-sm font-bold tracking-widest">{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t-2 border-neon-green p-4 space-y-4">

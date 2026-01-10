@@ -30,7 +30,7 @@ export function ArchivesPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {(['Initial Setup', 'Jailbreaking', 'Post-Install', 'Multi-Boot'] as const).map(category => (
+          {(['Initial Setup', 'Jailbreaking', 'Post-Install'] as const).map(category => (
             <RetroCard key={category} title={category.toUpperCase().replace(" ", "_")} status="SECURE">
               <div className="space-y-4">
                 {filteredGuides.filter(g => g.category === category).map(guide => (
