@@ -73,6 +73,24 @@ export function MultiBootPage() {
                   </Link>
                 </div>
               </RetroCard>
+              <RetroCard title="WINDOWS_11_EMU" variant="danger" status="VIRTUALIZED">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-xs font-bold text-neon-pink uppercase">
+                    <Layers className="size-4" /> QEMU_VIRT_STACK
+                  </div>
+                  <div className="p-2 border border-neon-pink/50 bg-neon-pink/10 text-[10px] uppercase space-y-1">
+                    <div className="flex justify-between"><span>ACCEL:</span> <span className="text-white">0%_SW_ONLY</span></div>
+                    <div className="flex justify-between"><span>THERMAL:</span> <span className="text-white">CRITICAL</span></div>
+                    <div className="flex justify-between"><span>I/O:</span> <span className="text-white">SLUGGISH</span></div>
+                  </div>
+                  <p className="text-xs leading-relaxed opacity-80">
+                    Native boot impossible. Requires pmOS + QEMU/KVM ARM64 emulation layer. Extreme battery drain warning.
+                  </p>
+                  <Link to="/archives/windows-emulation" className="retro-button w-full text-[10px] flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-none">
+                    <Zap className="size-3" /> INITIALIZE_EMU_GUIDE
+                  </Link>
+                </div>
+              </RetroCard>
               <RetroCard title="POSTMARKETOS" status="STABLE">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-xs font-bold text-neon-green">
