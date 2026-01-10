@@ -6,6 +6,7 @@ interface RetroLayoutProps {
   children: React.ReactNode;
 }
 export function RetroLayout({ children }: RetroLayoutProps) {
+  const marqueeText = "WARNING: VOIDING WARRANTY IS REVERSIBLE BUT RISKY. PROCEED WITH CAUTION. | A1633 ARCHIVE V1.0.4 | SECURE CONNECTION ESTABLISHED... | EXPLOIT STAGE 2: PAYLOAD_INJECTED | KERNEL_ADDR: 0xFFFF0000 | "
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="crt-overlay" />
@@ -31,11 +32,12 @@ export function RetroLayout({ children }: RetroLayoutProps) {
               </div>
             </div>
           </main>
-          <footer className="h-8 border-t-2 border-neon-green flex items-center px-4 bg-retro-black text-[10px] uppercase tracking-tighter">
-            <div className="flex gap-4 overflow-hidden whitespace-nowrap">
-              <span className="animate-marquee inline-block">
-                WARNING: VOIDING WARRANTY IS REVERSIBLE BUT RISKY. PROCEED WITH CAUTION. | A1633 ARCHIVE V1.0.4 | SECURE CONNECTION ESTABLISHED...
-              </span>
+          <footer className="h-8 border-t-2 border-neon-green flex items-center bg-retro-black text-[10px] uppercase tracking-tighter overflow-hidden">
+            <div className="relative flex w-full">
+              <div className="animate-marquee whitespace-nowrap flex">
+                <span className="px-4">{marqueeText}</span>
+                <span className="px-4">{marqueeText}</span>
+              </div>
             </div>
           </footer>
         </SidebarInset>
