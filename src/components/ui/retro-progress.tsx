@@ -22,9 +22,9 @@ export function RetroProgress({
   const percentage = Math.min(Math.max((current / max) * 100, 0), 100);
   const filledSegments = Math.floor((percentage / 100) * segments);
   const colors = {
-    green: 'bg-neon-green shadow-[0_0_10px_rgba(0,255,65,0.5)]',
-    pink: 'bg-neon-pink shadow-[0_0_10px_rgba(210,9,250,0.5)]',
-    yellow: 'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.5)]'
+    green: 'bg-[#00ff41] shadow-[0_0_10px_rgba(0,255,65,0.5)]',
+    pink: 'bg-[#d209fa] shadow-[0_0_10px_rgba(210,9,250,0.5)]',
+    yellow: 'bg-[#facc15] shadow-[0_0_10px_rgba(250,204,21,0.5)]'
   };
   const targetColor = variant === 'green' ? '#00ff41' : variant === 'pink' ? '#d209fa' : '#facc15';
   return (
@@ -34,15 +34,16 @@ export function RetroProgress({
           {label || 'XP_PROGRESSION'}
         </span>
         <span className="text-[10px] font-mono font-bold">
-          {isIndeterminate ? 'SCANNING...' : `${current} / ${max}`}
+          {isIndeterminate ? 'SCANNING...' : `${Math.floor(current)} / ${max}`}
         </span>
       </div>
       <div className="flex gap-1 h-5 w-full bg-black/40 border-2 border-neon-green/20 p-1">
         {Array.from({ length: segments }).map((_, i) => (
           <motion.div
             key={i}
+            layout
             animate={isIndeterminate ? {
-              opacity: [0.1, 1, 0.1],
+              opacity: [0.1, 0.8, 0.1],
               backgroundColor: [
                 'rgba(255,255,255,0.05)',
                 targetColor,
@@ -50,10 +51,10 @@ export function RetroProgress({
               ]
             } : {}}
             transition={isIndeterminate ? {
-              duration: 1.2,
+              duration: 1.5,
               repeat: Infinity,
-              delay: (i / segments) * 1.5,
-              ease: "easeInOut"
+              delay: (i / segments) * 1,
+              ease: "linear"
             } : {}}
             className={cn(
               "flex-1 transition-all duration-300",

@@ -17,13 +17,14 @@ export function Retro3DPhone() {
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [12, -12]), {
-    stiffness: 80,
-    damping: 20
+  // Snappier tactile response for rotation
+  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [10, -10]), {
+    stiffness: 120,
+    damping: 30
   });
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-12, 12]), {
-    stiffness: 80,
-    damping: 20
+  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-10, 10]), {
+    stiffness: 120,
+    damping: 30
   });
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -46,7 +47,6 @@ export function Retro3DPhone() {
   }, [mouseX, mouseY]);
   return (
     <div className="relative w-full h-full min-h-[450px] md:min-h-[500px] flex items-center justify-center [perspective:1200px] bg-retro-black/40 overflow-hidden select-none">
-      {/* Background Matrix Effect */}
       <div className="absolute inset-0 pointer-events-none opacity-10 overflow-hidden">
         <div className="text-[7px] md:text-[8px] font-mono absolute top-4 left-4 whitespace-pre leading-none">
           {Array.from({ length: 25 }).map((_, i) => (
@@ -60,11 +60,9 @@ export function Retro3DPhone() {
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
         className="relative w-40 h-80 md:w-48 md:h-96 transition-all duration-300"
       >
-        {/* Phone Body - Front */}
-        <div className="absolute inset-0 bg-neutral-800 border-2 border-neon-green/30 rounded-[30px] md:rounded-[32px] p-1 shadow-[0_0_30px_rgba(0,255,65,0.1)]">
+        <div className="absolute inset-0 bg-neutral-800 border-2 border-neon-green/30 rounded-[30px] md:rounded-[32px] p-1 shadow-[0_0_30px_rgba(0,255,65,0.1)] translate-z-[5px]">
           <div className="w-full h-full bg-black rounded-[26px] md:rounded-[28px] overflow-hidden relative border border-neon-green/40">
-            {/* Screen Content */}
-            <div className="absolute inset-0 flex flex-col p-4 font-mono text-[6px] md:text-[7px] text-neon-green/60 animate-marquee-vertical select-none will-change-transform">
+            <div className="absolute inset-0 flex flex-col p-4 font-mono text-[6px] md:text-[7px] text-neon-green/60 animate-marquee-vertical select-none will-change-transform speed-[10s]">
               <div className="space-y-1">
                 {Array.from({ length: 50 }).map((_, i) => (
                   <div key={i} className="flex justify-between">
@@ -74,7 +72,6 @@ export function Retro3DPhone() {
                     </span>
                   </div>
                 ))}
-                {/* Seamless loop repeat */}
                 {Array.from({ length: 50 }).map((_, i) => (
                   <div key={`dup-${i}`} className="flex justify-between">
                     <span>[SYS] LOG_{i}</span>
@@ -85,12 +82,10 @@ export function Retro3DPhone() {
                 ))}
               </div>
             </div>
-            {/* Screen Overlays */}
             <div className="absolute inset-0 bg-gradient-to-t from-neon-green/10 via-transparent to-transparent pointer-events-none" />
             <div className="absolute top-4 left-1/2 -translate-x-1/2 w-10 md:w-12 h-1 bg-neutral-900 rounded-full" />
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full border border-neon-green/30 shadow-[inset_0_0_5px_rgba(0,255,65,0.15)]" />
           </div>
-          {/* Hotspots - Enhanced for Touch */}
           {hotspots.map((spot) => (
             <div
               key={spot.id}
@@ -103,7 +98,6 @@ export function Retro3DPhone() {
               <div className="size-4 md:size-5 bg-neon-green rounded-full animate-pulse shadow-[0_0_15px_rgba(0,255,65,0.8)] flex items-center justify-center border-2 border-white/20">
                  <div className="size-1.5 md:size-2 bg-white rounded-full" />
               </div>
-              {/* Tooltip with edge-clipping prevention */}
               <div className={cn(
                 "absolute left-8 top-0 bg-retro-black border-2 border-neon-green p-3 min-w-[140px] md:min-w-[160px] shadow-[6px_6px_0px_rgba(0,255,65,1)] z-[100] transition-all duration-200 origin-left",
                 activeHotspot?.id === spot.id ? "opacity-100 scale-100 translate-x-0" : "opacity-0 scale-90 -translate-x-2 pointer-events-none"
@@ -119,15 +113,13 @@ export function Retro3DPhone() {
             </div>
           ))}
         </div>
-        {/* 3D Side panels (z-depth simulation) */}
         <div className="absolute top-4 left-0 h-[calc(100%-32px)] w-3 md:w-4 bg-neutral-900 border-l border-r border-neon-green/10 [transform:rotateY(-90deg)_translateX(-50%)]" />
         <div className="absolute top-4 right-0 h-[calc(100%-32px)] w-3 md:w-4 bg-neutral-900 border-l border-r border-neon-green/10 [transform:rotateY(90deg)_translateX(50%)]" />
       </motion.div>
-      {/* Floating Meta Data UI */}
       <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end border-t border-neon-green/20 pt-2 font-mono text-[9px] md:text-[10px]">
         <div className="space-y-1">
           <div className="text-neon-pink font-bold retro-glow animate-pulse uppercase tracking-widest text-[8px] md:text-[10px]">
-            A1633_HARDWARE_HUD_V1.1
+            A1633_HARDWARE_HUD_V1.2
           </div>
           <div className="opacity-40 uppercase hidden sm:block">PERSPECTIVE_LOCK: ACTIVE</div>
           <div className="opacity-40 uppercase">SENS_X: {rotateX.get().toFixed(1)}°</div>

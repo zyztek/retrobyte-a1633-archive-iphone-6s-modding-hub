@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Cpu, Smartphone, Database, Zap, Target, Lock, Activity, Wifi, GraduationCap } from 'lucide-react';
@@ -18,6 +18,10 @@ export function HomePage() {
   const addLog = useUIStore(s => s.addLog);
   const setLoading = useUIStore(s => s.setLoading);
   const isVerbose = useUIStore(s => s.isVerbose);
+  useEffect(() => {
+    addLog("SYSTEM_BOOT: A1633 Archive initialized.");
+    addLog("INTEGRITY_CHECK: 0x41633_VERIFIED");
+  }, [addLog]);
   const handleBindTerminal = () => {
     addLog("HANDSHAKE_INITIATED: Contacting A9 BootROM...");
     toast.success("TERMINAL_LINKED: Secure handshake complete.", {
@@ -59,13 +63,13 @@ export function HomePage() {
             <div className="relative z-10 space-y-4">
               <h1 className="text-4xl md:text-5xl font-bold retro-glow tracking-tighter">RETROBYTE A1633</h1>
               <p className="text-lg md:text-xl text-neon-green/80">
-                Core mainframe for iPhone 6s modding and legacy preservation. [V1.1.0]
+                Core mainframe for iPhone 6s modding and legacy preservation. [V1.2.0]
               </p>
               <div
-                className="bg-black/40 p-2 md:p-4 border border-neon-green/10 inline-block w-full cursor-help hover:border-neon-pink group transition-colors"
+                className="bg-black/40 p-2 md:p-4 border border-neon-green/10 w-full cursor-help hover:border-neon-pink group transition-colors max-w-full overflow-x-auto scrollbar-none"
                 onClick={handleAsciiClick}
               >
-                <div className="flex justify-center relative">
+                <div className="flex justify-center relative min-w-[300px]">
                   {isVerbose && (
                     <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-neon-pink opacity-40 flex flex-col items-end">
                       <span>PULSE_SYNC_ACTIVE</span>
@@ -170,7 +174,7 @@ export function HomePage() {
                   <span className="text-[9px] opacity-50 uppercase font-bold">{xp} TOTAL_XP</span>
                 </div>
               </div>
-              <RetroProgress current={xp} max={2500} segments={10} className="mt-2" />
+              <RetroProgress current={xp} max={2500} segments={10} className="mt-2" variant="green" />
               <Link to="/academy" className="retro-button w-full text-center block text-[10px] py-1">
                 CONTINUE_LEARNING
               </Link>
@@ -207,7 +211,7 @@ export function HomePage() {
                     <Zap className="w-4 h-4" /> BIND_TERMINAL
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="left" className="bg-retro-black border border-neon-green text-neon-green uppercase text-[10px] rounded-none">
+                <TooltipContent side="left" className="bg-retro-black border border-neon-green text-neon-green uppercase text-[10px] rounded-none z-[100]">
                   Establish DO-Durable Handshake
                 </TooltipContent>
               </Tooltip>
@@ -221,7 +225,7 @@ export function HomePage() {
                     <Wifi className="w-4 h-4" /> NETWORK_ARSENAL
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent side="left" className="bg-retro-black border border-neon-pink text-neon-pink uppercase text-[10px] rounded-none">
+                <TooltipContent side="left" className="bg-retro-black border border-neon-pink text-neon-pink uppercase text-[10px] rounded-none z-[100]">
                   Access RF Scanning Tools
                 </TooltipContent>
               </Tooltip>
@@ -235,7 +239,7 @@ export function HomePage() {
                     <Database className="w-4 h-4" /> SYSTEM_DIAGS
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent side="left" className="bg-retro-black border border-yellow-400 text-yellow-400 uppercase text-[10px] rounded-none">
+                <TooltipContent side="left" className="bg-retro-black border border-yellow-400 text-yellow-400 uppercase text-[10px] rounded-none z-[100]">
                   Check NAND and Kernel Health
                 </TooltipContent>
               </Tooltip>
@@ -249,7 +253,7 @@ export function HomePage() {
                     <Smartphone className="w-4 h-4" /> SCAN_DEVICE
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent side="left" className="bg-retro-black border border-neon-pink text-neon-pink uppercase text-[10px] rounded-none">
+                <TooltipContent side="left" className="bg-retro-black border border-neon-pink text-neon-pink uppercase text-[10px] rounded-none z-[100]">
                   Identify Firmware Vulnerabilities
                 </TooltipContent>
               </Tooltip>
