@@ -1,7 +1,7 @@
 import React from "react";
-import { 
-  Terminal, Code, BookOpen, Package, Github, Settings, Layers, 
-  FlaskConical, LayoutGrid, Target, Cpu, Brain, Laptop 
+import {
+  Terminal, Code, BookOpen, Package, Github, Settings, Layers,
+  FlaskConical, LayoutGrid, Target, Cpu, Brain, Laptop, Camera, Activity
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,8 @@ export function AppSidebar(): JSX.Element {
   const labNav = [
     { title: "System Lab", icon: FlaskConical, path: "/system-lab" },
     { title: "TweakAI", icon: Brain, path: "/tweak-ai" },
+    { title: "Exploit Lab", icon: Activity, path: "/exploit-lab" },
+    { title: "HackCam", icon: Camera, path: "/hack-cam" },
     { title: "GodMode", icon: Target, path: "/godmode" },
   ];
   const renderItems = (items: typeof mainNav) => (
@@ -45,7 +47,8 @@ export function AppSidebar(): JSX.Element {
               isActive={isActive}
               className={cn(
                 "hover:bg-neon-green hover:text-retro-black rounded-none h-11 transition-colors border-2 border-transparent",
-                isActive && "border-neon-green text-neon-green bg-neon-green/10"
+                isActive && "border-neon-green text-neon-green bg-neon-green/10",
+                item.path === '/godmode' && "border-neon-pink text-neon-pink hover:bg-neon-pink"
               )}
             >
               <Link to={item.path} className="flex items-center gap-3 w-full">
@@ -62,10 +65,10 @@ export function AppSidebar(): JSX.Element {
     <Sidebar className="border-r-2 border-neon-green bg-retro-black">
       <SidebarHeader className="border-b-2 border-neon-green p-4">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 bg-neon-green flex items-center justify-center text-retro-black font-bold text-xl">A</div>
+          <div className="h-8 w-8 bg-neon-green flex items-center justify-center text-retro-black font-bold text-xl shadow-[0_0_10px_rgba(0,255,65,0.5)]">A</div>
           <div className="flex flex-col">
             <span className="text-xs font-bold leading-none tracking-tighter">RETROBYTE</span>
-            <span className="text-[10px] text-neon-pink font-bold">A1633_SYSTEM</span>
+            <span className="text-[10px] text-neon-pink font-bold uppercase tracking-widest">A1633_SYSTEM</span>
           </div>
         </div>
       </SidebarHeader>
