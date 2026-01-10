@@ -1,5 +1,5 @@
 import React from "react";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 interface RetroLayoutProps {
@@ -10,22 +10,25 @@ export function RetroLayout({ children }: RetroLayoutProps) {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="crt-overlay" />
-      <div className="relative min-h-screen w-full bg-retro-black flex font-mono">
+      <div className="relative min-h-screen w-full bg-retro-black flex font-mono overflow-hidden">
         <AppSidebar />
-        <SidebarInset className="bg-transparent flex flex-col min-h-screen">
-          <header className="h-12 border-b-2 border-neon-green flex items-center justify-between px-6 bg-retro-black/50 backdrop-blur-sm z-10">
-            <div className="flex items-center gap-4">
-              <span className="text-xs animate-pulse">● SYSTEM_STATUS: ONLINE</span>
-              <span className="hidden md:inline text-xs text-neon-green/60">TARGET_HW: iPhone_6s_A1633</span>
+        <SidebarInset className="bg-transparent flex flex-col min-h-screen relative overflow-hidden">
+          <header className="h-12 border-b-2 border-neon-green flex items-center justify-between px-4 md:px-6 bg-retro-black/80 backdrop-blur-sm z-50">
+            <div className="flex items-center gap-2 md:gap-4">
+              <SidebarTrigger className="text-neon-green hover:bg-neon-green hover:text-retro-black border border-neon-green/30 rounded-none transition-colors" />
+              <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+                <span className="text-[10px] md:text-xs animate-pulse">�� SYSTEM_STATUS: ONLINE</span>
+                <span className="hidden sm:inline text-[10px] md:text-xs text-neon-green/60">TARGET_HW: iPhone_6s_A1633</span>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               <ThemeToggle className="static" />
-              <div className="text-xs tabular-nums">
+              <div className="text-[10px] md:text-xs tabular-nums">
                 {new Date().toLocaleTimeString()}
               </div>
             </div>
           </header>
-          <main className="flex-1 overflow-auto relative">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden relative">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="py-8 md:py-10 lg:py-12">
                 {children}

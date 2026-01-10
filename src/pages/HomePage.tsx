@@ -19,13 +19,15 @@ export function HomePage() {
     <RetroLayout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <RetroCard title="SYSTEM_OVERVIEW" status="READY">
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold retro-glow">RETROBYTE A1633</h1>
-              <p className="text-xl text-neon-green/80">
+          <RetroCard title="SYSTEM_OVERVIEW" status="READY" className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-neon-green/5 animate-pulse pointer-events-none" />
+            <div className="relative z-10 space-y-4">
+              <h1 className="text-4xl md:text-5xl font-bold retro-glow tracking-tighter">RETROBYTE A1633</h1>
+              <p className="text-lg md:text-xl text-neon-green/80">
                 Core mainframe for iPhone 6s modding and legacy preservation.
               </p>
-              <pre className="text-[10px] leading-none text-neon-green/40 mt-4 overflow-hidden select-none">
+              <div className="bg-black/40 p-2 md:p-4 border border-neon-green/10 inline-block w-full">
+                <pre className="text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] leading-none text-neon-green/40 overflow-hidden select-none flex justify-center py-4">
 {`        .------------------------.
         | [ ................... ] |
         | [ ................... ] |
@@ -35,38 +37,43 @@ export function HomePage() {
         | [_____________________] |
         |           (_)           |
         '-------------------------'`}
-              </pre>
+                </pre>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                <div className="border border-neon-green/30 p-3 flex gap-3 items-center">
-                  <Cpu className="w-5 h-5" />
+                <div className="border border-neon-green/30 p-3 flex gap-3 items-center bg-retro-black/50">
+                  <Cpu className="w-5 h-5 text-neon-green" />
                   <div>
                     <div className="text-[10px] uppercase opacity-50">Processor</div>
-                    <div className="text-sm">Apple A9 (64-bit)</div>
+                    <div className="text-sm font-bold">Apple A9 (64-bit)</div>
                   </div>
                 </div>
-                <div className="border border-neon-green/30 p-3 flex gap-3 items-center">
-                  <Database className="w-5 h-5" />
+                <div className="border border-neon-green/30 p-3 flex gap-3 items-center bg-retro-black/50">
+                  <Database className="w-5 h-5 text-neon-green" />
                   <div>
                     <div className="text-[10px] uppercase opacity-50">Memory</div>
-                    <div className="text-sm">2GB LPDDR4</div>
+                    <div className="text-sm font-bold">2GB LPDDR4</div>
                   </div>
                 </div>
               </div>
             </div>
           </RetroCard>
-          <RetroCard title="ARCHIVE_LOG" className="font-mono text-sm">
+          <RetroCard title="ARCHIVE_LOG" className="font-mono text-xs md:text-sm">
             <div className="space-y-2">
               <div className="flex gap-2">
                 <span className="text-neon-pink">[08:22:11]</span>
                 <span>Initializing boot sequence...</span>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 text-neon-green/90">
                 <span className="text-neon-pink">[08:22:12]</span>
                 <span>Detected iPhone 6s (N71AP/N71mAP).</span>
               </div>
+              <div className="flex gap-2 text-neon-green/90">
+                <span className="text-neon-pink">[08:22:13]</span>
+                <span>Kernel version 21.6.0 (Darwin) confirmed.</span>
+              </div>
               <div className="flex gap-2 text-neon-pink">
                 <span className="animate-pulse">_</span>
-                <span>Awaiting user command...</span>
+                <span className="font-bold">Awaiting user command...</span>
               </div>
             </div>
           </RetroCard>
@@ -84,21 +91,21 @@ export function HomePage() {
               </div>
               <div className="flex justify-between border-b border-neon-green/20 pb-2">
                 <span className="opacity-70">METHOD</span>
-                <span>Paler1n / Checkra1n</span>
+                <span className="font-bold">Paler1n / Checkra1n</span>
               </div>
             </div>
           </RetroCard>
           <RetroCard title="QUICK_ACTIONS">
             <div className="space-y-3">
-              <button 
+              <button
                 onClick={handleBindTerminal}
                 className="retro-button w-full flex items-center justify-center gap-2"
               >
                 <Zap className="w-4 h-4" /> BIND_TERMINAL
               </button>
-              <Link 
+              <Link
                 to="/multiboot"
-                className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-neon-pink hover:bg-neon-pink hover:text-white"
+                className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-none hover:bg-neon-pink hover:text-white transition-all"
               >
                 <Smartphone className="w-4 h-4" /> SCAN_DEVICE
               </Link>
