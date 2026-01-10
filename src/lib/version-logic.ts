@@ -11,25 +11,25 @@ export const IOS_VERSION_MATRIX: VersionStats[] = [
     version: "15.0 - 15.4.1",
     jailbreak: 'EXPLOITED',
     trollStore: 'NATIVE',
-    multiboot: 'READY',
+    multiboot: 'READY (KALI_CHROOT)',
     riskScore: 2,
-    notes: "The Golden Era. CoreTrust bug is fully accessible without a jailbreak."
+    notes: "The Golden Era. CoreTrust bug is fully accessible. Partitioning is stable but still risks NAND wear."
   },
   {
     version: "15.5 - 15.7.9",
     jailbreak: 'EXPLOITED',
     trollStore: 'INDIRECT',
-    multiboot: 'READY',
+    multiboot: 'READY (KALI_CHROOT)',
     riskScore: 3,
-    notes: "Requires Palera1n to install TrollStore helper. Kernel is hardening."
+    notes: "Requires Palera1n for TrollStore. Kernel hardening is minimal; Linux bootstrap is functional."
   },
   {
     version: "15.8 - 15.8.3",
     jailbreak: 'EXPLOITED',
     trollStore: 'INDIRECT',
-    multiboot: 'EXPERIMENTAL',
-    riskScore: 4,
-    notes: "Latest A1633 firmware. Most secure, requires specific Palera1n CLI flags."
+    multiboot: 'EXPERIMENTAL (KALI_EXT)',
+    riskScore: 5,
+    notes: "Latest firmware. NAND wear warning: Rolling release cycles on iOS 15.8+ partitions show extreme cell fatigue."
   }
 ];
 export function getCapabilities(version: string): VersionStats | undefined {
