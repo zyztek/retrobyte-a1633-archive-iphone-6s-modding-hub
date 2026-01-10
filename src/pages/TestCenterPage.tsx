@@ -36,7 +36,7 @@ export function TestCenterPage() {
         setLogs(prev => [...prev, `> [${new Date().toLocaleTimeString()}] ${msg}`]);
         if (i === sequence.length - 1) {
           setIsRunning(false);
-          toast.success("INTEGRITY_VERIFIED", { 
+          toast.success("INTEGRITY_VERIFIED", {
             description: "All systems passed validation.",
             style: { background: '#0a0a0a', color: '#00ff41', border: '1px solid #00ff41' }
           });
@@ -95,10 +95,10 @@ export function TestCenterPage() {
             </div>
             <RetroCard title="CI_PIPELINE_STREAMS" status={isRunning ? "RUNNING" : "IDLE"}>
               <div className="bg-black/60 p-4 border border-neon-green/30 h-64 overflow-y-auto font-mono text-[10px] text-neon-green/80 space-y-1.5 scrollbar-thin">
-                <AnimatePresence>
+                <AnimatePresence mode="popLayout">
                   {logs.map((log, i) => (
                     <motion.div
-                      key={i}
+                      key={`${i}-${log.length}`}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       className="border-l border-neon-green/20 pl-2 break-all"
@@ -169,21 +169,21 @@ export function TestCenterPage() {
                     <span>Statements</span>
                     <span>{COVERAGE_DATA.statements}%</span>
                   </div>
-                  <RetroProgress current={COVERAGE_DATA.statements} max={100} segments={window.innerWidth < 768 ? 10 : 15} className="!space-y-0" variant="green" />
+                  <RetroProgress current={COVERAGE_DATA.statements} max={100} segments={15} className="!space-y-0" variant="green" />
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-[10px] font-bold uppercase">
                     <span>Branches</span>
                     <span>{COVERAGE_DATA.branches}%</span>
                   </div>
-                  <RetroProgress current={COVERAGE_DATA.branches} max={100} segments={window.innerWidth < 768 ? 10 : 15} className="!space-y-0" variant="yellow" />
+                  <RetroProgress current={COVERAGE_DATA.branches} max={100} segments={15} className="!space-y-0" variant="yellow" />
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-[10px] font-bold uppercase">
                     <span>Functions</span>
                     <span>{COVERAGE_DATA.functions}%</span>
                   </div>
-                  <RetroProgress current={COVERAGE_DATA.functions} max={100} segments={window.innerWidth < 768 ? 10 : 15} className="!space-y-0" variant="pink" />
+                  <RetroProgress current={COVERAGE_DATA.functions} max={100} segments={15} className="!space-y-0" variant="pink" />
                 </div>
               </div>
             </RetroCard>

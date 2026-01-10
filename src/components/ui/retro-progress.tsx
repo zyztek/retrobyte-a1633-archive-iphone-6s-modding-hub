@@ -19,7 +19,8 @@ export function RetroProgress({
   isIndeterminate = false,
   variant = 'green'
 }: RetroProgressProps) {
-  const percentage = Math.min(Math.max((current / max) * 100, 0), 100);
+  // Ensure percentage is between 0-100 and handle division by zero
+  const percentage = max > 0 ? Math.min(Math.max((current / max) * 100, 0), 100) : 0;
   const filledSegments = Math.floor((percentage / 100) * segments);
   const colors = {
     green: 'bg-[#00ff41] shadow-[0_0_10px_rgba(0,255,65,0.5)]',
@@ -33,11 +34,11 @@ export function RetroProgress({
         <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">
           {label || 'XP_PROGRESSION'}
         </span>
-        <span className="text-[10px] font-mono font-bold">
+        <span className="text-[10px] font-mono font-bold tabular-nums">
           {isIndeterminate ? 'SCANNING...' : `${Math.floor(current)} / ${max}`}
         </span>
       </div>
-      <div className="flex gap-1 h-5 w-full bg-black/40 border-2 border-neon-green/20 p-1">
+      <div className="flex gap-1 h-5 w-full bg-black/40 border-2 border-neon-green/20 p-1 relative overflow-hidden">
         {Array.from({ length: segments }).map((_, i) => (
           <motion.div
             key={i}
@@ -57,12 +58,14 @@ export function RetroProgress({
               ease: "linear"
             } : {}}
             className={cn(
-              "flex-1 transition-all duration-300",
+              "flex-1 transition-all duration-300 h-full",
               !isIndeterminate && (i < filledSegments ? colors[variant] : "bg-white/5"),
               isIndeterminate && "bg-white/5 shadow-none"
             )}
           />
         ))}
+        {/* Subtle scanline overlay just for the progress bar */}
+        <div className="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
       </div>
     </div>
   );
