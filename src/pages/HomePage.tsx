@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { Cpu, Smartphone, Database, Zap, Target, Lock, Activity } from 'lucide-react';
+import { Cpu, Smartphone, Database, Zap, Target, Lock, Activity, Wifi } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { SecretVault } from '@/components/SecretVault';
@@ -60,6 +60,7 @@ export function HomePage() {
               <div className="space-y-2 mt-4">
                 <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-neon-green/60">
                   <span>Integrity_Index</span>
+                  <span className="flex items-center gap-1"><Wifi className="size-2" /> SNIFFING</span>
                   <span>98.4%</span>
                 </div>
                 <div className="h-1 w-full bg-neon-green/10 border border-neon-green/20">
@@ -131,6 +132,12 @@ export function HomePage() {
               >
                 <Zap className="w-4 h-4" /> BIND_TERMINAL
               </button>
+              <Link
+                to="/network-arsenal"
+                className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none"
+              >
+                <Wifi className="w-4 h-4" /> NETWORK_ARSENAL
+              </Link>
               <Link
                 to="/system-lab"
                 className="retro-button w-full flex items-center justify-center gap-2 border-yellow-400 text-yellow-400 shadow-[4px_4px_0px_rgba(250,204,21,1)] hover:shadow-none"

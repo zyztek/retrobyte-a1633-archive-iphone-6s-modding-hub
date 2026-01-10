@@ -23,6 +23,7 @@ import { TweakAIPage } from '@/pages/TweakAIPage'
 import { SystemLabPage } from '@/pages/SystemLabPage'
 import { GodModePage } from '@/pages/GodModePage'
 import { ExploitLabPage } from '@/pages/ExploitLabPage'
+import { NetworkArsenalPage } from '@/pages/NetworkArsenalPage'
 import { HackCamPage } from '@/pages/HackCamPage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -84,6 +85,11 @@ const router = createBrowserRouter([
   {
     path: "/exploit-lab",
     element: <ExploitLabPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/network-arsenal",
+    element: <NetworkArsenalPage />,
     errorElement: <RouteErrorBoundary />,
   },
   {
