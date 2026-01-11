@@ -5,7 +5,7 @@ import { useScriptStore } from '@/store/script-store';
 import { generatePowerShellScript, ScriptOptions } from '@/lib/script-templates';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Copy, Check, Download } from 'lucide-react';
+import { Copy, Check, Download, Rocket, Terminal, Cloud } from 'lucide-react';
 import { toast } from 'sonner';
 export function ScriptGenPage() {
   const options = useScriptStore(s => s.options);
@@ -15,7 +15,7 @@ export function ScriptGenPage() {
   const handleCopy = () => {
     navigator.clipboard.writeText(scriptBody);
     setCopied(true);
-    toast.success("Script copied to clipboard!");
+    toast.success("CODE_COPIED_TO_CLIPBOARD");
     setTimeout(() => setCopied(false), 2000);
   };
   const handleDownload = () => {
@@ -23,12 +23,12 @@ export function ScriptGenPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'A1633_Mod_Setup.ps1';
+    a.download = 'A1633_Mainframe_Setup.ps1';
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Downloading .ps1 script...");
+    toast.success("DOWNLOADING_SETUP_SCRIPT");
   };
-  const labels: Record<keyof ScriptOptions, string> = {
+  const toolLabels: Partial<Record<keyof ScriptOptions, string>> = {
     installDrivers: "Install USBDK Drivers",
     installiTunes: "Install iTunes (WinGet)",
     downloadPaler1n: "Fetch Paler1n CLI",
@@ -36,51 +36,74 @@ export function ScriptGenPage() {
     fetchIPSW: "Download iOS 15.8.3 IPSW",
     backupDevice: "Initialize Backup Script"
   };
+  const deployLabels: Partial<Record<keyof ScriptOptions, string>> = {
+    genGitHubWorkflow: "Generate GH-Pages Workflow",
+    genDevContainer: "Create Codespace Container",
+    includeReadmeGuides: "Include README Tutorials",
+    setupCodespaceProxy: "Setup Cloud Proxy (socat)"
+  };
   return (
     <RetroLayout>
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h1 className="text-3xl font-bold retro-glow uppercase tracking-tighter">Script Forge</h1>
+          <div className="flex items-center gap-3">
+            <Rocket className="size-8 text-neon-pink" />
+            <h1 className="text-3xl font-bold retro-glow uppercase tracking-tighter">Script Forge</h1>
+          </div>
           <div className="flex gap-2">
             <button onClick={handleCopy} className="retro-button flex gap-2 items-center">
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               COPY_CODE
             </button>
-            <button onClick={handleDownload} className="retro-button flex gap-2 items-center border-neon-pink text-neon-pink">
+            <button onClick={handleDownload} className="retro-button flex gap-2 items-center border-neon-pink text-neon-pink shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none">
               <Download className="w-4 h-4" /> SAVE_.PS1
             </button>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-4">
-            <RetroCard title="CONFIGURATION">
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  {(Object.keys(options) as Array<keyof ScriptOptions>).map((key) => (
-                    <div key={key} className="flex items-center space-x-3 group cursor-pointer" onClick={() => toggleOption(key)}>
-                      <Checkbox 
-                        id={key} 
-                        checked={options[key]} 
-                        className="border-neon-green data-[state=checked]:bg-neon-green data-[state=checked]:text-retro-black"
-                      />
-                      <Label 
-                        htmlFor={key} 
-                        className="text-sm uppercase tracking-tight cursor-pointer group-hover:text-neon-pink transition-colors"
-                      >
-                        {labels[key]}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-                <div className="p-3 bg-neon-pink/10 border border-neon-pink/30 text-[10px] text-neon-pink leading-tight uppercase">
-                  Notice: Ensure you have administrative privileges on your Windows host before executing the generated script.
-                </div>
+          <div className="lg:col-span-4 space-y-6">
+            <RetroCard title="CORE_MOD_TOOLS">
+              <div className="space-y-4">
+                {(Object.keys(toolLabels) as Array<keyof ScriptOptions>).map((key) => (
+                  <div key={key} className="flex items-center space-x-3 group cursor-pointer" onClick={() => toggleOption(key)}>
+                    <Checkbox
+                      id={key}
+                      checked={options[key]}
+                      className="border-neon-green data-[state=checked]:bg-neon-green data-[state=checked]:text-retro-black"
+                    />
+                    <Label htmlFor={key} className="text-[10px] md:text-xs uppercase tracking-tight cursor-pointer group-hover:text-neon-pink transition-colors font-bold">
+                      {toolLabels[key]}
+                    </Label>
+                  </div>
+                ))}
               </div>
             </RetroCard>
+            <RetroCard title="DEPLOYMENT_EXTENSIONS" variant="danger">
+              <div className="space-y-4">
+                {(Object.keys(deployLabels) as Array<keyof ScriptOptions>).map((key) => (
+                  <div key={key} className="flex items-center space-x-3 group cursor-pointer" onClick={() => toggleOption(key)}>
+                    <Checkbox
+                      id={key}
+                      checked={options[key]}
+                      className="border-neon-pink data-[state=checked]:bg-neon-pink data-[state=checked]:text-white"
+                    />
+                    <Label htmlFor={key} className="text-[10px] md:text-xs uppercase tracking-tight cursor-pointer group-hover:text-white transition-colors font-bold text-neon-pink">
+                      {deployLabels[key]}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </RetroCard>
+            <div className="p-3 bg-neon-pink/10 border border-neon-pink/30 text-[9px] text-neon-pink leading-tight uppercase font-bold italic">
+              Notice: Ensure you have administrative privileges and GitHub CLI access for cloud orchestration features.
+            </div>
           </div>
           <div className="lg:col-span-8">
-            <RetroCard title="POWERSHELL_OUTPUT" className="h-full">
-              <div className="bg-black/50 p-4 border border-neon-green/30 font-mono text-xs overflow-x-auto h-[500px] scrollbar-thin">
+            <RetroCard title="POWERSHELL_OUTPUT" className="h-full" status="DYNAMIC_GEN">
+              <div className="bg-black/50 p-4 border border-neon-green/30 font-mono text-[10px] md:text-xs overflow-x-auto h-[600px] scrollbar-thin relative">
+                <div className="absolute top-2 right-4 flex items-center gap-2 text-[9px] text-neon-green/40">
+                  <Terminal className="size-3" /> UTF-8
+                </div>
                 <pre className="text-neon-green/90">
                   <code>{scriptBody}</code>
                 </pre>

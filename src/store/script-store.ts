@@ -12,6 +12,10 @@ const defaultOptions: ScriptOptions = {
   downloadCheckra1n: false,
   fetchIPSW: false,
   backupDevice: false,
+  genGitHubWorkflow: false,
+  genDevContainer: false,
+  includeReadmeGuides: false,
+  setupCodespaceProxy: false,
 };
 export const useScriptStore = create<ScriptState>((set) => ({
   options: defaultOptions,
