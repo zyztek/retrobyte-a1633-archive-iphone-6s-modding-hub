@@ -17,14 +17,14 @@ export function Retro3DPhone() {
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  // Snappier tactile response for rotation
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [10, -10]), {
-    stiffness: 120,
-    damping: 30
+  // Increased damping and stiffness for a more stable, premium feel
+  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [15, -15]), {
+    stiffness: 150,
+    damping: 40
   });
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-10, 10]), {
-    stiffness: 120,
-    damping: 30
+  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-15, 15]), {
+    stiffness: 150,
+    damping: 40
   });
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -39,18 +39,19 @@ export function Retro3DPhone() {
       mouseY.set(touch.clientY - innerHeight / 2);
     };
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [mouseX, mouseY]);
   return (
-    <div className="relative w-full h-full min-h-[450px] md:min-h-[500px] flex items-center justify-center [perspective:1200px] bg-retro-black/40 overflow-hidden select-none">
-      <div className="absolute inset-0 pointer-events-none opacity-10 overflow-hidden">
-        <div className="text-[7px] md:text-[8px] font-mono absolute top-4 left-4 whitespace-pre leading-none">
-          {Array.from({ length: 25 }).map((_, i) => (
-            <div key={i} className="mb-1">
+    <div className="relative w-full h-full min-h-[450px] md:min-h-[550px] flex items-center justify-center [perspective:2000px] bg-retro-black/40 overflow-hidden select-none">
+      {/* Background Code Stream */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05] overflow-hidden">
+        <div className="text-[7px] md:text-[8px] font-mono absolute top-4 left-4 whitespace-pre leading-tight">
+          {Array.from({ length: 30 }).map((_, i) => (
+            <div key={i} className="mb-0.5">
               0x{Math.random().toString(16).slice(2, 10).toUpperCase()} 0x00FF 0x{Math.random().toString(16).slice(2, 6).toUpperCase()} 0x1A2B
             </div>
           ))}
@@ -58,79 +59,80 @@ export function Retro3DPhone() {
       </div>
       <motion.div
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-        className="relative w-40 h-80 md:w-48 md:h-96 transition-all duration-300"
+        className="relative w-40 h-80 md:w-56 md:h-[420px] will-change-transform"
       >
-        <div className="absolute inset-0 bg-neutral-800 border-2 border-neon-green/30 rounded-[30px] md:rounded-[32px] p-1 shadow-[0_0_30px_rgba(0,255,65,0.1)] translate-z-[5px]">
-          <div className="w-full h-full bg-black rounded-[26px] md:rounded-[28px] overflow-hidden relative border border-neon-green/40">
-            <div className="absolute inset-0 flex flex-col p-4 font-mono text-[6px] md:text-[7px] text-neon-green/60 animate-marquee-vertical select-none will-change-transform speed-[10s]">
-              <div className="space-y-1">
-                {Array.from({ length: 50 }).map((_, i) => (
-                  <div key={i} className="flex justify-between">
-                    <span>[SYS] LOG_{i}</span>
-                    <span className={cn(Math.random() > 0.9 ? 'text-neon-pink font-bold' : 'text-neon-green/40')}>
-                      0x{Math.random().toString(16).slice(2, 8).toUpperCase()}
-                    </span>
-                  </div>
-                ))}
-                {Array.from({ length: 50 }).map((_, i) => (
-                  <div key={`dup-${i}`} className="flex justify-between">
-                    <span>[SYS] LOG_{i}</span>
-                    <span className={cn(Math.random() > 0.9 ? 'text-neon-pink font-bold' : 'text-neon-green/40')}>
+        {/* Phone Body with layered shadows for depth */}
+        <div className="absolute inset-0 bg-neutral-800 border-2 border-neon-green/30 rounded-[35px] p-1.5 shadow-[0_40px_100px_rgba(0,0,0,0.8),0_0_50px_rgba(0,255,65,0.05)] translate-z-[10px]">
+          <div className="w-full h-full bg-black rounded-[30px] overflow-hidden relative border border-neon-green/50">
+            {/* Inner Screen Scanline Effect */}
+            <div className="absolute inset-0 z-10 pointer-events-none opacity-20 bg-[repeating-linear-gradient(0deg,rgba(0,255,65,0.1),rgba(0,255,65,0.1)_1px,transparent_1px,transparent_2px)] bg-[length:100%_4px]" />
+            {/* Screen Logs */}
+            <div className="absolute inset-0 flex flex-col p-4 font-mono text-[6px] md:text-[8px] text-neon-green/40 animate-marquee-vertical select-none will-change-transform duration-[12s]">
+              <div className="space-y-1.5">
+                {Array.from({ length: 60 }).map((_, i) => (
+                  <div key={i} className="flex justify-between border-b border-neon-green/5">
+                    <span>[SYS] AUDIT_{i}</span>
+                    <span className={cn(Math.random() > 0.85 ? 'text-neon-pink font-bold' : 'text-neon-green/30')}>
                       0x{Math.random().toString(16).slice(2, 8).toUpperCase()}
                     </span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-neon-green/10 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 w-10 md:w-12 h-1 bg-neutral-900 rounded-full" />
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full border border-neon-green/30 shadow-[inset_0_0_5px_rgba(0,255,65,0.15)]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-neon-green/10 via-transparent to-transparent pointer-events-none z-20" />
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 w-12 h-1 bg-neutral-900 rounded-full z-30" />
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full border border-neon-green/40 shadow-[inset_0_0_10px_rgba(0,255,65,0.2)] z-30" />
           </div>
+          {/* Precision Hotspots with high z-index tooltips */}
           {hotspots.map((spot) => (
             <div
               key={spot.id}
-              className="absolute group z-50 flex items-center justify-center p-3 -translate-x-1/2 -translate-y-1/2 cursor-crosshair"
-              style={{ top: spot.top, left: spot.left }}
+              className="absolute group z-[100] flex items-center justify-center p-3 -translate-x-1/2 -translate-y-1/2 cursor-crosshair"
+              style={{ top: spot.top, left: spot.left, transform: 'translateZ(30px)' }}
               onMouseEnter={() => setActiveHotspot(spot)}
               onMouseLeave={() => setActiveHotspot(null)}
               onClick={() => setActiveHotspot(activeHotspot?.id === spot.id ? null : spot)}
             >
-              <div className="size-4 md:size-5 bg-neon-green rounded-full animate-pulse shadow-[0_0_15px_rgba(0,255,65,0.8)] flex items-center justify-center border-2 border-white/20">
-                 <div className="size-1.5 md:size-2 bg-white rounded-full" />
+              <div className="size-5 bg-neon-green rounded-full animate-pulse shadow-[0_0_20px_rgba(0,255,65,1)] flex items-center justify-center border-2 border-white/40">
+                 <div className="size-2 bg-white rounded-full" />
               </div>
               <div className={cn(
-                "absolute left-8 top-0 bg-retro-black border-2 border-neon-green p-3 min-w-[140px] md:min-w-[160px] shadow-[6px_6px_0px_rgba(0,255,65,1)] z-[100] transition-all duration-200 origin-left",
-                activeHotspot?.id === spot.id ? "opacity-100 scale-100 translate-x-0" : "opacity-0 scale-90 -translate-x-2 pointer-events-none"
+                "absolute left-10 top-0 bg-retro-black border-2 border-neon-green p-4 min-w-[160px] md:min-w-[200px] shadow-[8px_8px_0px_rgba(0,255,65,1)] z-[200] transition-all duration-300 origin-left",
+                activeHotspot?.id === spot.id ? "opacity-100 scale-100 translate-x-0" : "opacity-0 scale-90 -translate-x-4 pointer-events-none"
               )}>
-                <div className="text-[10px] md:text-[11px] font-bold text-neon-green uppercase border-b border-neon-green/30 mb-1 pb-1 flex justify-between">
+                <div className="text-[11px] md:text-xs font-black text-neon-green uppercase border-b-2 border-neon-green/30 mb-2 pb-1 flex justify-between items-center">
                   <span>{spot.name}</span>
-                  <span className="text-neon-pink animate-pulse">!</span>
+                  <span className="text-neon-pink animate-pulse">!_ACT</span>
                 </div>
-                <div className="text-[8px] md:text-[9px] text-neon-green/80 uppercase font-mono leading-tight tracking-tight">
+                <div className="text-[9px] md:text-[10px] text-neon-green font-bold font-mono leading-tight tracking-widest uppercase italic">
                   {spot.data}
                 </div>
               </div>
             </div>
           ))}
         </div>
-        <div className="absolute top-4 left-0 h-[calc(100%-32px)] w-3 md:w-4 bg-neutral-900 border-l border-r border-neon-green/10 [transform:rotateY(-90deg)_translateX(-50%)]" />
-        <div className="absolute top-4 right-0 h-[calc(100%-32px)] w-3 md:w-4 bg-neutral-900 border-l border-r border-neon-green/10 [transform:rotateY(90deg)_translateX(50%)]" />
+        {/* 3D Sides for depth simulation */}
+        <div className="absolute top-6 left-0 h-[calc(100%-48px)] w-4 bg-neutral-900 border-l border-r border-neon-green/20 [transform:rotateY(-90deg)_translateX(-50%)]" />
+        <div className="absolute top-6 right-0 h-[calc(100%-48px)] w-4 bg-neutral-900 border-l border-r border-neon-green/20 [transform:rotateY(90deg)_translateX(50%)]" />
       </motion.div>
-      <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end border-t border-neon-green/20 pt-2 font-mono text-[9px] md:text-[10px]">
+      {/* Floating Status UI */}
+      <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end border-t-2 border-neon-green/30 pt-4 font-mono text-[10px] md:text-xs">
         <div className="space-y-1">
-          <div className="text-neon-pink font-bold retro-glow animate-pulse uppercase tracking-widest text-[8px] md:text-[10px]">
+          <div className="text-neon-pink font-black retro-glow animate-pulse uppercase tracking-widest text-sm italic">
             A1633_HARDWARE_HUD_V1.2
           </div>
-          <div className="opacity-40 uppercase hidden sm:block">PERSPECTIVE_LOCK: ACTIVE</div>
-          <div className="opacity-40 uppercase">SENS_X: {rotateX.get().toFixed(1)}°</div>
+          <div className="opacity-40 uppercase tracking-tight font-bold">RECON_STATE: VERIFIED</div>
+          <div className="opacity-60 text-neon-green uppercase font-black text-[9px]">
+            ROT_X: {rotateX.get().toFixed(1)}° | ROT_Y: {rotateY.get().toFixed(1)}°
+          </div>
         </div>
         <div className="text-right">
           {activeHotspot ? (
-            <div className="animate-glitch text-neon-pink font-bold uppercase tracking-tighter">
+            <div className="animate-glitch text-neon-pink font-black uppercase tracking-tighter text-sm">
               TARGETING: {activeHotspot.id.toUpperCase()}...
             </div>
           ) : (
-            <div className="opacity-20 uppercase tracking-tighter italic">Awaiting_Neural_Sync...</div>
+            <div className="opacity-30 uppercase tracking-widest italic font-bold">Awaiting_Neural_Sync...</div>
           )}
         </div>
       </div>
