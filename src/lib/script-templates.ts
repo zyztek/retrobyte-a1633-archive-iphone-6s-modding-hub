@@ -5,13 +5,17 @@ export interface ScriptOptions {
   downloadCheckra1n: boolean;
   fetchIPSW: boolean;
   backupDevice: boolean;
+  genGitHubWorkflow: boolean;
+  genDevContainer: boolean;
+  includeReadmeGuides: boolean;
+  setupCodespaceProxy: boolean;
 }
 export function generatePowerShellScript(options: ScriptOptions): string {
   let script = `# RetroByte A1633 - Auto-Modding Setup Script
 # Run this in PowerShell as Administrator
-Write-Host "Initializing RetroByte A1633 Environment..." -ForegroundColor Green
+Write-Host "Initializing RetroByte A1633 Mainframe Environment..." -ForegroundColor Green
 $ErrorActionPreference = "Stop"
-# Ensure directories exist
+# Ensure root modding directory exists
 $modPath = "$HOME\\Desktop\\A1633_Modding"
 if (!(Test-Path $modPath)) {
     New-Item -ItemType Directory -Path $modPath
@@ -24,7 +28,6 @@ $backupPath = Join-Path $modPath "Backups"
 if (!(Test-Path $backupPath)) {
     New-Item -ItemType Directory -Path $backupPath
 }
-Write-Host "    [!] IMPORTANT: Please use iTunes or 'idevicebackup2' to secure your SHSH blobs and data." -ForegroundColor Yellow
 Write-Host "    [!] Manual backup target: $backupPath" -ForegroundColor Yellow
 \n`;
   }
@@ -44,18 +47,90 @@ Start-Process msiexec.exe -ArgumentList "/i UsbDk_Installer.msi /quiet" -Wait
 Invoke-WebRequest -Uri "https://github.com/palera1n/palera1n/releases/latest/download/palera1n-v2.0.0-beta.7-windows-x86_64.exe" -OutFile "paler1n.exe"
 \n`;
   }
-  if (options.downloadCheckra1n) {
-    script += `Write-Host "[+] Note: Checkra1n usually requires Linux/MacOS. Suggesting Rufus for bootable ISO..." -ForegroundColor Yellow
-Invoke-WebRequest -Uri "https://github.com/pbatard/rufus/releases/download/v4.4/rufus-4.4.exe" -OutFile "rufus.exe"
+  if (options.genGitHubWorkflow) {
+    script += `Write-Host "[+] Generating GitHub Pages Deployment Workflow..." -ForegroundColor Magenta
+$workflowDir = Join-Path $modPath ".github\\workflows"
+if (!(Test-Path $workflowDir)) { New-Item -ItemType Directory -Path $workflowDir -Force }
+$workflowYaml = @"
+name: Deploy Archive to GitHub Pages
+on:
+  push:
+    branches: ["main"]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+"@
+Set-Content -Path (Join-Path $workflowDir "deploy.yml") -Value $workflowYaml
 \n`;
   }
-  if (options.fetchIPSW) {
-    script += `Write-Host "[+] Fetching latest iOS 15.8.3 IPSW for iPhone 6s..." -ForegroundColor Cyan
-# URL for iPhone8,1 (6s) 15.8.3
-Invoke-WebRequest -Uri "https://secure-appldnld.apple.com/itunes000/052-52061-20240805-4B8C3E5A-5B8B-4B8C-9B8C-5B8B4B8C9B8C/iPhone8,1_15.8.3_19H386_Restore.ipsw" -OutFile "iPhone6s_15.8.3.ipsw"
+  if (options.genDevContainer) {
+    script += `Write-Host "[+] Generating Codespaces DevContainer Config..." -ForegroundColor Magenta
+$containerDir = Join-Path $modPath ".devcontainer"
+if (!(Test-Path $containerDir)) { New-Item -ItemType Directory -Path $containerDir -Force }
+$containerJson = @"
+{
+  "name": "A1633 Cloud Lab",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-vscode.cpptools", "ms-python.python"]
+    }
+  },
+  "forwardPorts": [27015, 3000],
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libimobiledevice-utils usbmuxd socat"
+}
+"@
+Set-Content -Path (Join-Path $containerDir "devcontainer.json") -Value $containerJson
 \n`;
   }
-  script += `Write-Host "Setup Complete. Files located in: $modPath" -ForegroundColor Green
+  if (options.includeReadmeGuides) {
+    script += `Write-Host "[+] Generating Enhanced README with Tutorial Links..." -ForegroundColor Magenta
+$readmeContent = @"
+# A1633 Modding Archive
+Mainframe generated via RetroByte A1633.
+## Embedded Tutorials
+- [Palera1n Official Guide](https://palera1n.cf)
+- [Video: How to Jailbreak iPhone 6s iOS 15.8.3](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+## Quick Start
+1. Connect A1633 in DFU mode.
+2. Run \`./paler1n.exe -v\`.
+"@
+Set-Content -Path (Join-Path $modPath "README.md") -Value $readmeContent
+\n`;
+  }
+  if (options.setupCodespaceProxy) {
+    script += `Write-Host "[+] Generating Cloud Proxy Bridge (socat)..." -ForegroundColor Magenta
+$proxyScript = @"
+# usbmuxd socat bridge for Codespaces
+# Forwarding local usbmuxd port 27015 to remote tunnel
+socat TCP-LISTEN:27015,fork UNIX-CONNECT:/var/run/usbmuxd
+"@
+Set-Content -Path (Join-Path $modPath "start_cloud_proxy.sh") -Value $proxyScript
+\n`;
+  }
+  script += `Write-Host "Mainframe Setup Complete. Assets located in: $modPath" -ForegroundColor Green
 Write-Host "Press any key to exit..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")`;
   return script;
