@@ -3,20 +3,30 @@ import { persist } from 'zustand/middleware';
 import { AcademyTier } from '@shared/academy-data';
 interface AcademyState {
   xp: number;
+  username: string;
   completedModules: string[];
   unlockedTiers: AcademyTier[];
+  isSyncing: boolean;
+  lastSync: string | null;
   addXp: (amount: number) => void;
+  setUsername: (name: string) => void;
   completeModule: (moduleId: string) => void;
   unlockTier: (tier: AcademyTier) => void;
+  setSyncing: (status: boolean) => void;
+  setLastSync: (time: string) => void;
   resetProgress: () => void;
 }
 export const useAcademyStore = create<AcademyState>()(
   persist(
     (set) => ({
       xp: 0,
+      username: 'OPERATOR_4163',
       completedModules: [],
       unlockedTiers: ['LAMER'],
+      isSyncing: false,
+      lastSync: null,
       addXp: (amount) => set((state) => ({ xp: state.xp + amount })),
+      setUsername: (name) => set({ username: name }),
       completeModule: (moduleId) =>
         set((state) => ({
           completedModules: state.completedModules.includes(moduleId)
@@ -29,10 +39,25 @@ export const useAcademyStore = create<AcademyState>()(
             ? state.unlockedTiers
             : [...state.unlockedTiers, tier],
         })),
-      resetProgress: () => set({ xp: 0, completedModules: [], unlockedTiers: ['LAMER'] }),
+      setSyncing: (status) => set({ isSyncing: status }),
+      setLastSync: (time) => set({ lastSync: time }),
+      resetProgress: () => set({ 
+        xp: 0, 
+        completedModules: [], 
+        unlockedTiers: ['LAMER'],
+        username: 'OPERATOR_4163',
+        lastSync: null
+      }),
     }),
     {
       name: 'a1633-academy-storage',
+      partialize: (state) => ({
+        xp: state.xp,
+        username: state.username,
+        completedModules: state.completedModules,
+        unlockedTiers: state.unlockedTiers,
+        lastSync: state.lastSync
+      })
     }
   )
 );
