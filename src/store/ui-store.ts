@@ -17,6 +17,7 @@ interface UIState {
   setLoading: (loading: boolean) => void;
   addLog: (message: string) => void;
   clearLogs: () => void;
+  resetUI: () => void;
 }
 export const useUIStore = create<UIState>()(
   persist(
@@ -41,11 +42,17 @@ export const useUIStore = create<UIState>()(
         };
       }),
       clearLogs: () => set({ actionLogs: [] }),
+      resetUI: () => set({
+        isSingularityMode: false,
+        actionLogs: [],
+        isPublic: false,
+        isLoading: false
+      }),
     }),
     {
       name: 'a1633-ui-storage',
-      partialize: (state) => ({ 
-        isVerbose: state.isVerbose, 
+      partialize: (state) => ({
+        isVerbose: state.isVerbose,
         isPublic: state.isPublic,
         isSingularityMode: state.isSingularityMode
       }),

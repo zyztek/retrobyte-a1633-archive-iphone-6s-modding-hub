@@ -4,7 +4,7 @@ import {
   Globe, Smartphone, Radio, Palette, Monitor, Laptop, Shield
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/utils";
+import { cn } from "@/lib/utils";
 import { useUIStore } from "@/store/ui-store";
 import {
   Sidebar,
@@ -24,6 +24,7 @@ export function AppSidebar(): JSX.Element {
   const location = useLocation();
   const isVerbose = useUIStore(s => s.isVerbose);
   const toggleVerbose = useUIStore(s => s.toggleVerbose);
+  const isSingularityMode = useUIStore(s => s.isSingularityMode);
   const mainNav = [
     { title: "Terminal", icon: Terminal, path: "/", tip: "Main system interface" },
     { title: "Script Forge", icon: Code, path: "/script-forge", tip: "Automation generator" },
@@ -60,17 +61,29 @@ export function AppSidebar(): JSX.Element {
                     isActive={isActive}
                     className={cn(
                       "rounded-none h-12 border-2 border-transparent transition-all",
-                      isActive && "border-neon-green text-neon-green bg-neon-green/10 shadow-[inset_0_0_10px_rgba(0,255,65,0.1)]",
+                      isActive && !isSingularityMode && "border-neon-green text-neon-green bg-neon-green/10 shadow-[inset_0_0_10px_rgba(0,255,65,0.1)]",
+                      isActive && isSingularityMode && "border-neon-pink text-neon-pink bg-neon-pink/10 shadow-[inset_0_0_10px_rgba(210,9,250,0.1)]",
                       item.title === 'GodMode' && "text-neon-pink hover:bg-neon-pink hover:text-white border-neon-pink/30"
                     )}
                   >
                     <Link to={item.path} className="flex items-center gap-3 w-full">
-                      <item.icon className={cn("size-4 shrink-0", isActive && "brand-glow")} />
-                      <span className="uppercase text-[11px] font-black tracking-[0.2em]">{item.title}</span>
+                      <item.icon className={cn(
+                        "size-4 shrink-0", 
+                        isActive && (isSingularityMode ? "pink-glow" : "brand-glow")
+                      )} />
+                      <span className={cn(
+                        "uppercase text-[11px] font-black tracking-[0.2em]",
+                        isActive && isSingularityMode && "pink-glow"
+                      )}>
+                        {item.title}
+                      </span>
                     </Link>
                   </SidebarMenuButton>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="bg-retro-black border-2 border-neon-green text-neon-green rounded-none text-[11px] uppercase font-black">
+                <TooltipContent side="right" className={cn(
+                  "bg-retro-black border-2 rounded-none text-[11px] uppercase font-black",
+                  isSingularityMode ? "border-neon-pink text-neon-pink" : "border-neon-green text-neon-green"
+                )}>
                   {item.tip}
                 </TooltipContent>
               </Tooltip>
@@ -81,25 +94,45 @@ export function AppSidebar(): JSX.Element {
     </SidebarMenu>
   );
   return (
-    <Sidebar className="border-r-2 border-neon-green bg-retro-black shadow-[10px_0_30px_rgba(0,255,65,0.05)]">
-      <SidebarHeader className="border-b-2 border-neon-green p-8 bg-retro-black flex justify-center items-center">
-        <BrandLogo size="lg" className="brand-glow" />
+    <Sidebar className={cn(
+      "border-r-2 bg-retro-black transition-colors duration-500",
+      isSingularityMode 
+        ? "border-neon-pink shadow-[10px_0_30px_rgba(210,9,250,0.05)]" 
+        : "border-neon-green shadow-[10px_0_30px_rgba(0,255,65,0.05)]"
+    )}>
+      <SidebarHeader className={cn(
+        "border-b-2 p-8 bg-retro-black flex justify-center items-center transition-colors duration-500",
+        isSingularityMode ? "border-neon-pink" : "border-neon-green"
+      )}>
+        <BrandLogo size="lg" className={isSingularityMode ? "pink-glow" : "brand-glow"} />
       </SidebarHeader>
       <SidebarContent className="p-4 space-y-6 bg-retro-black scrollbar-thin">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] uppercase font-black text-neon-green/60 mb-3 px-2 tracking-[0.3em]">Core_System</SidebarGroupLabel>
+          <SidebarGroupLabel className={cn(
+            "text-[10px] uppercase font-black mb-3 px-2 tracking-[0.3em] transition-colors",
+            isSingularityMode ? "text-neon-pink/60" : "text-neon-green/60"
+          )}>Core_System</SidebarGroupLabel>
           {renderItems(mainNav)}
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] uppercase font-black text-neon-pink/60 mb-3 px-2 tracking-[0.3em]">Software_Sector</SidebarGroupLabel>
+          <SidebarGroupLabel className={cn(
+            "text-[10px] uppercase font-black mb-3 px-2 tracking-[0.3em] transition-colors",
+            isSingularityMode ? "text-neon-pink" : "text-neon-pink/60"
+          )}>Software_Sector</SidebarGroupLabel>
           {renderItems(softwareNav)}
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] uppercase font-black text-yellow-400/60 mb-3 px-2 tracking-[0.3em]">Technical_Labs</SidebarGroupLabel>
+          <SidebarGroupLabel className={cn(
+            "text-[10px] uppercase font-black mb-3 px-2 tracking-[0.3em] transition-colors",
+            isSingularityMode ? "text-yellow-400" : "text-yellow-400/60"
+          )}>Technical_Labs</SidebarGroupLabel>
           {renderItems(labNav)}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t-2 border-neon-green p-8 bg-retro-black space-y-6">
+      <SidebarFooter className={cn(
+        "border-t-2 p-8 bg-retro-black space-y-6 transition-colors duration-500",
+        isSingularityMode ? "border-neon-pink" : "border-neon-green"
+      )}>
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-2">
             <Monitor className={cn("size-4", isVerbose ? "text-neon-pink animate-pulse" : "text-white/20")} />
@@ -111,9 +144,14 @@ export function AppSidebar(): JSX.Element {
             className="data-[state=checked]:bg-neon-pink border-2 border-transparent rounded-none"
           />
         </div>
-        <div className="text-[9px] text-center text-neon-green/40 font-black uppercase tracking-[0.4em] leading-relaxed">
+        <div className={cn(
+          "text-[9px] text-center font-black uppercase tracking-[0.4em] leading-relaxed transition-colors",
+          isSingularityMode ? "text-neon-pink/60" : "text-neon-green/40"
+        )}>
           (C) 2024 SOLUCIONES 646<br/>
-          <span className="text-neon-pink/40">SINGULARITY_V30.0</span>
+          <span className={isSingularityMode ? "text-neon-pink font-black" : "text-neon-pink/40"}>
+            {isSingularityMode ? "SINGULARITY_V4.4_FINAL" : "SINGULARITY_V30.0"}
+          </span>
         </div>
       </SidebarFooter>
     </Sidebar>
