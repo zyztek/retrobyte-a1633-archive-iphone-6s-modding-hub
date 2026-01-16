@@ -4,118 +4,164 @@ import { RetroCard } from '@/components/ui/retro-card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Smartphone, Zap, ShieldCheck, Rocket, Download, Terminal, Package, Info } from 'lucide-react';
+import { Smartphone, Zap, ShieldCheck, Rocket, Download, Terminal, Package, Info, Layers, Maximize } from 'lucide-react';
 import { RetroProgress } from '@/components/ui/retro-progress';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 export function IslandFakeoutPage() {
   const [islandOpen, setIslandOpen] = useState(false);
   const [gestures, setGestures] = useState(true);
   const [isSigning, setIsSigning] = useState(false);
+  const [notchStyle, setNotchStyle] = useState<'island' | 'notch' | 'classic'>('island');
+  const [retinaOverride, setRetinaOverride] = useState(false);
   const startTurboSign = () => {
     setIsSigning(true);
-    toast.info("TROLL_TURBO_INITIATED: Bypassing CoreTrust...");
+    toast.info("TROLL_TURBO_BATCH_SIGN: Initializing Singularity...");
     setTimeout(() => {
       setIsSigning(false);
       setIslandOpen(true);
-      toast.success("IPA_PERMA_SIGNED", { description: "Certificate injected via TrollStore helper." });
-      setTimeout(() => setIslandOpen(false), 4000);
-    }, 3000);
+      toast.success("BATCH_IPA_SIGNED", { description: "3 items permanently signed for A1633." });
+      setTimeout(() => setIslandOpen(false), 3000);
+    }, 2500);
   };
   return (
     <RetroLayout>
       <div className="space-y-12">
-        <div className="relative flex justify-center pt-8">
-          <AnimatePresence>
+        {/* Dynamic Island Preview Area */}
+        <div className="relative flex justify-center pt-8 h-24">
+          <AnimatePresence mode="wait">
             <motion.div
               layout
               initial={{ width: 120, height: 30 }}
-              animate={{ 
-                width: islandOpen ? 300 : 120, 
-                height: islandOpen ? 80 : 30 
+              animate={{
+                width: islandOpen ? 280 : (notchStyle === 'classic' ? 0 : 120),
+                height: islandOpen ? 60 : (notchStyle === 'classic' ? 0 : 30),
+                borderRadius: notchStyle === 'notch' ? '0 0 15px 15px' : '30px'
               }}
-              className="bg-black rounded-[30px] border-2 border-white/20 flex items-center justify-center overflow-hidden z-50 shadow-xl"
+              className={cn(
+                "bg-black border-2 border-white/20 flex items-center justify-center overflow-hidden z-50 transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.5)]",
+                notchStyle === 'classic' && "opacity-0"
+              )}
             >
-              {!islandOpen ? (
-                <div className="size-2 bg-white/20 rounded-full" />
-              ) : (
+              {islandOpen ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4 px-6 text-white w-full">
-                  <div className="size-10 bg-neon-pink flex items-center justify-center rounded-xl">
-                    <Rocket className="size-6 text-white" />
+                  <div className="size-8 bg-neon-pink flex items-center justify-center rounded-lg">
+                    <Rocket className="size-4 text-white" />
                   </div>
-                  <div>
-                    <div className="text-[10px] font-black uppercase">Troll_Turbo</div>
-                    <div className="text-[9px] opacity-70">PAYLOAD_SUCCESS_N71AP</div>
+                  <div className="flex-1">
+                    <div className="text-[9px] font-black uppercase leading-none">Troll_Turbo_v2</div>
+                    <div className="text-[8px] opacity-70 uppercase">Batch_Injection_Link</div>
                   </div>
-                  <div className="ml-auto text-neon-green font-mono text-[10px] animate-pulse">LIVE</div>
+                  <div className="text-neon-green font-mono text-[9px] animate-pulse">ACTIVE</div>
                 </motion.div>
+              ) : (
+                <div className="flex gap-2">
+                  <div className="size-2 bg-white/20 rounded-full" />
+                  {notchStyle === 'island' && <div className="w-8 h-1 bg-white/10 rounded-full" />}
+                </div>
               )}
             </motion.div>
           </AnimatePresence>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4 space-y-6">
-            <RetroCard title="UI_MODERNIZATION" variant="default">
+            <RetroCard title="GEOMETRY_LAB" variant="default">
               <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-bold uppercase">iPhone 15 Gestures</Label>
-                  <Switch checked={gestures} onCheckedChange={setGestures} />
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase opacity-60">Notch_Architecture</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['island', 'notch', 'classic'].map(style => (
+                      <button
+                        key={style}
+                        onClick={() => setNotchStyle(style as any)}
+                        className={cn(
+                          "py-2 border-2 text-[9px] font-bold uppercase transition-all",
+                          notchStyle === style ? "bg-neon-green text-black border-neon-green" : "border-neon-green/20 text-neon-green/40 hover:border-neon-green/50"
+                        )}
+                      >
+                        {style}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-bold uppercase">Dynamic Island Mock</Label>
-                  <Switch checked={islandOpen} onCheckedChange={setIslandOpen} />
+                  <Label className="text-xs font-bold uppercase">Gestures_15</Label>
+                  <Switch checked={gestures} onCheckedChange={setGestures} className="data-[state=checked]:bg-neon-green" />
                 </div>
-                <div className="p-3 bg-neon-green/5 border border-neon-green/20 text-[10px] uppercase italic">
-                  Note: These are UI-only simulations for the A1633 framebuffer. Permanent injection requires Neptune or Little12.
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-bold uppercase">Pixel_Density_OVR</Label>
+                  <Switch checked={retinaOverride} onCheckedChange={setRetinaOverride} className="data-[state=checked]:bg-neon-green" />
                 </div>
               </div>
             </RetroCard>
-            <RetroCard title="TROLL_TURBO" variant="danger">
+            <RetroCard title="TROLL_BATCH_SIGN" variant="danger">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Package className="size-8 text-neon-pink" />
-                  <div className="text-xs font-bold uppercase">IPA Perma-Signer</div>
+                  <Layers className="size-8 text-neon-pink" />
+                  <div className="text-xs font-bold uppercase leading-tight">Batch_Sign_Sector</div>
                 </div>
-                <p className="text-[10px] opacity-70 leading-tight">Fastest certificate bypass for iOS 15.8.3. Uses CoreTrust Singularity.</p>
-                <button 
-                  onClick={startTurboSign}
-                  disabled={isSigning}
-                  className="retro-button w-full border-neon-pink text-neon-pink"
-                >
-                  {isSigning ? "TURBO_SIGNING..." : "INITIALIZE_TURBO"}
+                <div className="space-y-1">
+                  {['Instagram_NoAds.ipa', 'YouTube_Enhancer.ipa', 'MTerminal_P7.ipa'].map(app => (
+                    <div key={app} className="text-[9px] font-mono p-1 border border-neon-pink/20 bg-neon-pink/5 flex justify-between">
+                      <span className="text-neon-pink truncate">{app}</span>
+                      <ShieldCheck className="size-3 text-neon-pink" />
+                    </div>
+                  ))}
+                </div>
+                <button onClick={startTurboSign} disabled={isSigning} className="retro-button w-full border-neon-pink text-neon-pink">
+                  {isSigning ? "BATCH_SIGNING..." : "INITIALIZE_SINGULARITY"}
                 </button>
               </div>
             </RetroCard>
           </div>
           <div className="lg:col-span-8 space-y-8">
-            <RetroCard title="VISUAL_SIMULATOR" status="A1633_OVERRIDE">
-              <div className="aspect-[9/16] max-w-[320px] mx-auto border-8 border-neutral-900 rounded-[40px] bg-black relative overflow-hidden p-4">
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-20 border border-white/10" />
-                <div className="h-full w-full bg-gradient-to-b from-neutral-900 to-black rounded-[30px] flex flex-col p-6 space-y-4">
-                  <div className="h-32 w-full bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
-                    <Smartphone className="size-12 text-white/20" />
+            <RetroCard title="FRAMEBUFFER_SIMULATOR" status="N71AP_EMU">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-12 py-6">
+                <div className="relative aspect-[9/16] w-[260px] border-8 border-neutral-900 rounded-[40px] bg-black overflow-hidden shadow-[0_0_50px_rgba(0,255,65,0.1)]">
+                  <div className="absolute inset-0 bg-gradient-to-b from-neutral-800 to-black p-4">
+                    {/* Simulated OS Interface */}
+                    <div className="h-full flex flex-col gap-4">
+                      <div className="h-20 w-full bg-white/5 rounded-2xl flex items-center justify-center">
+                        <Smartphone className="size-8 text-white/10" />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {Array.from({ length: 16 }).map((_, i) => (
+                          <div key={i} className="aspect-square bg-white/5 rounded-lg" />
+                        ))}
+                      </div>
+                      <div className="flex-1 flex items-end justify-center pb-2">
+                        <div className="w-20 h-1 bg-white/20 rounded-full" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="h-2 w-3/4 bg-white/10 rounded" />
-                    <div className="h-2 w-1/2 bg-white/10 rounded" />
+                  {/* Notch Layer */}
+                  {notchStyle !== 'classic' && (
+                    <div 
+                      className={cn(
+                        "absolute top-0 left-1/2 -translate-x-1/2 bg-black z-30",
+                        notchStyle === 'island' ? "top-2 w-24 h-6 rounded-full border border-white/5" : "w-32 h-6 rounded-b-2xl border-x border-b border-white/5"
+                      )}
+                    />
+                  )}
+                  {retinaOverride && <div className="absolute inset-0 z-40 bg-neon-green/5 pointer-events-none mix-blend-overlay" />}
+                </div>
+                <div className="flex-1 space-y-6">
+                  <div className="p-4 border border-neon-green/30 bg-black/40 space-y-4">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase text-neon-green">
+                      <Maximize className="size-4" /> Rendering_Intel
+                    </div>
+                    <div className="space-y-2 font-mono text-[10px]">
+                      <div className="flex justify-between"><span>Density:</span> <span className={retinaOverride ? "text-neon-pink" : "text-neon-green"}>{retinaOverride ? '458_PPI' : '326_PPI'}</span></div>
+                      <div className="flex justify-between"><span>Frame_Lock:</span> <span className="text-neon-green">60_FPS</span></div>
+                      <div className="flex justify-between"><span>Geometry:</span> <span className="text-neon-green uppercase">{notchStyle}</span></div>
+                    </div>
                   </div>
-                  <div className="flex-1 flex items-end justify-center pb-4">
-                    <div className="h-1 w-24 bg-white/40 rounded-full" />
+                  <div className="p-4 border-2 border-neon-pink/20 bg-neon-pink/5 text-[9px] uppercase font-bold italic text-neon-pink leading-relaxed">
+                    "Injecting custom UI headers into the SpringBoard process allows the A9 hardware to simulate modern interface anchors without full OS replacement."
                   </div>
                 </div>
               </div>
             </RetroCard>
-            {isSigning && (
-              <RetroCard title="SIGNING_MANIFEST" status="BUSY">
-                <div className="space-y-4">
-                  <RetroProgress current={50} max={100} isIndeterminate />
-                  <div className="font-mono text-[9px] text-neon-pink space-y-1">
-                    <div>{">"} EXTRACTING_IPA_HEADER...</div>
-                    <div>{">"} INJECTING_CORETRUST_FAKE_CERT...</div>
-                    <div>{">"} SYNCING_LDID_ENTITLEMENTS...</div>
-                  </div>
-                </div>
-              </RetroCard>
-            )}
           </div>
         </div>
       </div>
