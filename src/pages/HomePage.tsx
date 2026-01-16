@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { Cpu, Smartphone, Database, Zap, Target, Activity, Wifi, GraduationCap, Share2, Rocket, Brain, ShieldCheck, HardDrive, Lock } from 'lucide-react';
+import { Cpu, Smartphone, Database, Zap, Target, Activity, Wifi, GraduationCap, Share2, Rocket, Brain, ShieldCheck, HardDrive, Lock, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { SecretVault } from '@/components/SecretVault';
@@ -10,10 +10,12 @@ import { useAcademyStore, getRankByXp } from '@/store/academy-store';
 import { useUIStore } from '@/store/ui-store';
 import { RetroProgress } from '@/components/ui/retro-progress';
 import { cn } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
+import { A9_HARDWARE_SPECS } from '@shared/extended-data';
 export function HomePage() {
   const [vaultOpen, setVaultOpen] = useState(false);
+  const [specsOpen, setSpecsOpen] = useState(false);
   const [asciiClicks, setAsciiClicks] = useState(0);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const addLog = useUIStore(s => s.addLog);
@@ -84,12 +86,17 @@ export function HomePage() {
         )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <RetroCard title="SYSTEM_OVERVIEW" status="READY">
+            <RetroCard 
+              title="SYSTEM_OVERVIEW" 
+              status="READY" 
+              onClick={() => setSpecsOpen(true)}
+              className="cursor-pointer hover:border-neon-pink transition-colors"
+            >
               <div className="space-y-6">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
                     <h1 className="text-5xl font-bold retro-glow tracking-tighter uppercase leading-none">RetroByte A1633</h1>
-                    <p className="text-xs text-neon-green/60 uppercase font-black tracking-widest mt-2">Apocalypse Suite :: v30.0_SINGULARITY</p>
+                    <p className="text-xs text-neon-green/60 uppercase font-black tracking-widest mt-2">Apocalypse Suite :: v35.0_SINGULARITY</p>
                   </div>
                   <div className="flex gap-2">
                     <div className="size-10 bg-neon-green/10 border-2 border-neon-green flex items-center justify-center"><Smartphone className="size-6" /></div>
@@ -97,8 +104,8 @@ export function HomePage() {
                   </div>
                 </div>
                 <div
-                  className="bg-black/40 p-6 border border-neon-green/20 cursor-pointer group hover:border-neon-pink"
-                  onClick={handleAsciiClick}
+                  className="bg-black/40 p-6 border border-neon-green/20 group hover:border-neon-pink"
+                  onClick={(e) => { e.stopPropagation(); handleAsciiClick(); }}
                 >
                   <pre className="text-[7px] md:text-[10px] leading-none text-neon-green/40 group-hover:text-neon-pink flex justify-center transition-all group-hover:animate-glitch">
 {`        .------------------------.
@@ -157,7 +164,7 @@ export function HomePage() {
                     <div className="text-[10px] opacity-50 uppercase font-black mt-1">OPERATOR_ID: #4163</div>
                   </div>
                 </div>
-                <RetroProgress current={xp} max={2500} label="SYNAPTIC_DEPTH" variant={xp >= 1500 ? 'pink' : 'green'} />
+                <RetroProgress current={xp} max={2500} label="SYNAPTIC_DEPTH" variant={xp >= 2000 ? 'pink' : 'green'} />
                 <Link to="/academy" className="retro-button block text-center text-[10px]">OPEN_DOSSIER</Link>
               </div>
             </RetroCard>
@@ -172,6 +179,42 @@ export function HomePage() {
         </div>
       </div>
       <SecretVault isOpen={vaultOpen} onClose={() => setVaultOpen(false)} />
+      <Dialog open={specsOpen} onOpenChange={setSpecsOpen}>
+        <DialogContent className="bg-retro-black border-4 border-neon-green text-neon-green max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black italic uppercase flex items-center gap-3">
+              <Info className="size-6 text-neon-green brand-glow" /> HARDWARE_SPEC_SHEET
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-xs font-black uppercase border-b border-neon-green/30 pb-1 text-neon-pink">Chipset_Matrix</h3>
+                <div className="space-y-2 text-[10px] font-mono">
+                  <div className="flex justify-between"><span>MODEL:</span> <span>{A9_HARDWARE_SPECS.model}</span></div>
+                  <div className="flex justify-between"><span>CODENAME:</span> <span>{A9_HARDWARE_SPECS.codename}</span></div>
+                  <div className="flex justify-between"><span>ARCH:</span> <span>{A9_HARDWARE_SPECS.chipset.architecture}</span></div>
+                  <div className="flex justify-between"><span>CLOCK:</span> <span>{A9_HARDWARE_SPECS.chipset.clock}</span></div>
+                  <div className="flex justify-between"><span>PROCESS:</span> <span>{A9_HARDWARE_SPECS.chipset.process}</span></div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h3 className="text-xs font-black uppercase border-b border-neon-green/30 pb-1 text-neon-pink">Visual_Engine</h3>
+                <div className="space-y-2 text-[10px] font-mono">
+                  <div className="flex justify-between"><span>GPU:</span> <span>{A9_HARDWARE_SPECS.graphics.gpu}</span></div>
+                  <div className="flex justify-between"><span>CORES:</span> <span>{A9_HARDWARE_SPECS.graphics.cores}</span></div>
+                  <div className="flex justify-between"><span>DISPLAY:</span> <span>{A9_HARDWARE_SPECS.display.type}</span></div>
+                  <div className="flex justify-between"><span>PPI:</span> <span>{A9_HARDWARE_SPECS.display.resolution}</span></div>
+                </div>
+              </div>
+            </div>
+            <div className="p-4 border border-neon-green/20 bg-neon-green/5 text-[9px] uppercase font-bold italic leading-tight">
+              Notice: All parameters verified via N71AP hardware handshake. The Samsung/TSMC variance in the 14nm FinFET process leads to a +/- 5% thermal deviation during high-burst Twister operations.
+            </div>
+            <button onClick={() => setSpecsOpen(false)} className="retro-button w-full">CLOSE_DATA_STREAM</button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </RetroLayout>
   );
 }

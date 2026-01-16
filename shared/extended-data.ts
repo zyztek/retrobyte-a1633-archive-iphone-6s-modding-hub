@@ -30,6 +30,88 @@ export interface QuizQuestion {
     impact: Record<string, number>;
   }[];
 }
+export const A9_HARDWARE_SPECS = {
+  model: "iPhone 6s (A1633)",
+  codename: "N71AP",
+  chipset: {
+    name: "Apple A9",
+    architecture: "64-bit Twister (Dual-Core)",
+    clock: "1.85 GHz",
+    process: "14nm FinFET (Samsung / TSMC)",
+    l3_cache: "4MB"
+  },
+  graphics: {
+    gpu: "PowerVR GT7600",
+    cores: 6,
+    api_support: "Metal 2.0 / OpenGL ES 3.0"
+  },
+  memory: {
+    capacity: "2GB",
+    type: "LPDDR4",
+    bandwidth: "25.6 GB/s"
+  },
+  display: {
+    type: "Retina HD with 3D Touch",
+    resolution: "1334-by-750 pixels (326 ppi)",
+    contrast: "1400:1"
+  }
+};
+export const SCRIPT_PRESETS = [
+  {
+    id: "minimal",
+    name: "MINIMAL_JB",
+    description: "Essential drivers and Paler1n CLI. Lowest risk profile.",
+    complexity: "LOW",
+    options: {
+      installDrivers: true,
+      installiTunes: true,
+      downloadPaler1n: true,
+      downloadCheckra1n: false,
+      fetchIPSW: false,
+      backupDevice: true,
+      genGitHubWorkflow: false,
+      genDevContainer: false,
+      includeReadmeGuides: true,
+      setupCodespaceProxy: false,
+    }
+  },
+  {
+    id: "dev",
+    name: "DEV_STATION",
+    description: "Cloud proxy orchestration and virtualization headers.",
+    complexity: "MEDIUM",
+    options: {
+      installDrivers: true,
+      installiTunes: true,
+      downloadPaler1n: true,
+      downloadCheckra1n: true,
+      fetchIPSW: true,
+      backupDevice: true,
+      genGitHubWorkflow: false,
+      genDevContainer: true,
+      includeReadmeGuides: true,
+      setupCodespaceProxy: true,
+    }
+  },
+  {
+    id: "apocalypse",
+    name: "APOCALYPSE_SUITE",
+    description: "Full lockdown suite with automated GitHub deployment.",
+    complexity: "MAXIMUM",
+    options: {
+      installDrivers: true,
+      installiTunes: true,
+      downloadPaler1n: true,
+      downloadCheckra1n: true,
+      fetchIPSW: true,
+      backupDevice: true,
+      genGitHubWorkflow: true,
+      genDevContainer: true,
+      includeReadmeGuides: true,
+      setupCodespaceProxy: true,
+    }
+  }
+];
 export const SINGULARITY_LOGIC: Record<string, string[]> = {
   gaming: [
     "A9_TWISTER_BURST: ENABLED",
