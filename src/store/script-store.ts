@@ -3,6 +3,7 @@ import { ScriptOptions } from '@/lib/script-templates';
 interface ScriptState {
   options: ScriptOptions;
   toggleOption: (key: keyof ScriptOptions) => void;
+  setOptions: (newOptions: ScriptOptions) => void;
   resetOptions: () => void;
 }
 const defaultOptions: ScriptOptions = {
@@ -25,5 +26,6 @@ export const useScriptStore = create<ScriptState>((set) => ({
       [key]: !state.options[key]
     }
   })),
+  setOptions: (newOptions) => set({ options: newOptions }),
   resetOptions: () => set({ options: defaultOptions }),
 }));

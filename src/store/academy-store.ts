@@ -16,11 +16,12 @@ interface AcademyState {
   setLastSync: (time: string) => void;
   resetProgress: () => void;
 }
+const generateOperatorId = () => `OPERATOR_${Math.floor(Math.random() * 9000 + 1000)}`;
 export const useAcademyStore = create<AcademyState>()(
   persist(
     (set) => ({
       xp: 0,
-      username: 'OPERATOR_4163',
+      username: generateOperatorId(),
       completedModules: [],
       unlockedTiers: ['LAMER'],
       isSyncing: false,
@@ -41,11 +42,11 @@ export const useAcademyStore = create<AcademyState>()(
         })),
       setSyncing: (status) => set({ isSyncing: status }),
       setLastSync: (time) => set({ lastSync: time }),
-      resetProgress: () => set({ 
-        xp: 0, 
-        completedModules: [], 
+      resetProgress: () => set({
+        xp: 0,
+        completedModules: [],
         unlockedTiers: ['LAMER'],
-        username: 'OPERATOR_4163',
+        username: generateOperatorId(),
         lastSync: null
       }),
     }),

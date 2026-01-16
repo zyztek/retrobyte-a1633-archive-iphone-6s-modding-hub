@@ -5,13 +5,14 @@ import { useScriptStore } from '@/store/script-store';
 import { generatePowerShellScript, ScriptOptions } from '@/lib/script-templates';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Copy, Check, Download, Rocket, Terminal, Layers, ShieldAlert, Zap } from 'lucide-react';
+import { Copy, Check, Download, Rocket, Terminal } from 'lucide-react';
 import { toast } from 'sonner';
 import { SCRIPT_PRESETS } from '@shared/extended-data';
 import { cn } from '@/lib/utils';
 export function ScriptGenPage() {
   const options = useScriptStore(s => s.options);
   const toggleOption = useScriptStore(s => s.toggleOption);
+  const setOptions = useScriptStore(s => s.setOptions);
   const [copied, setCopied] = useState(false);
   const scriptBody = generatePowerShellScript(options);
   const handleCopy = () => {
@@ -31,14 +32,7 @@ export function ScriptGenPage() {
     toast.success("DOWNLOADING_SETUP_SCRIPT");
   };
   const handleLoadPreset = (presetOptions: ScriptOptions) => {
-    // We update the store manually since useScriptStore doesn't have a setAllOptions action
-    // In a real app, you'd add this action to the store.
-    // Here we'll toggle based on diff or provide a full state update if available.
-    Object.keys(presetOptions).forEach(key => {
-      if (options[key as keyof ScriptOptions] !== presetOptions[key as keyof ScriptOptions]) {
-        toggleOption(key as keyof ScriptOptions);
-      }
-    });
+    setOptions(presetOptions);
     toast.info("PRESET_LOADED_SUCCESSFULLY");
   };
   const toolLabels: Partial<Record<keyof ScriptOptions, string>> = {
