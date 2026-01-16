@@ -50,28 +50,35 @@ export function VoiceShell() {
       handleCommand(text);
       setIsListening(false);
     };
-    recognition.onerror = () => setIsListening(false);
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error", event.error);
+      addLog(`VOICE_ERROR: ${event.error.toUpperCase()}`);
+      setIsListening(false);
+    };
     recognition.onend = () => setIsListening(false);
     if (isListening) {
       try {
         recognition.start();
       } catch (e) {
         console.error("Speech recognition start failed", e);
+        addLog("VOICE_SYS_FAIL: RECOGNITION_START_ERROR");
         setIsListening(false);
       }
     } else {
       try {
         recognition.stop();
       } catch (e) {
-        // Already stopped
+        // Recognition already inactive
       }
     }
     return () => {
       try {
         recognition.stop();
-      } catch (e) {}
+      } catch (e) {
+        // Recognition cleanup
+      }
     };
-  }, [isListening, handleCommand, isSupported]);
+  }, [isListening, handleCommand, isSupported, addLog]);
   return (
     <div className="relative">
       <div className={cn(
