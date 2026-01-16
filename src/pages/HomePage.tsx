@@ -19,6 +19,7 @@ export function HomePage() {
   const [asciiClicks, setAsciiClicks] = useState(0);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const addLog = useUIStore(s => s.addLog);
+  const isSingularityMode = useUIStore(s => s.isSingularityMode);
   const xp = useAcademyStore(s => s.xp);
   const rank = getRankByXp(xp);
   useEffect(() => {
@@ -48,8 +49,8 @@ export function HomePage() {
     }
   };
   const statusBadges = [
-    { label: 'NAND_HEALTH', val: '98%', icon: HardDrive, color: 'text-neon-green' },
-    { label: 'SYNC_STATUS', val: 'LOCKED', icon: ShieldCheck, color: 'text-neon-green' },
+    { label: 'NAND_HEALTH', val: '98%', icon: HardDrive, color: isSingularityMode ? 'text-neon-pink' : 'text-neon-green' },
+    { label: 'SYNC_STATUS', val: isSingularityMode ? 'SINGULARITY' : 'LOCKED', icon: ShieldCheck, color: isSingularityMode ? 'text-neon-pink' : 'text-neon-green' },
     { label: 'AUTH_LEVEL', val: rank.title.split('_')[0], icon: Lock, color: 'text-neon-pink' },
     { label: 'MOD_LOAD', val: 'ACTIVE', icon: Zap, color: 'text-yellow-400' }
   ];
@@ -58,10 +59,13 @@ export function HomePage() {
       <div className="space-y-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {statusBadges.map((badge) => (
-            <div key={badge.label} className="border-2 border-neon-green/30 bg-black/60 p-2 flex items-center gap-3">
-              <badge.icon className={cn("size-4", badge.color)} />
+            <div key={badge.label} className={cn(
+              "border-2 bg-black/60 p-2 flex items-center gap-3 transition-colors duration-500",
+              isSingularityMode ? "border-neon-pink/30" : "border-neon-green/30"
+            )}>
+              <badge.icon className={cn("size-4", badge.color, isSingularityMode && badge.label === 'SYNC_STATUS' && "animate-pulse")} />
               <div className="flex flex-col">
-                <span className="text-[8px] uppercase font-black opacity-40">{badge.label}</span>
+                <span className="text-[8px] uppercase font-black opacity-40 tracking-widest">{badge.label}</span>
                 <span className={cn("text-[10px] font-bold uppercase", badge.color)}>{badge.val}</span>
               </div>
             </div>
@@ -86,28 +90,47 @@ export function HomePage() {
         )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <RetroCard 
-              title="SYSTEM_OVERVIEW" 
-              status="READY" 
+            <RetroCard
+              title="SYSTEM_OVERVIEW"
+              status={isSingularityMode ? "SINGULARITY_LINK_ACTIVE" : "READY"}
               onClick={() => setSpecsOpen(true)}
-              className="cursor-pointer hover:border-neon-pink transition-colors"
+              variant={isSingularityMode ? "danger" : "default"}
+              className="cursor-pointer hover:border-white transition-all"
             >
               <div className="space-y-6">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
-                    <h1 className="text-5xl font-bold retro-glow tracking-tighter uppercase leading-none">RetroByte A1633</h1>
-                    <p className="text-xs text-neon-green/60 uppercase font-black tracking-widest mt-2">Apocalypse Suite :: v35.0_SINGULARITY</p>
+                    <h1 className={cn(
+                      "text-5xl font-bold tracking-tighter uppercase leading-none transition-all",
+                      isSingularityMode ? "text-neon-pink pink-glow animate-glitch" : "text-neon-green retro-glow"
+                    )}>RetroByte A1633</h1>
+                    <p className={cn(
+                      "text-xs uppercase font-black tracking-widest mt-2",
+                      isSingularityMode ? "text-neon-pink/80" : "text-neon-green/60"
+                    )}>
+                      Apocalypse Suite :: {isSingularityMode ? "v4.4_FINAL_SINGULARITY" : "v35.0_SINGULARITY"}
+                    </p>
                   </div>
                   <div className="flex gap-2">
-                    <div className="size-10 bg-neon-green/10 border-2 border-neon-green flex items-center justify-center"><Smartphone className="size-6" /></div>
-                    <div className="size-10 bg-neon-pink/10 border-2 border-neon-pink flex items-center justify-center"><Rocket className="size-6 text-neon-pink" /></div>
+                    <div className={cn("size-10 flex items-center justify-center border-2 transition-colors", isSingularityMode ? "border-neon-pink bg-neon-pink/10" : "border-neon-green bg-neon-green/10")}>
+                      <Smartphone className={cn("size-6", isSingularityMode ? "text-neon-pink" : "text-neon-green")} />
+                    </div>
+                    <div className="size-10 bg-neon-pink/10 border-2 border-neon-pink flex items-center justify-center">
+                      <Rocket className="size-6 text-neon-pink" />
+                    </div>
                   </div>
                 </div>
                 <div
-                  className="bg-black/40 p-6 border border-neon-green/20 group hover:border-neon-pink"
+                  className={cn(
+                    "bg-black/40 p-6 border group transition-all",
+                    isSingularityMode ? "border-neon-pink/40 hover:border-neon-pink" : "border-neon-green/20 hover:border-neon-pink"
+                  )}
                   onClick={(e) => { e.stopPropagation(); handleAsciiClick(); }}
                 >
-                  <pre className="text-[7px] md:text-[10px] leading-none text-neon-green/40 group-hover:text-neon-pink flex justify-center transition-all group-hover:animate-glitch">
+                  <pre className={cn(
+                    "text-[7px] md:text-[10px] leading-none flex justify-center transition-all group-hover:animate-glitch",
+                    isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green/40 group-hover:text-neon-pink"
+                  )}>
 {`        .------------------------.
           | [ ................... ] |
           | [      S I N G U      ] |
@@ -126,10 +149,13 @@ export function HomePage() {
                     { label: 'LINK', val: '0x41633', icon: Activity },
                     { label: 'ZONE', val: 'LOCAL_GRID', icon: Wifi }
                   ].map(stat => (
-                    <div key={stat.label} className="border border-neon-green/20 p-3 bg-black/40">
-                      <stat.icon className="size-4 mb-2 text-neon-green/50" />
+                    <div key={stat.label} className={cn(
+                      "border p-3 bg-black/40 transition-colors duration-500",
+                      isSingularityMode ? "border-neon-pink/20" : "border-neon-green/20"
+                    )}>
+                      <stat.icon className={cn("size-4 mb-2 opacity-50", isSingularityMode ? "text-neon-pink" : "text-neon-green")} />
                       <div className="text-[8px] uppercase font-black opacity-40">{stat.label}</div>
-                      <div className="text-[10px] font-bold text-neon-green truncate">{stat.val}</div>
+                      <div className={cn("text-[10px] font-bold truncate", isSingularityMode ? "text-neon-pink" : "text-neon-green")}>{stat.val}</div>
                     </div>
                   ))}
                 </div>
@@ -143,31 +169,53 @@ export function HomePage() {
                   <Link to="/tweak-ai" className="retro-button block text-center border-neon-pink text-neon-pink">CONSULT_ORACLE</Link>
                 </div>
               </RetroCard>
-              <RetroCard title="UI_FAKEOUT" variant="default">
+              <RetroCard title="UI_FAKEOUT" variant={isSingularityMode ? "danger" : "default"}>
                 <div className="space-y-4">
-                  <Smartphone className="size-8 text-neon-green" />
+                  <Smartphone className={cn("size-8", isSingularityMode ? "text-neon-pink animate-pulse" : "text-neon-green")} />
                   <p className="text-[10px] uppercase font-bold italic leading-tight">Simulate modern UI features on legacy hardware.</p>
-                  <Link to="/island-fakeout" className="retro-button block text-center">ACCESS_FAKEOUT</Link>
+                  <Link to="/island-fakeout" className={cn("retro-button block text-center", isSingularityMode && "border-neon-pink text-neon-pink")}>ACCESS_FAKEOUT</Link>
                 </div>
               </RetroCard>
             </div>
           </div>
           <div className="space-y-6">
-            <RetroCard title="ACADEMY_RANK" variant="default">
+            <RetroCard title="ACADEMY_RANK" variant={isSingularityMode ? "danger" : "default"}>
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <div className={cn("size-12 border-2 flex items-center justify-center bg-black/40", rank.color.replace('text', 'border'))}>
-                    <GraduationCap className={cn("size-8", rank.color)} />
+                  <div className={cn(
+                    "size-12 border-2 flex items-center justify-center bg-black/40 transition-all",
+                    isSingularityMode ? "border-neon-pink shadow-[0_0_10px_rgba(210,9,250,0.4)]" : rank.color.replace('text', 'border')
+                  )}>
+                    <GraduationCap className={cn("size-8", isSingularityMode ? "text-neon-pink" : rank.color)} />
                   </div>
                   <div>
-                    <div className={cn("text-xl font-black uppercase tracking-tighter leading-none", rank.color)}>{rank.title}</div>
+                    <div className={cn(
+                      "text-xl font-black uppercase tracking-tighter leading-none transition-colors",
+                      isSingularityMode ? "text-neon-pink pink-glow" : rank.color
+                    )}>
+                      {rank.title}
+                    </div>
                     <div className="text-[10px] opacity-50 uppercase font-black mt-1">OPERATOR_ID: #4163</div>
                   </div>
                 </div>
-                <RetroProgress current={xp} max={2500} label="SYNAPTIC_DEPTH" variant={xp >= 2000 ? 'pink' : 'green'} />
-                <Link to="/academy" className="retro-button block text-center text-[10px]">OPEN_DOSSIER</Link>
+                <RetroProgress current={xp} max={2500} label="SYNAPTIC_DEPTH" variant={isSingularityMode ? 'pink' : 'green'} />
+                <Link to="/academy" className={cn("retro-button block text-center text-[10px]", isSingularityMode && "border-neon-pink text-neon-pink")}>OPEN_DOSSIER</Link>
               </div>
             </RetroCard>
+            {xp >= 2500 && (
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+                <RetroCard title="SINGULARITY_NODE" variant="danger" className="border-neon-pink">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-neon-pink animate-pulse uppercase">
+                      <Target className="size-4" /> Global_Link_Established
+                    </div>
+                    <p className="text-[9px] uppercase font-bold italic opacity-70">
+                      Operator has reached GodMode. All systems synced to the global modding mainframe.
+                    </p>
+                  </div>
+                </RetroCard>
+              </motion.div>
+            )}
             <RetroCard title="QUICK_ACCESS">
               <div className="space-y-3">
                 <Link to="/exploit-lab" className="retro-button w-full flex items-center justify-center gap-2 border-neon-pink text-neon-pink shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none"><Zap className="size-4" /> INJECT_PAYLOAD</Link>
@@ -180,17 +228,23 @@ export function HomePage() {
       </div>
       <SecretVault isOpen={vaultOpen} onClose={() => setVaultOpen(false)} />
       <Dialog open={specsOpen} onOpenChange={setSpecsOpen}>
-        <DialogContent className="bg-retro-black border-4 border-neon-green text-neon-green max-w-2xl">
+        <DialogContent className={cn(
+          "bg-retro-black border-4 text-neon-green max-w-2xl transition-colors duration-500",
+          isSingularityMode ? "border-neon-pink" : "border-neon-green"
+        )}>
           <DialogHeader>
-            <DialogTitle className="text-2xl font-black italic uppercase flex items-center gap-3">
-              <Info className="size-6 text-neon-green brand-glow" /> HARDWARE_SPEC_SHEET
+            <DialogTitle className={cn(
+              "text-2xl font-black italic uppercase flex items-center gap-3 transition-colors",
+              isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green brand-glow"
+            )}>
+              <Info className={cn("size-6", isSingularityMode ? "text-neon-pink" : "text-neon-green")} /> HARDWARE_SPEC_SHEET
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6 pt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase border-b border-neon-green/30 pb-1 text-neon-pink">Chipset_Matrix</h3>
-                <div className="space-y-2 text-[10px] font-mono">
+                <h3 className={cn("text-xs font-black uppercase border-b pb-1 transition-colors", isSingularityMode ? "border-neon-pink/30 text-neon-pink" : "border-neon-green/30 text-neon-pink")}>Chipset_Matrix</h3>
+                <div className={cn("space-y-2 text-[10px] font-mono", isSingularityMode && "text-neon-pink/80")}>
                   <div className="flex justify-between"><span>MODEL:</span> <span>{A9_HARDWARE_SPECS.model}</span></div>
                   <div className="flex justify-between"><span>CODENAME:</span> <span>{A9_HARDWARE_SPECS.codename}</span></div>
                   <div className="flex justify-between"><span>ARCH:</span> <span>{A9_HARDWARE_SPECS.chipset.architecture}</span></div>
@@ -199,8 +253,8 @@ export function HomePage() {
                 </div>
               </div>
               <div className="space-y-4">
-                <h3 className="text-xs font-black uppercase border-b border-neon-green/30 pb-1 text-neon-pink">Visual_Engine</h3>
-                <div className="space-y-2 text-[10px] font-mono">
+                <h3 className={cn("text-xs font-black uppercase border-b pb-1 transition-colors", isSingularityMode ? "border-neon-pink/30 text-neon-pink" : "border-neon-green/30 text-neon-pink")}>Visual_Engine</h3>
+                <div className={cn("space-y-2 text-[10px] font-mono", isSingularityMode && "text-neon-pink/80")}>
                   <div className="flex justify-between"><span>GPU:</span> <span>{A9_HARDWARE_SPECS.graphics.gpu}</span></div>
                   <div className="flex justify-between"><span>CORES:</span> <span>{A9_HARDWARE_SPECS.graphics.cores}</span></div>
                   <div className="flex justify-between"><span>DISPLAY:</span> <span>{A9_HARDWARE_SPECS.display.type}</span></div>
@@ -208,10 +262,13 @@ export function HomePage() {
                 </div>
               </div>
             </div>
-            <div className="p-4 border border-neon-green/20 bg-neon-green/5 text-[9px] uppercase font-bold italic leading-tight">
+            <div className={cn(
+              "p-4 border text-[9px] uppercase font-bold italic leading-tight transition-colors",
+              isSingularityMode ? "border-neon-pink/20 bg-neon-pink/5 text-neon-pink" : "border-neon-green/20 bg-neon-green/5"
+            )}>
               Notice: All parameters verified via N71AP hardware handshake. The Samsung/TSMC variance in the 14nm FinFET process leads to a +/- 5% thermal deviation during high-burst Twister operations.
             </div>
-            <button onClick={() => setSpecsOpen(false)} className="retro-button w-full">CLOSE_DATA_STREAM</button>
+            <button onClick={() => setSpecsOpen(false)} className={cn("retro-button w-full", isSingularityMode && "border-neon-pink text-neon-pink")}>CLOSE_DATA_STREAM</button>
           </div>
         </DialogContent>
       </Dialog>
