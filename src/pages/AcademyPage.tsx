@@ -56,7 +56,8 @@ export function AcademyPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setLeaderboard(json.data);
+        // Immediately refresh leaderboard with new synced data
+        fetchLeaderboard();
         setLastSync(new Date().toLocaleTimeString());
         toast.success("MAINFRAME_SYNCED");
       }

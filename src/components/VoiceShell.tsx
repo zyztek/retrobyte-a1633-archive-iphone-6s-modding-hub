@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, Terminal, Zap, ShieldAlert } from 'lucide-react';
+import { Mic, MicOff, Terminal, Zap, ShieldAlert, AlertCircle } from 'lucide-react';
 import { useUIStore } from '@/store/ui-store';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -8,8 +8,15 @@ import { toast } from 'sonner';
 export function VoiceShell() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const [isSupported, setIsSupported] = useState(true);
   const addLog = useUIStore(s => s.addLog);
   const navigate = useNavigate();
+  useEffect(() => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setIsSupported(false);
+    }
+  }, []);
   const handleCommand = useCallback((cmd: string) => {
     const clean = cmd.toLowerCase();
     addLog(`VOICE_CMD: ${clean.toUpperCase()}`);
@@ -30,6 +37,7 @@ export function VoiceShell() {
     }
   }, [addLog, navigate]);
   useEffect(() => {
+    if (!isSupported) return;
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) return;
     const recognition = new SpeechRecognition();
@@ -44,32 +52,69 @@ export function VoiceShell() {
     };
     recognition.onerror = () => setIsListening(false);
     recognition.onend = () => setIsListening(false);
-    if (isListening) recognition.start();
-    else recognition.stop();
-    return () => recognition.stop();
-  }, [isListening, handleCommand]);
+    if (isListening) {
+      try {
+        recognition.start();
+      } catch (e) {
+        console.error("Speech recognition start failed", e);
+        setIsListening(false);
+      }
+    } else {
+      try {
+        recognition.stop();
+      } catch (e) {
+        // Already stopped
+      }
+    }
+    return () => {
+      try {
+        recognition.stop();
+      } catch (e) {}
+    };
+  }, [isListening, handleCommand, isSupported]);
   return (
     <div className="relative">
-      <div className="flex items-center gap-4 p-4 border-2 border-neon-green bg-retro-black/80 shadow-[4px_4px_0px_rgba(0,255,65,1)]">
+      <div className={cn(
+        "flex items-center gap-4 p-4 border-2 bg-retro-black/80 shadow-[4px_4px_0px_rgba(0,255,65,1)]",
+        !isSupported ? "border-yellow-400/50 shadow-[4px_4px_0px_rgba(250,204,21,0.5)]" : "border-neon-green"
+      )}>
         <button
-          onClick={() => setIsListening(!isListening)}
+          onClick={() => isSupported && setIsListening(!isListening)}
+          disabled={!isSupported}
           className={cn(
             "p-3 border-2 transition-all active:scale-95",
-            isListening ? "bg-neon-pink border-neon-pink animate-pulse" : "border-neon-green text-neon-green"
+            !isSupported ? "border-white/10 text-white/10 cursor-not-allowed" :
+            isListening ? "bg-neon-pink border-neon-pink animate-pulse" : "border-neon-green text-neon-green hover:bg-neon-green/10"
           )}
         >
           {isListening ? <MicOff className="size-6 text-white" /> : <Mic className="size-6" />}
         </button>
         <div className="flex-1 overflow-hidden">
           <div className="flex items-center gap-2 mb-1">
-            <Terminal className="size-3 text-neon-green" />
-            <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Voice_Command_Link</span>
+            {isSupported ? (
+              <Terminal className="size-3 text-neon-green" />
+            ) : (
+              <AlertCircle className="size-3 text-yellow-400" />
+            )}
+            <span className={cn(
+              "text-[9px] font-black uppercase tracking-widest opacity-60",
+              !isSupported && "text-yellow-400"
+            )}>
+              {isSupported ? "Voice_Command_Link" : "Compatibility_Error"}
+            </span>
           </div>
-          <div className="text-xs font-mono h-5 truncate italic text-neon-green/80">
-            {isListening ? "Listening for keywords..." : transcript || "System idle. Awaiting voice input."}
+          <div className={cn(
+            "text-xs font-mono h-5 truncate italic",
+            !isSupported ? "text-yellow-400/80" : "text-neon-green/80"
+          )}>
+            {!isSupported 
+              ? "Browser does not support Voice protocols. Use Chrome/Edge." 
+              : isListening 
+                ? "Listening for keywords..." 
+                : transcript || "System idle. Awaiting voice input."}
           </div>
         </div>
-        {isListening && (
+        {isListening && isSupported && (
           <div className="flex gap-1 items-end h-6 pb-1">
             {Array.from({ length: 12 }).map((_, i) => (
               <motion.div
