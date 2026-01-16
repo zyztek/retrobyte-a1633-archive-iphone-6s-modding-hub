@@ -80,7 +80,7 @@ function runSetupCommands() {
     const commands = [
     "bun install vitest",
     "bun add vitest @vitest/ui -D",
-    "bun add lucide-react framer-motion zustand",
+    "bun add lucide-react",
     "bun add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities",
     "bun add framer-motion lucide-react zustand"
 ];
