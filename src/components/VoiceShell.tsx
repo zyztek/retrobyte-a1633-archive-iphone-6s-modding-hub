@@ -13,7 +13,8 @@ export function VoiceShell() {
   const navigate = useNavigate();
   const recognitionRef = useRef<any>(null);
   const handleCommand = useCallback((cmd: string) => {
-    const clean = cmd.toLowerCase();
+    const clean = cmd.toLowerCase().trim();
+    if (!clean) return;
     addLog(`VOICE_CMD: ${clean.toUpperCase()}`);
     if (clean.includes('reset') || clean.includes('purge') || clean.includes('clear')) {
       setTranscript("");
@@ -39,31 +40,39 @@ export function VoiceShell() {
   }, [addLog, navigate]);
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
+    if (!SpeechRecognition || !navigator.mediaDevices) {
       setIsSupported(false);
     } else {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
-      recognition.onresult = (event: any) => {
-        const text = event.results[0][0].transcript;
-        setTranscript(text);
-        handleCommand(text);
-        setIsListening(false);
-      };
-      recognition.onerror = (event: any) => {
-        console.warn("Speech recognition error:", event.error);
-        if (event.error !== 'aborted') {
-          addLog(`VOICE_ERROR: ${event.error.toUpperCase()}`);
-          toast.error("VOICE_SYSTEM_FAILURE", { description: event.error });
-        }
-        setIsListening(false);
-      };
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-      recognitionRef.current = recognition;
+      try {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+        recognition.onresult = (event: any) => {
+          const text = event.results[0][0].transcript;
+          setTranscript(text);
+          handleCommand(text);
+          setIsListening(false);
+        };
+        recognition.onerror = (event: any) => {
+          console.warn("Speech recognition error:", event.error);
+          setIsListening(false);
+          if (event.error === 'not-allowed') {
+            addLog("VOICE_ERROR: PERMISSION_DENIED");
+            toast.error("MIC_ACCESS_DENIED", { description: "User blocked microphone handshake." });
+          } else if (event.error !== 'aborted') {
+            addLog(`VOICE_ERROR: ${event.error.toUpperCase()}`);
+            toast.error("VOICE_SYSTEM_FAILURE", { description: event.error });
+          }
+        };
+        recognition.onend = () => {
+          setIsListening(false);
+        };
+        recognitionRef.current = recognition;
+      } catch (e) {
+        setIsSupported(false);
+        console.error("Speech recognition initialization failed", e);
+      }
     }
     return () => {
       if (recognitionRef.current) {
@@ -79,6 +88,7 @@ export function VoiceShell() {
     if (!isSupported || !recognitionRef.current) return;
     if (!isListening) {
       try {
+        setTranscript("");
         recognitionRef.current.start();
         setIsListening(true);
       } catch (e) {
@@ -124,7 +134,7 @@ export function VoiceShell() {
                 "text-[9px] font-black uppercase tracking-widest opacity-60",
                 !isSupported && "text-yellow-400"
               )}>
-                {isSupported ? "Voice_Command_Link" : "Compatibility_Error"}
+                {isSupported ? "Voice_Link_v1.2" : "Compatibility_Error"}
               </span>
             </div>
             {transcript && (
@@ -138,9 +148,9 @@ export function VoiceShell() {
             !isSupported ? "text-yellow-400/80" : "text-neon-green/80"
           )}>
             {!isSupported
-              ? "Browser does not support Voice protocols. Use Chrome/Edge."
+              ? "PROTO_ERR: BROWSER_INCOMPATIBLE"
               : isListening
-                ? "Listening for keywords..."
+                ? "Listening for hardware keywords..."
                 : transcript || "System idle. Awaiting voice input."}
           </div>
         </div>

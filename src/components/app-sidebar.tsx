@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Terminal, Code, BookOpen, Package, Settings, FlaskConical, Target, Brain, Usb, GraduationCap, ShieldCheck,
+  Terminal, Code, BookOpen, Package, FlaskConical, Target, Brain, Usb, GraduationCap, ShieldCheck,
   Globe, Smartphone, Radio, Palette, Monitor, Laptop, Shield
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -16,12 +16,14 @@ import {
   SidebarMenuButton,
   SidebarGroup,
   SidebarGroupLabel,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { BrandLogo } from "@/components/ui/brand-logo";
 export function AppSidebar(): JSX.Element {
   const location = useLocation();
+  const { setOpenMobile, isMobile } = useSidebar();
   const isVerbose = useUIStore(s => s.isVerbose);
   const toggleVerbose = useUIStore(s => s.toggleVerbose);
   const isSingularityMode = useUIStore(s => s.isSingularityMode);
@@ -47,6 +49,11 @@ export function AppSidebar(): JSX.Element {
     { title: "Test Center", icon: ShieldCheck, path: "/test-center", tip: "Integrity validation" },
     { title: "GodMode", icon: Target, path: "/godmode", tip: "Command singularity" },
   ];
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
   const renderItems = (items: any[]) => (
     <SidebarMenu>
       {items.map((item) => {
@@ -66,9 +73,9 @@ export function AppSidebar(): JSX.Element {
                       item.title === 'GodMode' && "text-neon-pink hover:bg-neon-pink hover:text-white border-neon-pink/30"
                     )}
                   >
-                    <Link to={item.path} className="flex items-center gap-3 w-full">
+                    <Link to={item.path} onClick={handleLinkClick} className="flex items-center gap-3 w-full">
                       <item.icon className={cn(
-                        "size-4 shrink-0", 
+                        "size-4 shrink-0",
                         isActive && (isSingularityMode ? "pink-glow" : "brand-glow")
                       )} />
                       <span className={cn(
@@ -81,7 +88,7 @@ export function AppSidebar(): JSX.Element {
                   </SidebarMenuButton>
                 </TooltipTrigger>
                 <TooltipContent side="right" className={cn(
-                  "bg-retro-black border-2 rounded-none text-[11px] uppercase font-black",
+                  "bg-retro-black border-2 rounded-none text-[11px] uppercase font-black z-[100]",
                   isSingularityMode ? "border-neon-pink text-neon-pink" : "border-neon-green text-neon-green"
                 )}>
                   {item.tip}
@@ -96,8 +103,8 @@ export function AppSidebar(): JSX.Element {
   return (
     <Sidebar className={cn(
       "border-r-2 bg-retro-black transition-colors duration-500",
-      isSingularityMode 
-        ? "border-neon-pink shadow-[10px_0_30px_rgba(210,9,250,0.05)]" 
+      isSingularityMode
+        ? "border-neon-pink shadow-[10px_0_30px_rgba(210,9,250,0.05)]"
         : "border-neon-green shadow-[10px_0_30px_rgba(0,255,65,0.05)]"
     )}>
       <SidebarHeader className={cn(
@@ -148,9 +155,9 @@ export function AppSidebar(): JSX.Element {
           "text-[9px] text-center font-black uppercase tracking-[0.4em] leading-relaxed transition-colors",
           isSingularityMode ? "text-neon-pink/60" : "text-neon-green/40"
         )}>
-          (C) 2024 SOLUCIONES 646<br/>
+          (C) 2025 SOLUCIONES 646<br/>
           <span className={isSingularityMode ? "text-neon-pink font-black" : "text-neon-pink/40"}>
-            {isSingularityMode ? "SINGULARITY_V4.4_FINAL" : "SINGULARITY_V30.0"}
+            {isSingularityMode ? "SINGULARITY_V4.5_FINAL" : "SINGULARITY_V35.0"}
           </span>
         </div>
       </SidebarFooter>

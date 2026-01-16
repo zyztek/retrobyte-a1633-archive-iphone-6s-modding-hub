@@ -1,14 +1,15 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Retro3DPhone } from '@/components/Retro3DPhone';
-import { ShieldCheck, Target, Zap, CheckCircle2, Circle, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert, FileText, Download, RefreshCcw } from 'lucide-react';
+import { ShieldCheck, Target, Zap, CheckCircle2, Circle, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert, Download, RefreshCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { SINGULARITY_LOGIC, SYSTEM_AUDIT_METRICS, A9_HARDWARE_SPECS } from '@shared/extended-data';
 import { useAcademyStore } from '@/store/academy-store';
 import { useUIStore } from '@/store/ui-store';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 interface MissionTask {
   id: string;
   title: string;
@@ -25,6 +26,7 @@ export function GodModePage() {
   const [sysLogs, setSysLogs] = useState<string[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [isAuditing, setIsAuditing] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const navigate = useNavigate();
   const xp = useAcademyStore(s => s.xp);
   const resetProgress = useAcademyStore(s => s.resetProgress);
@@ -83,9 +85,9 @@ export function GodModePage() {
     setIsAuditing(true);
     const auditSteps = [
       "INITIATING_DEEP_SYSTEM_AUDIT...",
-      "SAMPLING_BMS_DRIFT: " + (SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value || "N/A"),
-      "CALIBRATING_I2S_BUS: " + (SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value || "N/A"),
-      "SNIFFING_LTE_ATTENUATION: " + (SYSTEM_AUDIT_METRICS.find(m => m.id === 'lte-baseband')?.value || "N/A"),
+      "SAMPLING_BMS_DRIFT: " + (SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value || "3.8V_NOMINAL"),
+      "CALIBRATING_I2S_BUS: " + (SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value || "0x12_ACTIVE"),
+      "SNIFFING_LTE_ATTENUATION...",
       "COMPARING_N71AP_SIGNATURES...",
       "AUDIT_SUCCESSFUL: HARDWARE_SECURE"
     ];
@@ -102,25 +104,36 @@ export function GodModePage() {
           }));
           setIsAuditing(false);
           toast.success("AUDIT_COMPLETE", {
-            description: "Hardware subsystems verified for A1633.",
-            style: { background: '#0a0a0a', color: isSingularityMode ? '#d209fa' : '#00ff41', border: isSingularityMode ? '1px solid #d209fa' : '1px solid #00ff41' }
+            description: "Hardware subsystems verified for A1633."
           });
         }
       }, i * 400);
     });
   };
   const handleResetProtocol = () => {
-    setLoading(true);
-    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] INITIATING_FACTORY_PURGE...`, ...prev]);
-    setTimeout(() => {
-      resetProgress();
-      resetUI();
-      setLoading(false);
-      navigate('/');
-      toast.error("SINGULARITY_PURGED", {
-        description: "Local data clusters and XP progress have been reset to 0x00."
-      });
-    }, 3000);
+    setIsResetting(true);
+    const resetSteps = [
+      "INITIATING_FACTORY_PURGE...",
+      "ERASING_NAND_BLOCKS...",
+      "PURGING_ACADEMY_RECORDS...",
+      "NULLING_SINGULARITY_VECTORS...",
+      "REBOOTING_KERNEL_0x00..."
+    ];
+    resetSteps.forEach((step, i) => {
+      setTimeout(() => {
+        setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] ${step}`, ...prev].slice(0, 10));
+        if (i === resetSteps.length - 1) {
+          setLoading(true);
+          setTimeout(() => {
+            resetProgress();
+            resetUI();
+            setLoading(false);
+            navigate('/');
+            toast.error("SINGULARITY_PURGED");
+          }, 1500);
+        }
+      }, i * 600);
+    });
   };
   const handleDownloadReport = () => {
     const report = `
@@ -131,14 +144,13 @@ MODEL: ${A9_HARDWARE_SPECS.model}
 ARCHITECTURE: ${A9_HARDWARE_SPECS.codename}
 SYSTEM STATUS:
 - XP LEVEL: ${xp}
-- SYNC INTEGRITY: ${xp >= 2000 ? 'SINGULARITY' : xp >= 1500 ? 'STABLE' : 'UNSYNCED'}
+- SYNC INTEGRITY: ${xp >= 2000 ? 'SINGULARITY' : xp >= 500 ? 'STABLE' : 'UNSYNCED'}
 MISSION PROGRESS:
 ${profiles.map(p => `[${p.name}]
 ${p.tasks.map(t => `  - ${t.title}: ${t.completed ? 'COMPLETED' : 'PENDING'}`).join('\n')}`).join('\n\n')}
 HARDWARE METRICS:
-- BATTERY_BMS: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value}
-- AUDIO_I2S: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value}
-- LTE_BASEBAND: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'lte-baseband')?.value}
+- BATTERY_BMS: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value || "N/A"}
+- AUDIO_I2S: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value || "N/A"}
 EOF: SYSTEM_REPORT_VALIDATED
     `;
     const blob = new Blob([report], { type: 'text/plain' });
@@ -153,19 +165,13 @@ EOF: SYSTEM_REPORT_VALIDATED
     const key = activeProfile === 'hw-recon' ? 'gaming' : activeProfile === 'ghost' ? 'stable' : 'gaming';
     return SINGULARITY_LOGIC[key] || [];
   }, [activeProfile]);
-  const handleExport = () => {
-    setIsExporting(true);
-    setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] NAVIGATING_TO_EXPORT_HUB...`, ...prev].slice(0, 10));
-    setTimeout(() => {
-      setIsExporting(false);
-      navigate('/export-hub');
-    }, 1200);
-  };
-  const syncIntegrity = xp >= 2000 ? 'SINGULARITY' : xp >= 1500 ? 'STABLE' : xp >= 500 ? 'SYNCING' : 'UNSYNCED';
-  const syncColor = xp >= 2000 ? 'text-neon-pink brand-glow' : xp >= 1500 ? 'text-neon-pink' : xp >= 500 ? 'text-yellow-400' : 'text-neon-pink/40';
   return (
     <RetroLayout>
-      <div className="space-y-12">
+      <motion.div 
+        animate={isResetting ? { x: [-2, 2, -2, 2, 0], y: [-1, 1, -1, 1, 0] } : {}}
+        transition={{ duration: 0.1, repeat: isResetting ? 20 : 0 }}
+        className="space-y-12"
+      >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-4">
             <div className={cn(
@@ -185,9 +191,10 @@ EOF: SYSTEM_REPORT_VALIDATED
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <button
               onClick={handleResetProtocol}
-              className="flex-1 md:flex-none retro-button border-red-500 text-red-500 flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(239,68,68,1)] hover:shadow-none active:translate-y-1"
+              disabled={isResetting}
+              className="flex-1 md:flex-none retro-button border-red-500 text-red-500 flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(239,68,68,1)] hover:shadow-none active:translate-y-1 disabled:opacity-50"
             >
-              <RefreshCcw className="size-3" /> RESET_GRID
+              <RefreshCcw className={cn("size-3", isResetting && "animate-spin")} /> RESET_GRID
             </button>
             <button
               onClick={handleAudit}
@@ -206,9 +213,9 @@ EOF: SYSTEM_REPORT_VALIDATED
               <Download className="size-3" /> EXPORT_REPORT
             </button>
             <button
-              onClick={handleExport}
+              onClick={() => { setIsExporting(true); setTimeout(() => navigate('/export-hub'), 800); }}
               disabled={isExporting}
-              className="flex-1 md:flex-none retro-button border-white text-white flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_white] hover:shadow-none disabled:opacity-50 active:translate-y-1"
+              className="flex-1 md:flex-none retro-button border-white text-white flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_white] hover:shadow-none disabled:opacity-50"
             >
               {isExporting ? <Share2 className="size-3 animate-spin" /> : <Rocket className="size-3" />} EXPORT_HUB
             </button>
@@ -216,9 +223,9 @@ EOF: SYSTEM_REPORT_VALIDATED
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-8">
-            <RetroCard 
-              title="HARDWARE_VISUALIZER" 
-              status={isSingularityMode ? "A1633_SINGULARITY_ACTIVE" : "A1633_LOCAL"} 
+            <RetroCard
+              title="HARDWARE_VISUALIZER"
+              status={isSingularityMode ? "A1633_SINGULARITY_ACTIVE" : "A1633_LOCAL"}
               className="min-h-[450px] md:min-h-[550px] flex flex-col p-0 overflow-hidden"
               variant={isSingularityMode ? "danger" : "default"}
             >
@@ -229,18 +236,15 @@ EOF: SYSTEM_REPORT_VALIDATED
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <RetroCard title="AUDIO_AUDIT (I2S)" variant={isSingularityMode ? "danger" : "default"} className="text-center">
                 <Volume2 className={cn("size-8 mx-auto mb-2", isSingularityMode ? "text-neon-pink" : "text-neon-green")} />
-                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value}</div>
-                <div className="text-[8px] opacity-40 uppercase">DAC_SYNC: LOCKED</div>
+                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value || "MAPPED_0x12"}</div>
               </RetroCard>
               <RetroCard title="BATTERY_AUDIT (BMS)" variant="warning" className="text-center">
                 <Battery className="size-8 mx-auto mb-2 text-yellow-400" />
-                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value}</div>
-                <div className="text-[8px] opacity-40 uppercase">STATUS: DEGRADED</div>
+                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value || "3.82V_NOMINAL"}</div>
               </RetroCard>
               <RetroCard title="LTE_AUDIT (BB)" variant={isSingularityMode ? "danger" : "default"} className="text-center">
                 <Radio className={cn("size-8 mx-auto mb-2", isSingularityMode ? "text-neon-pink" : "text-neon-green")} />
-                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'lte-baseband')?.value}</div>
-                <div className="text-[8px] opacity-40 uppercase">BAND_LOCK: ACTIVE</div>
+                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'lte-baseband')?.value || "LINK_ESTABLISHED"}</div>
               </RetroCard>
             </div>
           </div>
@@ -255,8 +259,10 @@ EOF: SYSTEM_REPORT_VALIDATED
                     </div>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="text-[10px] uppercase font-bold text-neon-pink/60 leading-none">Docs_Sync Integrity</span>
-                    <span className={cn("text-xs font-black uppercase tracking-widest", syncColor)}>{syncIntegrity}</span>
+                    <span className="text-[10px] uppercase font-bold text-neon-pink/60 leading-none">Sync_Depth</span>
+                    <span className={cn("text-xs font-black uppercase tracking-widest", xp >= 2000 ? "text-neon-pink brand-glow" : "text-neon-pink/40")}>
+                      {xp >= 2000 ? 'SINGULARITY' : 'SYNCING'}
+                    </span>
                   </div>
                 </div>
                 <div className="space-y-3 font-mono text-[9px]">
@@ -305,12 +311,12 @@ EOF: SYSTEM_REPORT_VALIDATED
                     {log}
                   </div>
                 ))}
-                {isAuditing && <div className="animate-pulse text-neon-pink">_AUDIT_IN_PROGRESS</div>}
+                {(isAuditing || isResetting) && <div className="animate-pulse text-neon-pink">_BUSY_STREAM_LOCKED</div>}
               </div>
             </RetroCard>
           </div>
         </div>
-      </div>
+      </motion.div>
     </RetroLayout>
   );
 }

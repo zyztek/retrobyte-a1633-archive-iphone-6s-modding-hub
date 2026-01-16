@@ -17,12 +17,12 @@ export function Retro3DPhone() {
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  // Increased damping and stiffness for a more stable, premium feel
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [15, -15]), {
+  // Implement rotation clamping to prevent visual distortion on wide screens
+  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [12, -12], { clamp: true }), {
     stiffness: 150,
     damping: 40
   });
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-15, 15]), {
+  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-12, 12], { clamp: true }), {
     stiffness: 150,
     damping: 40
   });
@@ -47,7 +47,7 @@ export function Retro3DPhone() {
   }, [mouseX, mouseY]);
   return (
     <div className="relative w-full h-full min-h-[450px] md:min-h-[550px] flex items-center justify-center [perspective:2000px] bg-retro-black/40 overflow-hidden select-none">
-      {/* Background Code Stream */}
+      {/* Background Code Stream - Pointer events disabled to allow hotspot interaction */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.05] overflow-hidden">
         <div className="text-[7px] md:text-[8px] font-mono absolute top-4 left-4 whitespace-pre leading-tight">
           {Array.from({ length: 30 }).map((_, i) => (
@@ -61,12 +61,10 @@ export function Retro3DPhone() {
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
         className="relative w-40 h-80 md:w-56 md:h-[420px] will-change-transform"
       >
-        {/* Phone Body with layered shadows for depth */}
+        {/* Phone Body */}
         <div className="absolute inset-0 bg-neutral-800 border-2 border-neon-green/30 rounded-[35px] p-1.5 shadow-[0_40px_100px_rgba(0,0,0,0.8),0_0_50px_rgba(0,255,65,0.05)] translate-z-[10px]">
           <div className="w-full h-full bg-black rounded-[30px] overflow-hidden relative border border-neon-green/50">
-            {/* Inner Screen Scanline Effect */}
             <div className="absolute inset-0 z-10 pointer-events-none opacity-20 bg-[repeating-linear-gradient(0deg,rgba(0,255,65,0.1),rgba(0,255,65,0.1)_1px,transparent_1px,transparent_2px)] bg-[length:100%_4px]" />
-            {/* Screen Logs */}
             <div className="absolute inset-0 flex flex-col p-4 font-mono text-[6px] md:text-[8px] text-neon-green/40 animate-marquee-vertical select-none will-change-transform duration-[12s]">
               <div className="space-y-1.5">
                 {Array.from({ length: 60 }).map((_, i) => (
@@ -83,7 +81,6 @@ export function Retro3DPhone() {
             <div className="absolute top-6 left-1/2 -translate-x-1/2 w-12 h-1 bg-neutral-900 rounded-full z-30" />
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full border border-neon-green/40 shadow-[inset_0_0_10px_rgba(0,255,65,0.2)] z-30" />
           </div>
-          {/* Precision Hotspots with high z-index tooltips */}
           {hotspots.map((spot) => (
             <div
               key={spot.id}
@@ -111,15 +108,13 @@ export function Retro3DPhone() {
             </div>
           ))}
         </div>
-        {/* 3D Sides for depth simulation */}
         <div className="absolute top-6 left-0 h-[calc(100%-48px)] w-4 bg-neutral-900 border-l border-r border-neon-green/20 [transform:rotateY(-90deg)_translateX(-50%)]" />
         <div className="absolute top-6 right-0 h-[calc(100%-48px)] w-4 bg-neutral-900 border-l border-r border-neon-green/20 [transform:rotateY(90deg)_translateX(50%)]" />
       </motion.div>
-      {/* Floating Status UI */}
       <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end border-t-2 border-neon-green/30 pt-4 font-mono text-[10px] md:text-xs">
         <div className="space-y-1">
           <div className="text-neon-pink font-black retro-glow animate-pulse uppercase tracking-widest text-sm italic">
-            A1633_HARDWARE_HUD_V1.2
+            A1633_HARDWARE_HUD_V1.3
           </div>
           <div className="opacity-40 uppercase tracking-tight font-bold">RECON_STATE: VERIFIED</div>
           <div className="opacity-60 text-neon-green uppercase font-black text-[9px]">
