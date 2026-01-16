@@ -79,7 +79,8 @@ function updateWranglerJsonc() {
 function runSetupCommands() {
     const commands = [
     "bun install vitest",
-    "bun add vitest @vitest/ui -D"
+    "bun add vitest @vitest/ui -D",
+    "bun add lucide-react framer-motion zustand"
 ];
     
     if (commands.length === 0) {
