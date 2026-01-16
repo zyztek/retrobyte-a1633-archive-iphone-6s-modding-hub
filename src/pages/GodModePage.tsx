@@ -87,6 +87,18 @@ export function GodModePage() {
     auditSteps.forEach((step, i) => {
       setTimeout(() => {
         setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] ${step}`, ...prev].slice(0, 10));
+        
+        // Mark the audit task as completed when we reach the end of the simulation
+        if (i === auditSteps.length - 1) {
+          setProfiles(current => current.map(p => {
+            if (p.id !== 'overclock') return p;
+            return {
+              ...p,
+              tasks: p.tasks.map(t => t.id === 'o2' ? { ...t, completed: true } : t)
+            };
+          }));
+        }
+
         if (i === auditSteps.length - 1) {
           setIsAuditing(false);
           toast.success("AUDIT_COMPLETE", {
