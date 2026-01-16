@@ -2,10 +2,10 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Retro3DPhone } from '@/components/Retro3DPhone';
-import { ShieldCheck, Target, Zap, CheckCircle2, Circle, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, Target, Zap, CheckCircle2, Circle, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert, FileText, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
-import { SINGULARITY_LOGIC, SYSTEM_AUDIT_METRICS } from '@shared/extended-data';
+import { SINGULARITY_LOGIC, SYSTEM_AUDIT_METRICS, A9_HARDWARE_SPECS } from '@shared/extended-data';
 import { useAcademyStore } from '@/store/academy-store';
 import { toast } from 'sonner';
 interface MissionTask {
@@ -87,8 +87,6 @@ export function GodModePage() {
     auditSteps.forEach((step, i) => {
       setTimeout(() => {
         setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] ${step}`, ...prev].slice(0, 10));
-        
-        // Mark the audit task as completed when we reach the end of the simulation
         if (i === auditSteps.length - 1) {
           setProfiles(current => current.map(p => {
             if (p.id !== 'overclock') return p;
@@ -97,9 +95,6 @@ export function GodModePage() {
               tasks: p.tasks.map(t => t.id === 'o2' ? { ...t, completed: true } : t)
             };
           }));
-        }
-
-        if (i === auditSteps.length - 1) {
           setIsAuditing(false);
           toast.success("AUDIT_COMPLETE", {
             description: "Hardware subsystems verified for A1633.",
@@ -108,6 +103,33 @@ export function GodModePage() {
         }
       }, i * 400);
     });
+  };
+  const handleDownloadReport = () => {
+    const report = `
+A1633 ARCHIVE - TECHNICAL AUDIT REPORT
+======================================
+GENERATED: ${new Date().toISOString()}
+MODEL: ${A9_HARDWARE_SPECS.model}
+ARCHITECTURE: ${A9_HARDWARE_SPECS.codename}
+SYSTEM STATUS:
+- XP LEVEL: ${xp}
+- SYNC INTEGRITY: ${xp >= 2000 ? 'SINGULARITY' : xp >= 1500 ? 'STABLE' : 'UNSYNCED'}
+MISSION PROGRESS:
+${profiles.map(p => `[${p.name}]
+${p.tasks.map(t => `  - ${t.title}: ${t.completed ? 'COMPLETED' : 'PENDING'}`).join('\n')}`).join('\n\n')}
+HARDWARE METRICS:
+- BATTERY_BMS: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value}
+- AUDIO_I2S: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value}
+- LTE_BASEBAND: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'lte-baseband')?.value}
+EOF: SYSTEM_REPORT_VALIDATED
+    `;
+    const blob = new Blob([report], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `A1633_Technical_Audit_${new Date().getTime()}.txt`;
+    a.click();
+    toast.success("TECHNICAL_REPORT_EXPORTED");
   };
   const aiInsights = useMemo(() => {
     const key = activeProfile === 'hw-recon' ? 'gaming' : activeProfile === 'ghost' ? 'stable' : 'gaming';
@@ -121,8 +143,8 @@ export function GodModePage() {
       navigate('/export-hub');
     }, 1200);
   };
-  const syncIntegrity = xp >= 1500 ? 'STABLE' : xp >= 500 ? 'SYNCING' : 'UNSYNCED';
-  const syncColor = xp >= 1500 ? 'text-neon-pink' : xp >= 500 ? 'text-yellow-400' : 'text-neon-pink/40';
+  const syncIntegrity = xp >= 2000 ? 'SINGULARITY' : xp >= 1500 ? 'STABLE' : xp >= 500 ? 'SYNCING' : 'UNSYNCED';
+  const syncColor = xp >= 2000 ? 'text-neon-pink brand-glow' : xp >= 1500 ? 'text-neon-pink' : xp >= 500 ? 'text-yellow-400' : 'text-neon-pink/40';
   return (
     <RetroLayout>
       <div className="space-y-12">
@@ -143,6 +165,12 @@ export function GodModePage() {
               className="flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none active:translate-y-1 disabled:opacity-50"
             >
               {isAuditing ? <Activity className="size-3 animate-spin" /> : <ShieldAlert className="size-3" />} FULL_AUDIT
+            </button>
+            <button
+              onClick={handleDownloadReport}
+              className="flex-1 md:flex-none retro-button border-yellow-400 text-yellow-400 flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(250,204,21,1)] hover:shadow-none active:translate-y-1"
+            >
+              <Download className="size-3" /> EXPORT_REPORT
             </button>
             <button
               onClick={handleExport}
@@ -183,8 +211,8 @@ export function GodModePage() {
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="relative shrink-0">
-                    <div className={cn("absolute inset-0 blur-xl animate-pulse opacity-40", syncIntegrity === 'STABLE' ? 'bg-neon-pink' : 'bg-yellow-400')} />
-                    <div className={cn("size-12 border-2 flex items-center justify-center font-bold text-[10px] relative z-10 bg-retro-black", syncIntegrity === 'STABLE' ? 'border-neon-pink text-neon-pink' : 'border-yellow-400 text-yellow-400')}>
+                    <div className={cn("absolute inset-0 blur-xl animate-pulse opacity-40", xp >= 2000 ? 'bg-neon-pink' : 'bg-yellow-400')} />
+                    <div className={cn("size-12 border-2 flex items-center justify-center font-bold text-[10px] relative z-10 bg-retro-black", xp >= 1500 ? 'border-neon-pink text-neon-pink' : 'border-yellow-400 text-yellow-400')}>
                       {Math.floor((xp / 2500) * 100)}%
                     </div>
                   </div>

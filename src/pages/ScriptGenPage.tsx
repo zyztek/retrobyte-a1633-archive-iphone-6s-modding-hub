@@ -5,8 +5,10 @@ import { useScriptStore } from '@/store/script-store';
 import { generatePowerShellScript, ScriptOptions } from '@/lib/script-templates';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Copy, Check, Download, Rocket, Terminal, Cloud } from 'lucide-react';
+import { Copy, Check, Download, Rocket, Terminal, Layers, ShieldAlert, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import { SCRIPT_PRESETS } from '@shared/extended-data';
+import { cn } from '@/lib/utils';
 export function ScriptGenPage() {
   const options = useScriptStore(s => s.options);
   const toggleOption = useScriptStore(s => s.toggleOption);
@@ -27,6 +29,17 @@ export function ScriptGenPage() {
     a.click();
     URL.revokeObjectURL(url);
     toast.success("DOWNLOADING_SETUP_SCRIPT");
+  };
+  const handleLoadPreset = (presetOptions: ScriptOptions) => {
+    // We update the store manually since useScriptStore doesn't have a setAllOptions action
+    // In a real app, you'd add this action to the store.
+    // Here we'll toggle based on diff or provide a full state update if available.
+    Object.keys(presetOptions).forEach(key => {
+      if (options[key as keyof ScriptOptions] !== presetOptions[key as keyof ScriptOptions]) {
+        toggleOption(key as keyof ScriptOptions);
+      }
+    });
+    toast.info("PRESET_LOADED_SUCCESSFULLY");
   };
   const toolLabels: Partial<Record<keyof ScriptOptions, string>> = {
     installDrivers: "Install USBDK Drivers",
@@ -62,6 +75,26 @@ export function ScriptGenPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-4 space-y-6">
+            <RetroCard title="SYSTEM_PRESETS" variant="warning">
+              <div className="space-y-3">
+                {SCRIPT_PRESETS.map((preset) => (
+                  <button
+                    key={preset.id}
+                    onClick={() => handleLoadPreset(preset.options)}
+                    className="w-full text-left p-3 border-2 border-yellow-400/30 bg-black/40 hover:border-yellow-400 hover:bg-yellow-400/10 transition-all group"
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[11px] font-black text-yellow-400 group-hover:retro-glow uppercase">{preset.name}</span>
+                      <span className={cn(
+                        "text-[8px] px-1 border",
+                        preset.complexity === 'MAXIMUM' ? "border-neon-pink text-neon-pink" : "border-yellow-400 text-yellow-400"
+                      )}>{preset.complexity}</span>
+                    </div>
+                    <p className="text-[9px] opacity-60 leading-tight uppercase font-bold">{preset.description}</p>
+                  </button>
+                ))}
+              </div>
+            </RetroCard>
             <RetroCard title="CORE_MOD_TOOLS">
               <div className="space-y-4">
                 {(Object.keys(toolLabels) as Array<keyof ScriptOptions>).map((key) => (
