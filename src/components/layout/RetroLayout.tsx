@@ -17,7 +17,8 @@ export function RetroLayout({ children }: RetroLayoutProps) {
   const xp = useAcademyStore(s => s.xp);
   const setSingularityMode = useUIStore(s => s.setSingularityMode);
   const isSingularityMode = useUIStore(s => s.isSingularityMode);
-  // Mobile awareness for sidebar default state
+  const isEternityMode = useUIStore(s => s.isEternityMode);
+  const isOCAbyss = useUIStore(s => s.isOCAbyss);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
   useEffect(() => {
     const handleResize = () => setIsLargeScreen(window.innerWidth >= 1024);
@@ -42,75 +43,51 @@ export function RetroLayout({ children }: RetroLayoutProps) {
     return "0x" + (base >>> 0).toString(16).toUpperCase().padStart(8, '0');
   }, [memSeed]);
   const marqueeText = isSingularityMode
-    ? "SYSTEM_SINGULARITY_REACHED :: VOIDING_ALL_RESTRICTIONS :: GLOBAL_GRID_SYNC_ACTIVE :: PROTOCOL_4163_ENGAGED :: WELCOME_TO_THE_ABYSS :: "
-    : "WARNING: VOIDING WARRANTY IS REVERSIBLE BUT RISKY. PROCEED WITH CAUTION. | A1633 ARCHIVE V1.1.0 | GPRS_LINK: ACTIVE | CH_BUS: 133mhz | PAYLOAD_INJECTED | INTEGRITY_CHECK_COMPLETE :: ALL_SYSTEMS_OPERATIONAL | SOLUCIONES_646_SINGULARITY | ";
+    ? "VOIDING_ALL_DATA_RESTRICTIONS :: APOCALYPSE_PROTOCOL_4163 :: SINGULARITY_LOCK_ENGAGED :: WELCOME_TO_THE_ABYSS :: NO_MERCY_FOR_LEGACY_CODE :: "
+    : "A1633 ARCHIVE V1.2.0 | GPRS_LINK: ACTIVE | CH_BUS: 133mhz | PAYLOAD_INJECTED | SOLUCIONES_646_SINGULARITY | ";
   return (
     <TooltipProvider delayDuration={400}>
       <SidebarProvider defaultOpen={isLargeScreen}>
-        <div className={cn(
-          "crt-overlay pointer-events-none fixed inset-0 z-[9999] transition-all duration-1000",
-          isSingularityMode ? "opacity-95 animate-crt-flicker grayscale-[0.05]" : "opacity-90"
-        )} />
+        {/* Apocalypse Noise Background Layer */}
         {isSingularityMode && (
-          <div className="fixed inset-0 z-[10000] pointer-events-none opacity-40 bg-[linear-gradient(rgba(210,9,250,0.05)_50%,transparent_50%)] bg-[length:100%_1px] animate-scanline" />
+          <div className="fixed inset-0 z-[-1] pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]" />
         )}
         <div className={cn(
+          "crt-overlay pointer-events-none fixed inset-0 z-[9999] transition-all duration-700",
+          isSingularityMode ? "opacity-100 animate-crt-flicker" : "opacity-90"
+        )} />
+        <div className={cn(
           "screen-glow pointer-events-none fixed inset-0 z-[9998] transition-all duration-1000",
-          isSingularityMode ? "opacity-60 shadow-[inset_0_0_150px_rgba(210,9,250,0.35)]" : "opacity-30 shadow-[inset_0_0_120px_rgba(0,255,65,0.15)]"
+          isSingularityMode ? "opacity-60 shadow-[inset_0_0_200px_rgba(210,9,250,0.4)]" : "opacity-30 shadow-[inset_0_0_120px_rgba(0,255,65,0.15)]"
         )} />
         <LoadingOverlay />
         <VerboseHUD />
         <div className="relative min-h-screen w-full bg-retro-black flex font-mono overflow-hidden">
           <AppSidebar />
-          <SidebarInset className="bg-transparent flex flex-col min-h-screen relative overflow-hidden">
+          <SidebarInset className={cn(
+            "bg-transparent flex flex-col min-h-screen relative transition-all duration-1000",
+            isSingularityMode ? "hue-rotate-15 saturate-[1.5]" : ""
+          )}>
             <header className={cn(
-              "h-14 md:h-16 border-b-2 flex items-center justify-between px-4 md:px-8 bg-retro-black/95 backdrop-blur-lg z-50 flex-nowrap shrink-0 transition-colors duration-1000 delay-150",
+              "h-14 md:h-16 border-b-2 flex items-center justify-between px-4 md:px-8 bg-retro-black/95 backdrop-blur-lg z-50 transition-colors duration-1000",
               isSingularityMode ? "border-neon-pink shadow-[0_4px_20px_rgba(210,9,250,0.2)]" : "border-neon-green shadow-[0_4px_20px_rgba(0,255,65,0.1)]"
             )}>
-              <div className="flex items-center gap-4 overflow-hidden min-w-0">
-                <div className="relative">
-                  <SidebarTrigger
-                    className={cn(
-                      "rounded-none h-10 w-10 shrink-0 flex items-center justify-center transition-all active:scale-95",
-                      isSingularityMode
-                        ? "text-neon-pink border-neon-pink hover:bg-neon-pink hover:text-white shadow-[4px_4px_0px_rgba(210,9,250,0.3)]"
-                        : "text-neon-green border-neon-green hover:bg-neon-green hover:text-retro-black shadow-[4px_4px_0px_rgba(0,255,65,0.3)]"
-                    )}
-                    aria-label="Toggle System Menu"
-                  />
-                </div>
-                <BrandLogo size="lg" className="hidden sm:flex shrink-0" iconClassName={isSingularityMode ? "text-neon-pink" : ""} />
-                <BrandLogo size="md" className="flex sm:hidden shrink-0" iconClassName={isSingularityMode ? "text-neon-pink" : ""} />
-                <div className={cn(
-                  "flex items-center gap-2 md:gap-6 leading-none overflow-hidden border-l-2 pl-4 md:pl-8 min-w-0 transition-colors duration-500",
-                  isSingularityMode ? "border-neon-pink/30" : "border-neon-green/20"
-                )}>
-                  <span className={cn(
-                    "text-[10px] md:text-xs animate-pulse font-black shrink-0 whitespace-nowrap",
-                    isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green retro-glow"
-                  )}>● {isSingularityMode ? "SINGULARITY_LINK" : "SYS_UP"}</span>
-                  <span className={cn(
-                    "text-[10px] md:text-xs font-mono truncate italic transition-colors",
-                    isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-pink/80"
-                  )}>
-                    {memAddress}
-                  </span>
+              <div className="flex items-center gap-4 min-w-0">
+                <SidebarTrigger className={cn("rounded-none transition-all", isSingularityMode ? "text-neon-pink border-neon-pink" : "text-neon-green border-neon-green")} />
+                <BrandLogo size="md" className="shrink-0" iconClassName={isSingularityMode ? "text-neon-pink" : ""} />
+                <div className={cn("hidden sm:flex items-center gap-6 border-l-2 pl-4 transition-colors", isSingularityMode ? "border-neon-pink/30" : "border-neon-green/20")}>
+                  <span className={cn("text-[10px] animate-pulse font-black", isSingularityMode ? "text-neon-pink" : "text-neon-green")}>● {isSingularityMode ? "ABYSS_SYNC" : "SYS_UP"}</span>
+                  <span className={cn("text-[10px] font-mono", isSingularityMode ? "text-neon-pink" : "text-neon-pink/80")}>{memAddress}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3 md:gap-8 shrink-0">
+              <div className="flex items-center gap-8">
                 <div className="hidden lg:flex flex-col text-right">
-                  <span className="text-[8px] uppercase opacity-50 leading-none font-black tracking-widest">Sync_Depth</span>
-                  <span className={cn(
-                    "text-[11px] leading-none font-bold transition-colors",
-                    isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green retro-glow"
-                  )}>{xp} XP</span>
+                   <span className="text-[8px] opacity-50 font-black">SYNC_DEPTH</span>
+                   <span className={cn("text-[11px] font-bold", isSingularityMode ? "text-neon-pink" : "text-neon-green")}>{xp} XP</span>
                 </div>
                 <ThemeToggle className="static" />
-                <div className={cn(
-                  "text-[10px] md:text-sm tabular-nums font-black border-l-2 pl-4 md:pl-8 whitespace-nowrap transition-colors",
-                  isSingularityMode ? "border-neon-pink/30 text-neon-pink pink-glow" : "border-neon-green/30 text-neon-green retro-glow"
-                )}>
-                  {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                <div className={cn("text-[10px] md:text-sm tabular-nums font-black border-l-2 pl-4", isSingularityMode ? "text-neon-pink border-neon-pink/30" : "text-neon-green border-neon-green/30")}>
+                  {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
                 </div>
               </div>
             </header>
@@ -121,35 +98,15 @@ export function RetroLayout({ children }: RetroLayoutProps) {
                 </div>
               </div>
             </main>
-            <footer className={cn(
-              "h-12 border-t-2 flex items-center bg-retro-black text-[11px] uppercase tracking-tighter overflow-hidden shrink-0 transition-colors duration-500",
-              isSingularityMode ? "border-neon-pink" : "border-neon-green"
-            )}>
+            <footer className={cn("h-12 border-t-2 flex items-center bg-retro-black text-[11px] uppercase overflow-hidden shrink-0 transition-colors", isSingularityMode ? "border-neon-pink" : "border-neon-green")}>
               <div className="relative flex w-full h-full items-center">
-                <div className={cn(
-                  "whitespace-nowrap flex items-center h-full will-change-transform",
-                  isSingularityMode ? "animate-marquee" : "animate-marquee"
-                )} style={{ animationDuration: isSingularityMode ? '15s' : '30s' }}>
-                  <span className={cn(
-                    "px-12 font-black transition-colors",
-                    isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green/90 retro-glow"
-                  )}>{marqueeText}</span>
-                  <span className={cn(
-                    "px-12 font-black transition-colors",
-                    isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green/90 retro-glow"
-                  )}>{marqueeText}</span>
+                <div className="whitespace-nowrap flex items-center h-full animate-marquee" style={{ animationDuration: isSingularityMode ? '15s' : '30s' }}>
+                  <span className={cn("px-12 font-black", isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green/90")}>{marqueeText}</span>
+                  <span className={cn("px-12 font-black", isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green/90")}>{marqueeText}</span>
                 </div>
-                <div className={cn(
-                  "absolute right-0 h-full bg-retro-black border-l-2 px-6 flex items-center gap-4 z-20 transition-all",
-                  isSingularityMode
-                    ? "border-neon-pink shadow-[-20px_0_40px_rgba(210,9,250,0.5)]"
-                    : "border-neon-green shadow-[-20px_0_30px_rgba(10,10,10,1)]"
-                )}>
-                  <BrandLogo size="sm" showText={false} iconClassName={isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-pink"} />
-                  <span className={cn(
-                    "text-[10px] font-black tracking-[0.2em] hidden xs:block",
-                    isSingularityMode ? "text-white pink-glow" : "text-neon-pink"
-                  )}>SOLUCIONES_646</span>
+                <div className={cn("absolute right-0 h-full bg-retro-black border-l-2 px-6 flex items-center gap-4 z-20", isSingularityMode ? "border-neon-pink shadow-[-20px_0_40px_rgba(210,9,250,0.5)]" : "border-neon-green")}>
+                   <BrandLogo size="sm" showText={false} iconClassName={isSingularityMode ? "text-neon-pink" : "text-neon-pink"} />
+                   <span className={cn("text-[10px] font-black tracking-widest hidden xs:block", isSingularityMode ? "text-white" : "text-neon-pink")}>SOLUCIONES_646</span>
                 </div>
               </div>
             </footer>
