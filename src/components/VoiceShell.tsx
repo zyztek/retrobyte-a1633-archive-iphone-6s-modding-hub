@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, Terminal, Zap, ShieldAlert, AlertCircle } from 'lucide-react';
+import { Mic, MicOff, Terminal, AlertCircle } from 'lucide-react';
 import { useUIStore } from '@/store/ui-store';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -11,12 +11,45 @@ export function VoiceShell() {
   const [isSupported, setIsSupported] = useState(true);
   const addLog = useUIStore(s => s.addLog);
   const navigate = useNavigate();
+  const recognitionRef = useRef<any>(null);
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setIsSupported(false);
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      recognition.onresult = (event: any) => {
+        const text = event.results[0][0].transcript;
+        setTranscript(text);
+        handleCommand(text);
+        setIsListening(false);
+      };
+      recognition.onerror = (event: any) => {
+        console.warn("Speech recognition error:", event.error);
+        if (event.error !== 'aborted') {
+          addLog(`VOICE_ERROR: ${event.error.toUpperCase()}`);
+          toast.error("VOICE_SYSTEM_FAILURE", { description: event.error });
+        }
+        setIsListening(false);
+      };
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+      recognitionRef.current = recognition;
     }
-  }, []);
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {
+          // No-op
+        }
+      }
+    };
+  }, [addLog]);
   const handleCommand = useCallback((cmd: string) => {
     const clean = cmd.toLowerCase();
     addLog(`VOICE_CMD: ${clean.toUpperCase()}`);
@@ -36,29 +69,12 @@ export function VoiceShell() {
       toast.error("UNRECOGNIZED_VOICE_KEYWORD");
     }
   }, [addLog, navigate]);
-  useEffect(() => {
-    if (!isSupported) return;
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
-    const recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
-    recognition.onresult = (event: any) => {
-      const text = event.results[0][0].transcript;
-      setTranscript(text);
-      handleCommand(text);
-      setIsListening(false);
-    };
-    recognition.onerror = (event: any) => {
-      console.error("Speech recognition error", event.error);
-      addLog(`VOICE_ERROR: ${event.error.toUpperCase()}`);
-      setIsListening(false);
-    };
-    recognition.onend = () => setIsListening(false);
-    if (isListening) {
+  const toggleListening = () => {
+    if (!isSupported || !recognitionRef.current) return;
+    if (!isListening) {
       try {
-        recognition.start();
+        recognitionRef.current.start();
+        setIsListening(true);
       } catch (e) {
         console.error("Speech recognition start failed", e);
         addLog("VOICE_SYS_FAIL: RECOGNITION_START_ERROR");
@@ -66,19 +82,13 @@ export function VoiceShell() {
       }
     } else {
       try {
-        recognition.stop();
+        recognitionRef.current.stop();
+        setIsListening(false);
       } catch (e) {
-        // Recognition already inactive
+        setIsListening(false);
       }
     }
-    return () => {
-      try {
-        recognition.stop();
-      } catch (e) {
-        // Recognition cleanup
-      }
-    };
-  }, [isListening, handleCommand, isSupported, addLog]);
+  };
   return (
     <div className="relative">
       <div className={cn(
@@ -86,7 +96,7 @@ export function VoiceShell() {
         !isSupported ? "border-yellow-400/50 shadow-[4px_4px_0px_rgba(250,204,21,0.5)]" : "border-neon-green"
       )}>
         <button
-          onClick={() => isSupported && setIsListening(!isListening)}
+          onClick={toggleListening}
           disabled={!isSupported}
           className={cn(
             "p-3 border-2 transition-all active:scale-95",
@@ -114,10 +124,10 @@ export function VoiceShell() {
             "text-xs font-mono h-5 truncate italic",
             !isSupported ? "text-yellow-400/80" : "text-neon-green/80"
           )}>
-            {!isSupported 
-              ? "Browser does not support Voice protocols. Use Chrome/Edge." 
-              : isListening 
-                ? "Listening for keywords..." 
+            {!isSupported
+              ? "Browser does not support Voice protocols. Use Chrome/Edge."
+              : isListening
+                ? "Listening for keywords..."
                 : transcript || "System idle. Awaiting voice input."}
           </div>
         </div>
