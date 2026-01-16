@@ -2,7 +2,7 @@ import React from "react";
 import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers, Book,
   FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap, ShieldCheck,
-  Globe, Smartphone, Rocket, Usb, BarChart3
+  Globe, Smartphone, Rocket, Usb, BarChart3, Shield
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,7 @@ export function AppSidebar(): JSX.Element {
     { title: "Island Fakeout", icon: Smartphone, path: "/island-fakeout", tip: "Modern UI simulation" },
     { title: "EmuVault", icon: Laptop, path: "/emuvault", tip: "A9 JIT Emulation" },
     { title: "Remote Ops", icon: Globe, path: "/remote-ops", tip: "SSH & VNC Hub" },
+    { title: "Docs Vault", icon: Shield, path: "/docs-vault", tip: "Classified Intel" },
   ];
   const labNav = [
     { title: "System Lab", icon: FlaskConical, path: "/system-lab", tip: "Foundry & Forge" },
@@ -42,6 +43,7 @@ export function AppSidebar(): JSX.Element {
     { title: "Exploit Lab", icon: Activity, path: "/exploit-lab", tip: "Race-condition sim" },
     { title: "USB Forge", icon: Usb, path: "/usb-forge", tip: "P7 & OTG Protocols" },
     { title: "Academy", icon: GraduationCap, path: "/academy", tip: "Global Ranks & XP" },
+    { title: "Test Center", icon: ShieldCheck, path: "/test-center", tip: "Integrity validation" },
     { title: "GodMode", icon: Target, path: "/godmode", tip: "Command singularity" },
   ];
   const renderItems = (items: any[]) => (
@@ -103,7 +105,7 @@ export function AppSidebar(): JSX.Element {
           <Switch checked={isVerbose} onCheckedChange={toggleVerbose} className="data-[state=checked]:bg-neon-pink rounded-none" />
         </div>
         <div className="text-[8px] text-center text-neon-green/40 font-bold uppercase tracking-widest">
-          (C) 2024 SOLUCIONES 646<br/>A1633_SINGULARITY
+          (C) 2024 SOLUCIONES 646<br/>A1633_SINGULARITY_V30.0
         </div>
       </SidebarFooter>
     </Sidebar>

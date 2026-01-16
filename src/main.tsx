@@ -1,8 +1,8 @@
 import '@/lib/errorReporter';
+import React, { StrictMode, Suspense, lazy } from 'react';
 import { enableMapSet } from "immer";
 enableMapSet();
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot } from 'react-dom/client';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -10,28 +10,30 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteErrorBoundary } from '@/components/RouteErrorBoundary';
-import '@/index.css'
-import { HomePage } from '@/pages/HomePage'
-import { ScriptGenPage } from '@/pages/ScriptGenPage'
-import { ArchivesPage } from '@/pages/ArchivesPage'
-import { GuideDetailPage } from '@/pages/GuideDetailPage'
-import { ModRepoPage } from '@/pages/ModRepoPage'
-import { MultiBootPage } from '@/pages/MultiBootPage'
-import { PackageStoresPage } from '@/pages/PackageStoresPage'
-import { EmuVaultPage } from '@/pages/EmuVaultPage'
-import { TweakAIPage } from '@/pages/TweakAIPage'
-import { SystemLabPage } from '@/pages/SystemLabPage'
-import { GodModePage } from '@/pages/GodModePage'
-import { ExploitLabPage } from '@/pages/ExploitLabPage'
-import { NetworkArsenalPage } from '@/pages/NetworkArsenalPage'
-import { HackCamPage } from '@/pages/HackCamPage'
-import { DocsVaultPage } from '@/pages/DocsVaultPage'
-import { AcademyPage } from '@/pages/AcademyPage'
-import { TestCenterPage } from '@/pages/TestCenterPage'
-import { ExportHubPage } from '@/pages/ExportHubPage'
-import { USBForgePage } from '@/pages/USBForgePage'
-import { RemoteUSBPage } from '@/pages/RemoteUSBPage'
-import { IslandFakeoutPage } from '@/pages/IslandFakeoutPage'
+import '@/index.css';
+import { LoadingOverlay } from '@/components/ui/loading-overlay';
+// Lazy loaded page components
+const HomePage = lazy(() => import('@/pages/HomePage').then(m => ({ default: m.HomePage })));
+const ScriptGenPage = lazy(() => import('@/pages/ScriptGenPage').then(m => ({ default: m.ScriptGenPage })));
+const ArchivesPage = lazy(() => import('@/pages/ArchivesPage').then(m => ({ default: m.ArchivesPage })));
+const GuideDetailPage = lazy(() => import('@/pages/GuideDetailPage').then(m => ({ default: m.GuideDetailPage })));
+const ModRepoPage = lazy(() => import('@/pages/ModRepoPage').then(m => ({ default: m.ModRepoPage })));
+const MultiBootPage = lazy(() => import('@/pages/MultiBootPage').then(m => ({ default: m.MultiBootPage })));
+const PackageStoresPage = lazy(() => import('@/pages/PackageStoresPage').then(m => ({ default: m.PackageStoresPage })));
+const EmuVaultPage = lazy(() => import('@/pages/EmuVaultPage').then(m => ({ default: m.EmuVaultPage })));
+const TweakAIPage = lazy(() => import('@/pages/TweakAIPage').then(m => ({ default: m.TweakAIPage })));
+const SystemLabPage = lazy(() => import('@/pages/SystemLabPage').then(m => ({ default: m.SystemLabPage })));
+const GodModePage = lazy(() => import('@/pages/GodModePage').then(m => ({ default: m.GodModePage })));
+const ExploitLabPage = lazy(() => import('@/pages/ExploitLabPage').then(m => ({ default: m.ExploitLabPage })));
+const NetworkArsenalPage = lazy(() => import('@/pages/NetworkArsenalPage').then(m => ({ default: m.NetworkArsenalPage })));
+const HackCamPage = lazy(() => import('@/pages/HackCamPage').then(m => ({ default: m.HackCamPage })));
+const DocsVaultPage = lazy(() => import('@/pages/DocsVaultPage').then(m => ({ default: m.DocsVaultPage })));
+const AcademyPage = lazy(() => import('@/pages/AcademyPage').then(m => ({ default: m.AcademyPage })));
+const TestCenterPage = lazy(() => import('@/pages/TestCenterPage').then(m => ({ default: m.TestCenterPage })));
+const ExportHubPage = lazy(() => import('@/pages/ExportHubPage').then(m => ({ default: m.ExportHubPage })));
+const USBForgePage = lazy(() => import('@/pages/USBForgePage').then(m => ({ default: m.USBForgePage })));
+const RemoteUSBPage = lazy(() => import('@/pages/RemoteUSBPage').then(m => ({ default: m.RemoteUSBPage })));
+const IslandFakeoutPage = lazy(() => import('@/pages/IslandFakeoutPage').then(m => ({ default: m.IslandFakeoutPage })));
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   { path: "/", element: <HomePage />, errorElement: <RouteErrorBoundary /> },
@@ -56,12 +58,17 @@ const router = createBrowserRouter([
   { path: "/remote-ops", element: <RemoteUSBPage />, errorElement: <RouteErrorBoundary /> },
   { path: "/island-fakeout", element: <IslandFakeoutPage />, errorElement: <RouteErrorBoundary /> }
 ]);
+const ForceLoadingOverlay = () => {
+  return <LoadingOverlay forcedState={true} />;
+};
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
-        <RouterProvider router={router} />
+        <Suspense fallback={<ForceLoadingOverlay />}>
+          <RouterProvider router={router} />
+        </Suspense>
       </ErrorBoundary>
     </QueryClientProvider>
   </StrictMode>,
-)
+);
