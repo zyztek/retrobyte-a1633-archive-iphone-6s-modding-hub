@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { Retro3DPhone } from '@/components/Retro3DPhone';
-import { ShieldCheck, Target, Zap, CheckCircle2, Circle, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert, Download, RefreshCcw } from 'lucide-react';
+import { ShieldCheck, Target, Zap, CheckCircle2, Circle, Activity, Hammer, Share2, Rocket, Radio, Battery, Volume2, ShieldAlert, Download, RefreshCcw, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { SINGULARITY_LOGIC, SYSTEM_AUDIT_METRICS, A9_HARDWARE_SPECS } from '@shared/extended-data';
@@ -31,8 +31,13 @@ export function GodModePage() {
   const xp = useAcademyStore(s => s.xp);
   const resetProgress = useAcademyStore(s => s.resetProgress);
   const isSingularityMode = useUIStore(s => s.isSingularityMode);
+  const isEternityMode = useUIStore(s => s.isEternityMode);
+  const setEternityMode = useUIStore(s => s.setEternityMode);
+  const isOCAbyss = useUIStore(s => s.isOCAbyss);
+  const setOCAbyss = useUIStore(s => s.setOCAbyss);
   const resetUI = useUIStore(s => s.resetUI);
   const setLoading = useUIStore(s => s.setLoading);
+  const addLog = useUIStore(s => s.addLog);
   const [profiles, setProfiles] = useState<MissionProfile[]>([
     {
       id: "ghost",
@@ -65,6 +70,40 @@ export function GodModePage() {
       ]
     }
   ]);
+  const handleEternityProtocol = () => {
+    if (isEternityMode) {
+      setEternityMode(false);
+      addLog("ETERNITY_LINK: SEVERED");
+      return;
+    }
+    const sequence = ["Nulling Battery Voltage...", "Bypassing BMS Limits...", "ETERNITY_LINK: ENGAGED"];
+    sequence.forEach((step, i) => {
+      setTimeout(() => {
+        setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] ${step}`, ...prev]);
+        if (i === sequence.length - 1) {
+          setEternityMode(true);
+          toast.success("BATTERY_ETERNITY_ACTIVE");
+        }
+      }, i * 500);
+    });
+  };
+  const handleOCAbyss = () => {
+    if (isOCAbyss) {
+      setOCAbyss(false);
+      addLog("ABYSS_OC: REVERTED_TO_STOCK");
+      return;
+    }
+    const sequence = ["Unlocking Twister Core V-Rail...", "Synchronizing at 2.4GHz...", "ABYSS_THERMAL_LOCK: BYPASSED"];
+    sequence.forEach((step, i) => {
+      setTimeout(() => {
+        setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] ${step}`, ...prev]);
+        if (i === sequence.length - 1) {
+          setOCAbyss(true);
+          toast.error("OC_ABYSS_UNSTABLE_ULTRA");
+        }
+      }, i * 500);
+    });
+  };
   const toggleTask = (profileId: string, taskId: string) => {
     setProfiles(prev => prev.map(p => {
       if (p.id !== profileId) return p;
@@ -103,22 +142,14 @@ export function GodModePage() {
             };
           }));
           setIsAuditing(false);
-          toast.success("AUDIT_COMPLETE", {
-            description: "Hardware subsystems verified for A1633."
-          });
+          toast.success("AUDIT_COMPLETE");
         }
       }, i * 400);
     });
   };
   const handleResetProtocol = () => {
     setIsResetting(true);
-    const resetSteps = [
-      "INITIATING_FACTORY_PURGE...",
-      "ERASING_NAND_BLOCKS...",
-      "PURGING_ACADEMY_RECORDS...",
-      "NULLING_SINGULARITY_VECTORS...",
-      "REBOOTING_KERNEL_0x00..."
-    ];
+    const resetSteps = ["INITIATING_FACTORY_PURGE...", "ERASING_NAND_BLOCKS...", "PURGING_ACADEMY_RECORDS...", "NULLING_SINGULARITY_VECTORS...", "REBOOTING_KERNEL_0x00..."];
     resetSteps.forEach((step, i) => {
       setTimeout(() => {
         setSysLogs(prev => [`[${new Date().toLocaleTimeString()}] ${step}`, ...prev].slice(0, 10));
@@ -136,28 +167,12 @@ export function GodModePage() {
     });
   };
   const handleDownloadReport = () => {
-    const report = `
-A1633 ARCHIVE - TECHNICAL AUDIT REPORT
-======================================
-GENERATED: ${new Date().toISOString()}
-MODEL: ${A9_HARDWARE_SPECS.model}
-ARCHITECTURE: ${A9_HARDWARE_SPECS.codename}
-SYSTEM STATUS:
-- XP LEVEL: ${xp}
-- SYNC INTEGRITY: ${xp >= 2000 ? 'SINGULARITY' : xp >= 500 ? 'STABLE' : 'UNSYNCED'}
-MISSION PROGRESS:
-${profiles.map(p => `[${p.name}]
-${p.tasks.map(t => `  - ${t.title}: ${t.completed ? 'COMPLETED' : 'PENDING'}`).join('\n')}`).join('\n\n')}
-HARDWARE METRICS:
-- BATTERY_BMS: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value || "N/A"}
-- AUDIO_I2S: ${SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value || "N/A"}
-EOF: SYSTEM_REPORT_VALIDATED
-    `;
+    const report = `A1633 ARCHIVE - TECHNICAL AUDIT REPORT\n======================================\nGENERATED: ${new Date().toISOString()}\nXP LEVEL: ${xp}\nMISSION PROGRESS:\n${profiles.map(p => `[${p.name}]\n${p.tasks.map(t => `  - ${t.title}: ${t.completed ? 'COMPLETED' : 'PENDING'}`).join('\n')}`).join('\n\n')}\nEOF: SYSTEM_REPORT_VALIDATED`;
     const blob = new Blob([report], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `A1633_Technical_Audit_${new Date().getTime()}.txt`;
+    a.download = `A1633_Report_${new Date().getTime()}.txt`;
     a.click();
     toast.success("TECHNICAL_REPORT_EXPORTED");
   };
@@ -167,153 +182,81 @@ EOF: SYSTEM_REPORT_VALIDATED
   }, [activeProfile]);
   return (
     <RetroLayout>
-      <motion.div 
-        animate={isResetting ? { x: [-2, 2, -2, 2, 0], y: [-1, 1, -1, 1, 0] } : {}}
-        transition={{ duration: 0.1, repeat: isResetting ? 20 : 0 }}
-        className="space-y-12"
-      >
+      <motion.div animate={isResetting ? { x: [-2, 2, -2, 2, 0] } : {}} className="space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex items-center gap-4">
-            <div className={cn(
-              "p-3 text-white transition-all",
-              isSingularityMode ? "bg-neon-pink shadow-[0_0_20px_rgba(210,9,250,0.6)] animate-pulse" : "bg-neon-pink/80"
-            )}>
+            <div className={cn("p-3 text-white transition-all", isSingularityMode ? "bg-neon-pink shadow-[0_0_20px_rgba(210,9,250,0.6)] animate-pulse" : "bg-neon-pink/80")}>
               <Target className="size-8 md:size-10" />
             </div>
             <div>
-              <h1 className={cn(
-                "text-3xl md:text-4xl font-bold uppercase tracking-tighter leading-none transition-colors",
-                isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-pink"
-              )}>GodMode Hub</h1>
+              <h1 className={cn("text-3xl md:text-4xl font-bold uppercase tracking-tighter leading-none transition-colors", isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-pink")}>GodMode Hub</h1>
               <p className="text-[10px] md:text-xs text-neon-pink uppercase font-bold tracking-[0.2em] opacity-80">Singularity :: Command_Center</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
-            <button
-              onClick={handleResetProtocol}
-              disabled={isResetting}
-              className="flex-1 md:flex-none retro-button border-red-500 text-red-500 flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(239,68,68,1)] hover:shadow-none active:translate-y-1 disabled:opacity-50"
-            >
-              <RefreshCcw className={cn("size-3", isResetting && "animate-spin")} /> RESET_GRID
-            </button>
-            <button
-              onClick={handleAudit}
-              disabled={isAuditing}
-              className={cn(
-                "flex-1 md:flex-none retro-button border-neon-pink text-neon-pink flex items-center justify-center gap-2 text-[10px] active:translate-y-1 disabled:opacity-50",
-                isSingularityMode ? "shadow-[4px_4px_0px_rgba(210,9,250,1)] hover:shadow-none" : "shadow-[4px_4px_0px_rgba(210,9,250,0.4)]"
-              )}
-            >
-              {isAuditing ? <Activity className="size-3 animate-spin" /> : <ShieldAlert className="size-3" />} FULL_AUDIT
-            </button>
-            <button
-              onClick={handleDownloadReport}
-              className="flex-1 md:flex-none retro-button border-yellow-400 text-yellow-400 flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_rgba(250,204,21,1)] hover:shadow-none active:translate-y-1"
-            >
-              <Download className="size-3" /> EXPORT_REPORT
-            </button>
-            <button
-              onClick={() => { setIsExporting(true); setTimeout(() => navigate('/export-hub'), 800); }}
-              disabled={isExporting}
-              className="flex-1 md:flex-none retro-button border-white text-white flex items-center justify-center gap-2 text-[10px] shadow-[4px_4px_0px_white] hover:shadow-none disabled:opacity-50"
-            >
-              {isExporting ? <Share2 className="size-3 animate-spin" /> : <Rocket className="size-3" />} EXPORT_HUB
-            </button>
+             <button onClick={handleEternityProtocol} className={cn("flex-1 md:flex-none retro-button border-yellow-400 text-yellow-400 text-[10px]", isEternityMode && "bg-yellow-400 text-black")}>
+               {isEternityMode ? "ETERNITY_ACTIVE" : "INIT_ETERNITY"}
+             </button>
+             <button onClick={handleOCAbyss} className={cn("flex-1 md:flex-none retro-button border-neon-pink text-neon-pink text-[10px]", isOCAbyss && "bg-neon-pink text-white animate-pulse")}>
+               {isOCAbyss ? "ABYSS_ULTRA" : "INIT_ABYSS_OC"}
+             </button>
+             <button onClick={handleResetProtocol} className="flex-1 md:flex-none retro-button border-red-500 text-red-500 text-[10px]">RESET_GRID</button>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-8">
-            <RetroCard
-              title="HARDWARE_VISUALIZER"
-              status={isSingularityMode ? "A1633_SINGULARITY_ACTIVE" : "A1633_LOCAL"}
-              className="min-h-[450px] md:min-h-[550px] flex flex-col p-0 overflow-hidden"
-              variant={isSingularityMode ? "danger" : "default"}
-            >
-              <div className="flex-1 w-full relative h-full">
-                <Retro3DPhone />
-              </div>
+            <RetroCard title="HARDWARE_VISUALIZER" status={isSingularityMode ? "SINGULARITY_LOCKED" : "A1633_LOCAL"} className="min-h-[450px] relative">
+              {xp >= 2500 && (
+                <div className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center">
+                   <div className="border-4 border-neon-pink p-8 bg-black/80 backdrop-blur-md animate-pulse">
+                      <Lock className="size-16 text-neon-pink mb-4 mx-auto" />
+                      <div className="text-2xl font-black text-neon-pink uppercase">Singularity_Lock_Active</div>
+                   </div>
+                </div>
+              )}
+              <Retro3DPhone />
             </RetroCard>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <RetroCard title="AUDIO_AUDIT (I2S)" variant={isSingularityMode ? "danger" : "default"} className="text-center">
-                <Volume2 className={cn("size-8 mx-auto mb-2", isSingularityMode ? "text-neon-pink" : "text-neon-green")} />
-                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'audio-i2s')?.value || "MAPPED_0x12"}</div>
+              <RetroCard title="AUDIO_AUDIT" variant={isSingularityMode ? "danger" : "default"} className="text-center">
+                <Volume2 className="size-8 mx-auto mb-2" />
+                <div className="text-[10px] font-black uppercase">MAPPED_0x12</div>
               </RetroCard>
-              <RetroCard title="BATTERY_AUDIT (BMS)" variant="warning" className="text-center">
-                <Battery className="size-8 mx-auto mb-2 text-yellow-400" />
-                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'battery-bms')?.value || "3.82V_NOMINAL"}</div>
+              <RetroCard title="BATTERY_ETERNITY" variant="warning" className="text-center">
+                <Battery className={cn("size-8 mx-auto mb-2", isEternityMode ? "text-yellow-400 animate-pulse" : "text-white/20")} />
+                <div className="text-[10px] font-black uppercase">{isEternityMode ? "ETERNAL_VOLT" : "3.82V_NOMINAL"}</div>
               </RetroCard>
-              <RetroCard title="LTE_AUDIT (BB)" variant={isSingularityMode ? "danger" : "default"} className="text-center">
-                <Radio className={cn("size-8 mx-auto mb-2", isSingularityMode ? "text-neon-pink" : "text-neon-green")} />
-                <div className="text-[10px] font-black">{SYSTEM_AUDIT_METRICS.find(m => m.id === 'lte-baseband')?.value || "LINK_ESTABLISHED"}</div>
+              <RetroCard title="ABYSS_PERF" variant={isSingularityMode ? "danger" : "default"} className="text-center">
+                <Zap className={cn("size-8 mx-auto mb-2", isOCAbyss ? "text-neon-pink animate-pulse" : "text-white/20")} />
+                <div className="text-[10px] font-black uppercase">{isOCAbyss ? "UNSTABLE_ULTRA" : "1.85GHZ_STOCK"}</div>
               </RetroCard>
             </div>
           </div>
           <div className="lg:col-span-4 space-y-8">
             <RetroCard title="SINGULARITY_AI" status="PREDICTING" variant="danger">
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="relative shrink-0">
-                    <div className={cn("absolute inset-0 blur-xl animate-pulse opacity-40", xp >= 2000 ? 'bg-neon-pink' : 'bg-yellow-400')} />
-                    <div className={cn("size-12 border-2 flex items-center justify-center font-bold text-[10px] relative z-10 bg-retro-black", xp >= 1500 ? 'border-neon-pink text-neon-pink' : 'border-yellow-400 text-yellow-400')}>
-                      {Math.floor((xp / 2500) * 100)}%
+               <div className="space-y-4">
+                 <div className="flex items-center gap-4">
+                    <div className="size-12 border-2 border-neon-pink flex items-center justify-center text-neon-pink font-black text-xs">
+                       {Math.floor((xp / 2500) * 100)}%
                     </div>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] uppercase font-bold text-neon-pink/60 leading-none">Sync_Depth</span>
-                    <span className={cn("text-xs font-black uppercase tracking-widest", xp >= 2000 ? "text-neon-pink brand-glow" : "text-neon-pink/40")}>
-                      {xp >= 2000 ? 'SINGULARITY' : 'SYNCING'}
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-3 font-mono text-[9px]">
-                  {aiInsights.map((log, i) => (
-                    <div key={i} className="p-2.5 border border-neon-pink/30 bg-neon-pink/5 leading-tight animate-in fade-in slide-in-from-left-2 duration-300 italic">
-                      {log}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </RetroCard>
-            <RetroCard title="MISSION_PROFILES" status="VITAL" variant="danger">
-              <div className="space-y-4">
-                {profiles.map((profile) => (
-                  <div key={profile.id} className={cn(
-                    "p-3 border-2 cursor-pointer transition-all hover:bg-neon-pink/5",
-                    activeProfile === profile.id ? "border-neon-pink bg-neon-pink/10 shadow-[inset_0_0_10px_rgba(210,9,250,0.2)]" : "border-neon-pink/20 opacity-60"
-                  )} onClick={() => setActiveProfile(profile.id)}>
-                    <div className="flex items-center gap-2 mb-3">
-                      <profile.icon className="size-4 text-neon-pink" />
-                      <span className="text-[10px] font-black text-neon-pink uppercase">{profile.name}</span>
-                    </div>
-                    <div className="space-y-2">
-                      {profile.tasks.map((task) => (
-                        <div key={task.id} className="flex justify-between items-center text-[8px] font-bold uppercase cursor-pointer hover:text-white" onClick={(e) => { e.stopPropagation(); toggleTask(profile.id, task.id); }}>
-                          <span className={task.completed ? "text-neon-pink" : "opacity-30"}>{task.title}</span>
-                          {task.completed ? <CheckCircle2 className="size-3 text-neon-pink" /> : <Circle className="size-3" />}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    <span className="text-xs font-black text-neon-pink uppercase">Sync_Depth</span>
+                 </div>
+                 <div className="space-y-2 font-mono text-[9px]">
+                   {aiInsights.map((log, i) => (
+                     <div key={i} className="p-2 border border-neon-pink/30 bg-neon-pink/5">{log}</div>
+                   ))}
+                 </div>
+               </div>
             </RetroCard>
             <RetroCard title="SYSLOG_STREAM" status="LIVE">
-              <div className={cn(
-                "bg-black/80 border p-3 h-48 overflow-y-auto font-mono text-[9px] space-y-1.5 scrollbar-thin transition-colors",
-                isSingularityMode ? "border-neon-pink/30 text-neon-pink/80" : "border-neon-green/30 text-neon-green/80"
-              )}>
-                {sysLogs.length === 0 && <div className="opacity-20 uppercase italic">Awaiting telemetry...</div>}
+              <div className="bg-black/80 border border-neon-green/30 p-3 h-48 overflow-y-auto font-mono text-[9px] space-y-1.5">
                 {sysLogs.map((log, i) => (
-                  <div key={i} className={cn(
-                    "animate-in fade-in slide-in-from-bottom-1 duration-200 border-l pl-2 break-all",
-                    isSingularityMode ? "border-neon-pink/20" : "border-neon-green/20"
-                  )}>
-                    {log}
-                  </div>
+                  <div key={i} className="border-l border-neon-green/20 pl-2">{log}</div>
                 ))}
-                {(isAuditing || isResetting) && <div className="animate-pulse text-neon-pink">_BUSY_STREAM_LOCKED</div>}
               </div>
             </RetroCard>
+            <button onClick={handleDownloadReport} className="retro-button w-full flex items-center justify-center gap-2">
+              <Download className="size-4" /> EXPORT_REPORT
+            </button>
           </div>
         </div>
       </motion.div>

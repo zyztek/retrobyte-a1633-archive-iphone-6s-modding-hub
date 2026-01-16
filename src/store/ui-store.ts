@@ -10,10 +10,14 @@ interface UIState {
   isLoading: boolean;
   isPublic: boolean;
   isSingularityMode: boolean;
+  isEternityMode: boolean;
+  isOCAbyss: boolean;
   actionLogs: ActionLog[];
   toggleVerbose: () => void;
   togglePublic: () => void;
   setSingularityMode: (active: boolean) => void;
+  setEternityMode: (active: boolean) => void;
+  setOCAbyss: (active: boolean) => void;
   setLoading: (loading: boolean) => void;
   addLog: (message: string) => void;
   clearLogs: () => void;
@@ -26,10 +30,14 @@ export const useUIStore = create<UIState>()(
       isLoading: false,
       isPublic: false,
       isSingularityMode: false,
+      isEternityMode: false,
+      isOCAbyss: false,
       actionLogs: [],
       toggleVerbose: () => set((state) => ({ isVerbose: !state.isVerbose })),
       togglePublic: () => set((state) => ({ isPublic: !state.isPublic })),
       setSingularityMode: (active) => set({ isSingularityMode: active }),
+      setEternityMode: (active) => set({ isEternityMode: active }),
+      setOCAbyss: (active) => set({ isOCAbyss: active }),
       setLoading: (loading) => set({ isLoading: loading }),
       addLog: (message) => set((state) => {
         const newLog: ActionLog = {
@@ -44,6 +52,8 @@ export const useUIStore = create<UIState>()(
       clearLogs: () => set({ actionLogs: [] }),
       resetUI: () => set({
         isSingularityMode: false,
+        isEternityMode: false,
+        isOCAbyss: false,
         actionLogs: [],
         isPublic: false,
         isLoading: false
@@ -54,7 +64,9 @@ export const useUIStore = create<UIState>()(
       partialize: (state) => ({
         isVerbose: state.isVerbose,
         isPublic: state.isPublic,
-        isSingularityMode: state.isSingularityMode
+        isSingularityMode: state.isSingularityMode,
+        isEternityMode: state.isEternityMode,
+        isOCAbyss: state.isOCAbyss
       }),
     }
   )
