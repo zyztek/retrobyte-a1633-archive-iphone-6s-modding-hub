@@ -17,6 +17,13 @@ export function RetroLayout({ children }: RetroLayoutProps) {
   const xp = useAcademyStore(s => s.xp);
   const setSingularityMode = useUIStore(s => s.setSingularityMode);
   const isSingularityMode = useUIStore(s => s.isSingularityMode);
+  // Mobile awareness for sidebar default state
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+  useEffect(() => {
+    const handleResize = () => setIsLargeScreen(window.innerWidth >= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   useEffect(() => {
     const interval = setInterval(() => {
       setMemSeed(prev => prev + 1);
@@ -24,11 +31,9 @@ export function RetroLayout({ children }: RetroLayoutProps) {
     return () => clearInterval(interval);
   }, []);
   useEffect(() => {
-    // Enable Singularity mode at 2500 XP threshold
     if (xp >= 2500 && !isSingularityMode) {
       setSingularityMode(true);
     } else if (xp < 2500 && isSingularityMode) {
-      // Allow manual or reset-based toggle off if XP drops
       setSingularityMode(false);
     }
   }, [xp, isSingularityMode, setSingularityMode]);
@@ -36,34 +41,30 @@ export function RetroLayout({ children }: RetroLayoutProps) {
     const base = Math.floor(Math.random() * 0xFFFFFFFF) ^ memSeed;
     return "0x" + (base >>> 0).toString(16).toUpperCase().padStart(8, '0');
   }, [memSeed]);
-  const marqueeText = isSingularityMode 
+  const marqueeText = isSingularityMode
     ? "SYSTEM_SINGULARITY_REACHED :: VOIDING_ALL_RESTRICTIONS :: GLOBAL_GRID_SYNC_ACTIVE :: PROTOCOL_4163_ENGAGED :: WELCOME_TO_THE_ABYSS :: "
     : "WARNING: VOIDING WARRANTY IS REVERSIBLE BUT RISKY. PROCEED WITH CAUTION. | A1633 ARCHIVE V1.1.0 | GPRS_LINK: ACTIVE | CH_BUS: 133mhz | PAYLOAD_INJECTED | INTEGRITY_CHECK_COMPLETE :: ALL_SYSTEMS_OPERATIONAL | SOLUCIONES_646_SINGULARITY | ";
   return (
     <TooltipProvider delayDuration={400}>
-      <SidebarProvider defaultOpen={true}>
+      <SidebarProvider defaultOpen={isLargeScreen}>
         <div className={cn(
           "crt-overlay pointer-events-none fixed inset-0 z-[9999] transition-all duration-1000",
-          isSingularityMode ? "opacity-100 animate-crt-flicker grayscale-[0.1]" : "opacity-90"
+          isSingularityMode ? "opacity-95 animate-crt-flicker grayscale-[0.05]" : "opacity-90"
         )} />
-        {/* Additional Singularity Scanline Layer */}
         {isSingularityMode && (
           <div className="fixed inset-0 z-[10000] pointer-events-none opacity-40 bg-[linear-gradient(rgba(210,9,250,0.05)_50%,transparent_50%)] bg-[length:100%_1px] animate-scanline" />
         )}
         <div className={cn(
           "screen-glow pointer-events-none fixed inset-0 z-[9998] transition-all duration-1000",
-          isSingularityMode ? "opacity-50 shadow-[inset_0_0_150px_rgba(210,9,250,0.3)]" : "opacity-30 shadow-[inset_0_0_120px_rgba(0,255,65,0.15)]"
+          isSingularityMode ? "opacity-60 shadow-[inset_0_0_150px_rgba(210,9,250,0.35)]" : "opacity-30 shadow-[inset_0_0_120px_rgba(0,255,65,0.15)]"
         )} />
-        {isSingularityMode && (
-          <div className="fixed inset-0 z-[9997] pointer-events-none opacity-[0.05] bg-red-950 animate-pulse" />
-        )}
         <LoadingOverlay />
         <VerboseHUD />
         <div className="relative min-h-screen w-full bg-retro-black flex font-mono overflow-hidden">
           <AppSidebar />
           <SidebarInset className="bg-transparent flex flex-col min-h-screen relative overflow-hidden">
             <header className={cn(
-              "h-14 md:h-16 border-b-2 flex items-center justify-between px-4 md:px-8 bg-retro-black/95 backdrop-blur-lg z-50 flex-nowrap shrink-0 transition-colors duration-500",
+              "h-14 md:h-16 border-b-2 flex items-center justify-between px-4 md:px-8 bg-retro-black/95 backdrop-blur-lg z-50 flex-nowrap shrink-0 transition-colors duration-1000 delay-150",
               isSingularityMode ? "border-neon-pink shadow-[0_4px_20px_rgba(210,9,250,0.2)]" : "border-neon-green shadow-[0_4px_20px_rgba(0,255,65,0.1)]"
             )}>
               <div className="flex items-center gap-4 overflow-hidden min-w-0">
@@ -77,9 +78,6 @@ export function RetroLayout({ children }: RetroLayoutProps) {
                     )}
                     aria-label="Toggle System Menu"
                   />
-                  {isSingularityMode && (
-                    <span className="absolute -top-1 -right-1 size-3 bg-neon-pink border border-white animate-pulse rounded-full hidden xs:block" />
-                  )}
                 </div>
                 <BrandLogo size="lg" className="hidden sm:flex shrink-0" iconClassName={isSingularityMode ? "text-neon-pink" : ""} />
                 <BrandLogo size="md" className="flex sm:hidden shrink-0" iconClassName={isSingularityMode ? "text-neon-pink" : ""} />
@@ -143,8 +141,8 @@ export function RetroLayout({ children }: RetroLayoutProps) {
                 </div>
                 <div className={cn(
                   "absolute right-0 h-full bg-retro-black border-l-2 px-6 flex items-center gap-4 z-20 transition-all",
-                  isSingularityMode 
-                    ? "border-neon-pink shadow-[-20px_0_40px_rgba(210,9,250,0.5)]" 
+                  isSingularityMode
+                    ? "border-neon-pink shadow-[-20px_0_40px_rgba(210,9,250,0.5)]"
                     : "border-neon-green shadow-[-20px_0_30px_rgba(10,10,10,1)]"
                 )}>
                   <BrandLogo size="sm" showText={false} iconClassName={isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-pink"} />
