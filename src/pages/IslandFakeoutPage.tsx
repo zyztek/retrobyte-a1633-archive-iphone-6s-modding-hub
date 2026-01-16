@@ -21,7 +21,7 @@ export function IslandFakeoutPage() {
     if (isSingularityMode && notchStyle !== 'island') {
       setNotchStyle('island');
     }
-  }, [isSingularityMode]);
+  }, [isSingularityMode, notchStyle]);
   const startTurboSign = () => {
     setIsSigning(true);
     setIsVortexActive(true);
@@ -72,10 +72,10 @@ export function IslandFakeoutPage() {
                 <div className="flex flex-col items-center justify-center text-neon-pink w-full px-8 relative z-10">
                    <div className="text-[10px] font-black uppercase mb-1">VORTEX_SIGNING_BLOCK_4163</div>
                    <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }} 
-                        animate={{ width: `${vortexProgress}%` }} 
-                        className="h-full bg-neon-pink shadow-[0_0_10px_rgba(210,9,250,1)]" 
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${vortexProgress}%` }}
+                        className="h-full bg-neon-pink shadow-[0_0_10px_rgba(210,9,250,1)]"
                       />
                    </div>
                    <div className="text-[8px] font-mono mt-1">{vortexProgress}%_SYNC</div>
