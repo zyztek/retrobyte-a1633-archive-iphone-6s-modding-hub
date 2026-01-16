@@ -58,14 +58,11 @@ const router = createBrowserRouter([
   { path: "/remote-ops", element: <RemoteUSBPage />, errorElement: <RouteErrorBoundary /> },
   { path: "/island-fakeout", element: <IslandFakeoutPage />, errorElement: <RouteErrorBoundary /> }
 ]);
-const ForceLoadingOverlay = () => {
-  return <LoadingOverlay forcedState={true} />;
-};
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
-        <Suspense fallback={<ForceLoadingOverlay />}>
+        <Suspense fallback={<LoadingOverlay forcedState />}>
           <RouterProvider router={router} />
         </Suspense>
       </ErrorBoundary>
