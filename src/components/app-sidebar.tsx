@@ -2,7 +2,7 @@ import React from "react";
 import {
   Terminal, Code, BookOpen, Package, Github, Settings, Layers, Book,
   FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap, ShieldCheck,
-  Globe, Smartphone, Rocket, Usb, BarChart3, Shield
+  Globe, Smartphone, Rocket, Usb, BarChart3, Shield, Monitor
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -59,18 +59,18 @@ export function AppSidebar(): JSX.Element {
                     asChild
                     isActive={isActive}
                     className={cn(
-                      "rounded-none h-11 border-2 border-transparent transition-all",
-                      isActive && "border-neon-green text-neon-green bg-neon-green/10",
-                      item.title === 'GodMode' && "text-neon-pink hover:bg-neon-pink hover:text-white"
+                      "rounded-none h-12 border-2 border-transparent transition-all",
+                      isActive && "border-neon-green text-neon-green bg-neon-green/10 shadow-[inset_0_0_10px_rgba(0,255,65,0.1)]",
+                      item.title === 'GodMode' && "text-neon-pink hover:bg-neon-pink hover:text-white border-neon-pink/30"
                     )}
                   >
                     <Link to={item.path} className="flex items-center gap-3 w-full">
-                      <item.icon className="size-4 shrink-0" />
-                      <span className="uppercase text-[11px] font-black tracking-widest">{item.title}</span>
+                      <item.icon className={cn("size-4 shrink-0", isActive && "brand-glow")} />
+                      <span className="uppercase text-[11px] font-black tracking-[0.2em]">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </TooltipTrigger>
-                <TooltipContent side="right" className="bg-retro-black border-2 border-neon-green text-neon-green rounded-none text-[10px] uppercase">
+                <TooltipContent side="right" className="bg-retro-black border-2 border-neon-green text-neon-green rounded-none text-[11px] uppercase font-black">
                   {item.tip}
                 </TooltipContent>
               </Tooltip>
@@ -81,31 +81,39 @@ export function AppSidebar(): JSX.Element {
     </SidebarMenu>
   );
   return (
-    <Sidebar className="border-r-2 border-neon-green bg-retro-black">
-      <SidebarHeader className="border-b-2 border-neon-green p-6 bg-retro-black">
-        <BrandLogo size="lg" />
+    <Sidebar className="border-r-2 border-neon-green bg-retro-black shadow-[10px_0_30px_rgba(0,255,65,0.05)]">
+      <SidebarHeader className="border-b-2 border-neon-green p-8 bg-retro-black flex justify-center items-center">
+        <BrandLogo size="lg" className="brand-glow" />
       </SidebarHeader>
-      <SidebarContent className="p-3 space-y-4 bg-retro-black">
+      <SidebarContent className="p-4 space-y-6 bg-retro-black scrollbar-thin">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[9px] uppercase font-black text-neon-green/40 mb-2 px-2">Core_System</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] uppercase font-black text-neon-green/60 mb-3 px-2 tracking-[0.3em]">Core_System</SidebarGroupLabel>
           {renderItems(mainNav)}
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[9px] uppercase font-black text-neon-pink/40 mb-2 px-2">Software_Sector</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] uppercase font-black text-neon-pink/60 mb-3 px-2 tracking-[0.3em]">Software_Sector</SidebarGroupLabel>
           {renderItems(softwareNav)}
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[9px] uppercase font-black text-yellow-400/40 mb-2 px-2">Technical_Labs</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] uppercase font-black text-yellow-400/60 mb-3 px-2 tracking-[0.3em]">Technical_Labs</SidebarGroupLabel>
           {renderItems(labNav)}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t-2 border-neon-green p-6 bg-retro-black space-y-4">
+      <SidebarFooter className="border-t-2 border-neon-green p-8 bg-retro-black space-y-6">
         <div className="flex items-center justify-between px-2">
-          <span className="text-[10px] font-bold text-neon-pink uppercase">Verbose</span>
-          <Switch checked={isVerbose} onCheckedChange={toggleVerbose} className="data-[state=checked]:bg-neon-pink rounded-none" />
+          <div className="flex items-center gap-2">
+            <Monitor className={cn("size-4", isVerbose ? "text-neon-pink animate-pulse" : "text-white/20")} />
+            <span className={cn("text-[11px] font-black uppercase tracking-widest", isVerbose ? "text-neon-pink" : "text-white/40")}>Verbose</span>
+          </div>
+          <Switch 
+            checked={isVerbose} 
+            onCheckedChange={toggleVerbose} 
+            className="data-[state=checked]:bg-neon-pink border-2 border-transparent rounded-none" 
+          />
         </div>
-        <div className="text-[8px] text-center text-neon-green/40 font-bold uppercase tracking-widest">
-          (C) 2024 SOLUCIONES 646<br/>A1633_SINGULARITY_V30.0
+        <div className="text-[9px] text-center text-neon-green/40 font-black uppercase tracking-[0.4em] leading-relaxed">
+          (C) 2024 SOLUCIONES 646<br/>
+          <span className="text-neon-pink/40">SINGULARITY_V30.0</span>
         </div>
       </SidebarFooter>
     </Sidebar>
