@@ -1,11 +1,10 @@
 import React from "react";
 import {
-  Terminal, Code, BookOpen, Package, Github, Settings, Layers, Book,
-  FlaskConical, LayoutGrid, Target, Brain, Laptop, Camera, Activity, Wifi, GraduationCap, ShieldCheck,
-  Globe, Smartphone, Rocket, Usb, BarChart3, Shield, Monitor
+  Terminal, Code, BookOpen, Package, Settings, FlaskConical, Target, Brain, Usb, GraduationCap, ShieldCheck,
+  Globe, Smartphone, Radio, Palette, Monitor, Laptop, Shield
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { useUIStore } from "@/store/ui-store";
 import {
   Sidebar,
@@ -33,6 +32,8 @@ export function AppSidebar(): JSX.Element {
   ];
   const softwareNav = [
     { title: "Island Fakeout", icon: Smartphone, path: "/island-fakeout", tip: "Modern UI simulation" },
+    { title: "Theme Abyss", icon: Palette, path: "/themes", tip: "iOS 18 custom skins" },
+    { title: "Live Spectator", icon: Radio, path: "/spectator", tip: "Global modding feeds" },
     { title: "EmuVault", icon: Laptop, path: "/emuvault", tip: "A9 JIT Emulation" },
     { title: "Remote Ops", icon: Globe, path: "/remote-ops", tip: "SSH & VNC Hub" },
     { title: "Docs Vault", icon: Shield, path: "/docs-vault", tip: "Classified Intel" },
@@ -40,7 +41,6 @@ export function AppSidebar(): JSX.Element {
   const labNav = [
     { title: "System Lab", icon: FlaskConical, path: "/system-lab", tip: "Foundry & Forge" },
     { title: "Tweak Oracle", icon: Brain, path: "/tweak-ai", tip: "ML-Lite recommendations" },
-    { title: "Exploit Lab", icon: Activity, path: "/exploit-lab", tip: "Race-condition sim" },
     { title: "USB Forge", icon: Usb, path: "/usb-forge", tip: "P7 & OTG Protocols" },
     { title: "Academy", icon: GraduationCap, path: "/academy", tip: "Global Ranks & XP" },
     { title: "Test Center", icon: ShieldCheck, path: "/test-center", tip: "Integrity validation" },
@@ -105,10 +105,10 @@ export function AppSidebar(): JSX.Element {
             <Monitor className={cn("size-4", isVerbose ? "text-neon-pink animate-pulse" : "text-white/20")} />
             <span className={cn("text-[11px] font-black uppercase tracking-widest", isVerbose ? "text-neon-pink" : "text-white/40")}>Verbose</span>
           </div>
-          <Switch 
-            checked={isVerbose} 
-            onCheckedChange={toggleVerbose} 
-            className="data-[state=checked]:bg-neon-pink border-2 border-transparent rounded-none" 
+          <Switch
+            checked={isVerbose}
+            onCheckedChange={toggleVerbose}
+            className="data-[state=checked]:bg-neon-pink border-2 border-transparent rounded-none"
           />
         </div>
         <div className="text-[9px] text-center text-neon-green/40 font-black uppercase tracking-[0.4em] leading-relaxed">

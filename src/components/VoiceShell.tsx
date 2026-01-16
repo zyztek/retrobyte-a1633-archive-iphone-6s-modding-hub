@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, Terminal, AlertCircle } from 'lucide-react';
+import { Mic, MicOff, Terminal, AlertCircle, Trash2 } from 'lucide-react';
 import { useUIStore } from '@/store/ui-store';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -12,6 +12,31 @@ export function VoiceShell() {
   const addLog = useUIStore(s => s.addLog);
   const navigate = useNavigate();
   const recognitionRef = useRef<any>(null);
+  const handleCommand = useCallback((cmd: string) => {
+    const clean = cmd.toLowerCase();
+    addLog(`VOICE_CMD: ${clean.toUpperCase()}`);
+    if (clean.includes('reset') || clean.includes('purge') || clean.includes('clear')) {
+      setTranscript("");
+      addLog("VOICE_BUFFER_PURGED");
+      toast.success("VOICE_BUFFER_CLEARED");
+      return;
+    }
+    if (clean.includes('inject') || clean.includes('jailbreak')) {
+      toast.info("COMMAND_ACCEPTED: Initializing Exploit Lab...");
+      navigate('/exploit-lab');
+    } else if (clean.includes('god') || clean.includes('godmode')) {
+      toast.warning("AUTHORITY_OVERRIDE: Entering GodMode...");
+      navigate('/godmode');
+    } else if (clean.includes('archives')) {
+      navigate('/archives');
+    } else if (clean.includes('script') || clean.includes('forge')) {
+      navigate('/script-forge');
+    } else if (clean.includes('backup')) {
+      toast.success("INITIATING_BACKUP_PROTOCOL");
+    } else {
+      toast.error("UNRECOGNIZED_VOICE_KEYWORD");
+    }
+  }, [addLog, navigate]);
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -49,26 +74,7 @@ export function VoiceShell() {
         }
       }
     };
-  }, [addLog]);
-  const handleCommand = useCallback((cmd: string) => {
-    const clean = cmd.toLowerCase();
-    addLog(`VOICE_CMD: ${clean.toUpperCase()}`);
-    if (clean.includes('inject') || clean.includes('jailbreak')) {
-      toast.info("COMMAND_ACCEPTED: Initializing Exploit Lab...");
-      navigate('/exploit-lab');
-    } else if (clean.includes('god') || clean.includes('godmode')) {
-      toast.warning("AUTHORITY_OVERRIDE: Entering GodMode...");
-      navigate('/godmode');
-    } else if (clean.includes('archives')) {
-      navigate('/archives');
-    } else if (clean.includes('script') || clean.includes('forge')) {
-      navigate('/script-forge');
-    } else if (clean.includes('backup')) {
-      toast.success("INITIATING_BACKUP_PROTOCOL");
-    } else {
-      toast.error("UNRECOGNIZED_VOICE_KEYWORD");
-    }
-  }, [addLog, navigate]);
+  }, [addLog, handleCommand]);
   const toggleListening = () => {
     if (!isSupported || !recognitionRef.current) return;
     if (!isListening) {
@@ -107,18 +113,25 @@ export function VoiceShell() {
           {isListening ? <MicOff className="size-6 text-white" /> : <Mic className="size-6" />}
         </button>
         <div className="flex-1 overflow-hidden">
-          <div className="flex items-center gap-2 mb-1">
-            {isSupported ? (
-              <Terminal className="size-3 text-neon-green" />
-            ) : (
-              <AlertCircle className="size-3 text-yellow-400" />
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2">
+              {isSupported ? (
+                <Terminal className="size-3 text-neon-green" />
+              ) : (
+                <AlertCircle className="size-3 text-yellow-400" />
+              )}
+              <span className={cn(
+                "text-[9px] font-black uppercase tracking-widest opacity-60",
+                !isSupported && "text-yellow-400"
+              )}>
+                {isSupported ? "Voice_Command_Link" : "Compatibility_Error"}
+              </span>
+            </div>
+            {transcript && (
+              <button onClick={() => setTranscript("")} className="hover:text-neon-pink transition-colors">
+                <Trash2 className="size-3" />
+              </button>
             )}
-            <span className={cn(
-              "text-[9px] font-black uppercase tracking-widest opacity-60",
-              !isSupported && "text-yellow-400"
-            )}>
-              {isSupported ? "Voice_Command_Link" : "Compatibility_Error"}
-            </span>
           </div>
           <div className={cn(
             "text-xs font-mono h-5 truncate italic",

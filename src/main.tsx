@@ -1,15 +1,12 @@
 import '@/lib/errorReporter';
 import React, { StrictMode, Suspense, lazy } from 'react';
-
 declare global {
   interface Window {
     __ROOT__: import('react-dom/client').Root | null;
   }
 }
-
 import { enableMapSet } from "immer";
 enableMapSet();
-
 import { createRoot } from 'react-dom/client';
 import {
   createBrowserRouter,
@@ -20,7 +17,6 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteErrorBoundary } from '@/components/RouteErrorBoundary';
 import '@/index.css';
 import { LoadingOverlay } from '@/components/ui/loading-overlay';
-
 // Lazy loaded page components
 const HomePage = lazy(() => import('@/pages/HomePage').then(m => ({ default: m.HomePage })));
 const ScriptGenPage = lazy(() => import('@/pages/ScriptGenPage').then(m => ({ default: m.ScriptGenPage })));
@@ -43,7 +39,8 @@ const ExportHubPage = lazy(() => import('@/pages/ExportHubPage').then(m => ({ de
 const USBForgePage = lazy(() => import('@/pages/USBForgePage').then(m => ({ default: m.USBForgePage })));
 const RemoteUSBPage = lazy(() => import('@/pages/RemoteUSBPage').then(m => ({ default: m.RemoteUSBPage })));
 const IslandFakeoutPage = lazy(() => import('@/pages/IslandFakeoutPage').then(m => ({ default: m.IslandFakeoutPage })));
-
+const LiveStreamPage = lazy(() => import('@/pages/LiveStreamPage').then(m => ({ default: m.LiveStreamPage })));
+const ThemeAbyssPage = lazy(() => import('@/pages/ThemeAbyssPage').then(m => ({ default: m.ThemeAbyssPage })));
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   { path: "/", element: <HomePage />, errorElement: <RouteErrorBoundary /> },
@@ -66,15 +63,15 @@ const router = createBrowserRouter([
   { path: "/export-hub", element: <ExportHubPage />, errorElement: <RouteErrorBoundary /> },
   { path: "/usb-forge", element: <USBForgePage />, errorElement: <RouteErrorBoundary /> },
   { path: "/remote-ops", element: <RemoteUSBPage />, errorElement: <RouteErrorBoundary /> },
-  { path: "/island-fakeout", element: <IslandFakeoutPage />, errorElement: <RouteErrorBoundary /> }
+  { path: "/island-fakeout", element: <IslandFakeoutPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/spectator", element: <LiveStreamPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/themes", element: <ThemeAbyssPage />, errorElement: <RouteErrorBoundary /> }
 ]);
-
 const container = document.getElementById('root')!;
 if (!window.__ROOT__) {
   window.__ROOT__ = createRoot(container);
 }
 const root = window.__ROOT__!;
-
 root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
@@ -86,8 +83,6 @@ root.render(
     </QueryClientProvider>
   </StrictMode>,
 );
-
 if (import.meta.hot) {
   import.meta.hot.accept();
 }
-//

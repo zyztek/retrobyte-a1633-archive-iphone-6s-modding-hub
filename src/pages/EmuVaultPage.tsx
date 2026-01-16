@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { EMU_VAULT } from '@shared/extended-data';
-import { Cpu, Zap, Activity, Info, BarChart3, Settings } from 'lucide-react';
+import { Cpu, Zap, Activity, Info, BarChart3, Settings, ShieldAlert, Thermometer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -24,8 +24,8 @@ export function EmuVaultPage() {
         </div>
         <div className="grid grid-cols-1 gap-8">
           {EMU_VAULT.map((emu) => (
-            <RetroCard 
-              key={emu.name} 
+            <RetroCard
+              key={emu.name}
               title={`${emu.platform} :: ${emu.name.toUpperCase()}`}
               variant={emu.compatibility === 'EXPERIMENTAL' ? 'warning' : 'default'}
               status={emu.compatibility}
@@ -35,8 +35,8 @@ export function EmuVaultPage() {
                   <div className="flex items-center gap-4">
                     <div className="bg-neon-green/10 p-3 border-2 border-neon-green/30 relative">
                       <Cpu className="size-8 text-neon-green" />
-                      {(emu.name === 'PPSSPP' || emu.name === 'Delta') && (
-                        <div className="absolute -top-2 -right-2 bg-neon-pink text-white text-[7px] px-1 font-black">A9_TUNED</div>
+                      {(emu.name.includes('A9') || emu.name.includes('PVR')) && (
+                        <div className="absolute -top-2 -right-2 bg-neon-pink text-white text-[7px] px-1 font-black shadow-[0_0_5px_rgba(210,9,250,1)]">RAGNAROK</div>
                       )}
                     </div>
                     <div>
@@ -45,6 +45,17 @@ export function EmuVaultPage() {
                     </div>
                   </div>
                   <p className="text-sm leading-relaxed opacity-80 font-bold uppercase">{emu.notes}</p>
+                  {emu.compatibility === 'EXPERIMENTAL' && (
+                    <div className="p-3 border border-neon-pink/30 bg-neon-pink/5 flex items-start gap-3">
+                      <Thermometer className="size-5 text-neon-pink animate-pulse shrink-0" />
+                      <div>
+                        <div className="text-[10px] font-black uppercase text-neon-pink">Thermal_Forecast: CRITICAL</div>
+                        <p className="text-[9px] opacity-70 uppercase leading-tight italic">
+                          Running {emu.name} on A9 silicon will exceed thermal safe-zones. CPU throttling at 82C expected within 4 minutes.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="p-3 border border-neon-green/30 bg-black/40">
                       <div className="text-[8px] font-black opacity-40 uppercase mb-1">Backend_Engine</div>
@@ -68,10 +79,13 @@ export function EmuVaultPage() {
                         <span className="text-neon-pink">{(emu.performanceScore * 0.6).toFixed(0)} FPS</span>
                       </div>
                       <div className="h-4 w-full bg-black border border-neon-green/30 p-0.5">
-                        <motion.div 
+                        <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${emu.performanceScore}%` }}
-                          className="h-full bg-neon-green shadow-[0_0_10px_rgba(0,255,65,1)]"
+                          className={cn(
+                            "h-full transition-all duration-1000",
+                            emu.performanceScore < 30 ? "bg-red-500 shadow-[0_0_10px_rgba(239,68,68,1)]" : "bg-neon-green shadow-[0_0_10px_rgba(0,255,65,1)]"
+                          )}
                         />
                       </div>
                     </div>
@@ -79,7 +93,10 @@ export function EmuVaultPage() {
                   <div className="space-y-2">
                     <div className="text-[10px] font-black uppercase text-neon-pink/60">A9_Backend_Forge</div>
                     <div className="flex flex-col gap-2">
-                      <button className="text-left px-3 py-1.5 border border-neon-pink/30 text-[9px] font-bold uppercase hover:bg-neon-pink hover:text-white transition-all">Prefer_Vulkan_Experimental</button>
+                      <button className="text-left px-3 py-1.5 border border-neon-pink/30 text-[9px] font-bold uppercase hover:bg-neon-pink hover:text-white transition-all flex items-center justify-between group">
+                        Prefer_Vulkan_Exp
+                        <ShieldAlert className="size-3 opacity-0 group-hover:opacity-100" />
+                      </button>
                       <button className="text-left px-3 py-1.5 border border-white/20 text-[9px] font-bold uppercase bg-white/5">OpenGL_ES_3.0_Stable</button>
                     </div>
                   </div>

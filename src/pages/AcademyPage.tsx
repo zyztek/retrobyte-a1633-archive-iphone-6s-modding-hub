@@ -5,9 +5,10 @@ import { RetroProgress } from '@/components/ui/retro-progress';
 import { RetroTable } from '@/components/ui/retro-table';
 import { useAcademyStore, getRankByXp } from '@/store/academy-store';
 import { ACADEMY_MODULES, ACADEMY_QUIZZES, Module, QuizQuestion, AcademyTier } from '@shared/academy-data';
-import { GraduationCap, Play, Lock, CheckCircle2, BrainCircuit, Globe, RefreshCw, UserCircle } from 'lucide-react';
+import { GraduationCap, Play, Lock, CheckCircle2, BrainCircuit, Globe, RefreshCw, UserCircle, ShieldAlert, Award, Zap } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -184,10 +185,22 @@ export function AcademyPage() {
                 <RetroTable
                   headers={['RANK', 'OPERATOR', 'SYNC_DEPTH', 'CLEARANCE']}
                   rows={leaderboard.map((e, i) => [
-                    <span className="font-bold text-neon-pink">#{i + 1}</span>,
-                    <span className="uppercase font-bold tracking-tight">{e.username}</span>,
+                    <span className="font-bold text-neon-pink flex items-center gap-2">
+                      #{i + 1}
+                      {i === 0 && <Award className="size-3 animate-bounce" />}
+                    </span>,
+                    <span className="uppercase font-bold tracking-tight flex items-center gap-2">
+                      {e.username}
+                      {e.xp >= 1500 && <Zap className="size-3 text-neon-pink brand-glow" />}
+                    </span>,
                     <span className="font-mono text-neon-green">{e.xp} XP</span>,
-                    <span className="text-[9px] border px-2 py-0.5 border-neon-green/30 uppercase font-bold">{e.rank}</span>
+                    <div className={cn(
+                      "text-[9px] border px-2 py-0.5 uppercase font-black flex items-center gap-1",
+                      e.rank.includes('GOD') ? "border-neon-pink text-neon-pink pink-glow" : "border-neon-green/30 text-neon-green"
+                    )}>
+                      {e.rank.includes('GOD') && <ShieldAlert className="size-2" />}
+                      {e.rank}
+                    </div>
                   ])}
                 />
                 <div className="text-[8px] text-center opacity-30 uppercase font-black tracking-[0.4em] py-4">

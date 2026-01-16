@@ -112,6 +112,58 @@ export const SCRIPT_PRESETS = [
     }
   }
 ];
+export const EMU_VAULT: Emulator[] = [
+  {
+    name: "Citra_A9",
+    platform: "3DS",
+    compatibility: "EXPERIMENTAL",
+    jitRequired: true,
+    performanceScore: 15,
+    notes: "A9 architecture pushed to limits. JIT required for Twister cores. High thermal strain."
+  },
+  {
+    name: "Flycast_PVR",
+    platform: "Dreamcast",
+    compatibility: "EXPERIMENTAL",
+    jitRequired: true,
+    performanceScore: 40,
+    notes: "Utilizes PowerVR GPU hooks. Optimized for A9 pipeline but still requires careful thermal management."
+  },
+  {
+    name: "Dolphin_A9",
+    platform: "GC/Wii",
+    compatibility: "EXPERIMENTAL",
+    jitRequired: true,
+    performanceScore: 45,
+    notes: "A9 architecture requires specialized cache-line alignment for PowerVR GPU backends. Vulkan recommended."
+  },
+  {
+    name: "PPSSPP",
+    platform: "PSP",
+    compatibility: "STABLE",
+    jitRequired: true,
+    performanceScore: 95,
+    notes: "A9 hardware handles most 3D titles at 2x resolution. Tuned for Twister core bursts."
+  },
+  {
+    name: "Delta",
+    platform: "Retro",
+    compatibility: "STABLE",
+    jitRequired: false,
+    performanceScore: 100,
+    notes: "Flawless execution on A1633. Native LPDDR4 memory mapping optimized."
+  }
+];
+export const IOS18_SKINS = [
+  { id: 'tinted', name: 'iOS 18 TINTED', color: '#00ff41', desc: 'Neon monochrome focus' },
+  { id: 'dark', name: 'iOS 18 DARK', color: '#1a1a1a', desc: 'Pure void aesthetic' },
+  { id: 'abyss', name: 'iOS 18 ABYSS', color: '#d209fa', desc: 'Singularity magenta drift' }
+];
+export const SPECTATOR_SESSIONS = [
+  { id: 'op_4163', action: 'INJECTING_PAYLOAD', region: 'NA_EAST', lat: 40.7, lng: -74.0 },
+  { id: 'op_9921', action: 'SYNCING_ARCHIVE', region: 'EU_WEST', lat: 51.5, lng: -0.1 },
+  { id: 'op_0042', action: 'KERNEL_FORGE', region: 'ASIA_SOUTH', lat: 35.6, lng: 139.6 }
+];
 export const SINGULARITY_LOGIC: Record<string, string[]> = {
   gaming: [
     "A9_TWISTER_BURST: ENABLED",
@@ -156,32 +208,6 @@ export const DOCS_VAULT_CONTENT: WikiArticle[] = [
     category: 'KERNEL',
     content: 'The Apple A9 SoC utilizes a dual-core 1.85GHz Twister architecture. Memory management is handled by a sophisticated MMU mapping the 2GB LPDDR4 address space. Neural_Weights simulation indicates a stable loss of 0.00042 during Tweak_AI training cycles.',
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-  }
-];
-export const EMU_VAULT: Emulator[] = [
-  {
-    name: "Dolphin_A9",
-    platform: "GC/Wii",
-    compatibility: "EXPERIMENTAL",
-    jitRequired: true,
-    performanceScore: 45,
-    notes: "A9 architecture requires specialized cache-line alignment for PowerVR GPU backends. Vulkan recommended."
-  },
-  {
-    name: "PPSSPP",
-    platform: "PSP",
-    compatibility: "STABLE",
-    jitRequired: true,
-    performanceScore: 95,
-    notes: "A9 hardware handles most 3D titles at 2x resolution. Tuned for Twister core bursts."
-  },
-  {
-    name: "Delta",
-    platform: "Retro",
-    compatibility: "STABLE",
-    jitRequired: false,
-    performanceScore: 100,
-    notes: "Flawless execution on A1633. Native LPDDR4 memory mapping optimized."
   }
 ];
 export const TWEAK_AI_QUIZ: QuizQuestion[] = [
