@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
-import { DOCS_VAULT_CONTENT, WikiArticle } from '@shared/extended-data';
+import { DOCS_VAULT_CONTENT, type WikiArticle } from '@shared/extended-data';
 import { Search, Shield, Book, Play, Terminal, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { AspectRatio } from '@/components/ui/aspect-ratio';

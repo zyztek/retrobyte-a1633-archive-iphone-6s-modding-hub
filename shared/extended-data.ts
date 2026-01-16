@@ -1,4 +1,11 @@
 import { Mod } from './archive-data';
+export interface WikiArticle {
+  id: string;
+  title: string;
+  category: string;
+  content: string;
+  videoUrl?: string;
+}
 export interface PackageStore {
   name: string;
   description: string;
@@ -23,6 +30,32 @@ export interface QuizQuestion {
     impact: Record<string, number>;
   }[];
 }
+export const SINGULARITY_LOGIC: Record<string, string[]> = {
+  gaming: [
+    "A9_TWISTER_BURST: ENABLED",
+    "THERMAL_THROTTLE_LIMIT: +15C",
+    "LPDDR4_LATENCY: REDUCED_0x44"
+  ],
+  stable: [
+    "POWERCUFF_PROFILE: ACTIVE",
+    "BACKGROUND_DAEMON_SCRUB: 88%",
+    "VOLTAGE_RAIL_SMOOTHING: ON"
+  ]
+};
+export const SYSTEM_AUDIT_METRICS = [
+  { id: 'battery-bms', value: '3.82V_NOMINAL' },
+  { id: 'audio-i2s', value: 'MAPPED_0x12' },
+  { id: 'lte-baseband', value: 'LINK_ESTABLISHED' }
+];
+export const ZERO_DAY_EXPLOITS = [
+  { id: 'z1', name: 'USB_SHREDDER', windowSize: 5, speed: 4 },
+  { id: 'z2', name: 'HEAPP_SPRAY', windowSize: 8, speed: 3 },
+  { id: 'z3', name: 'SYSCALL_RACE', windowSize: 3, speed: 5 }
+];
+export const NETWORK_TOOLS = [
+  { id: 'n1', name: 'AIRCRACK_NG', status: 'READY' },
+  { id: 'n2', name: 'WIRESHARK_P7', status: 'STANDBY' }
+];
 export const JC_P7_COMMANDS = [
   { cmd: "AT+READ_SYSCFG", desc: "Read raw system configuration partition" },
   { cmd: "AT+WRITE_SN", desc: "Write serial number to BGA110 module" },
@@ -34,7 +67,7 @@ export const BGA110_ERRORS: Record<string, string> = {
   "0x2": "DIE_MISMATCH: NAND signature not recognized.",
   "0x3": "V_RAIL_DROP: Insufficient power for reflow state."
 };
-export const DOCS_VAULT_CONTENT = [
+export const DOCS_VAULT_CONTENT: WikiArticle[] = [
   {
     id: 'a9-architecture',
     title: 'A9 (N71AP) KERNEL STRUCTURE',

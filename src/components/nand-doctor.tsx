@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RetroCard } from './ui/retro-card';
-import { Activity, AlertTriangle, Terminal, Cpu, Database, ChevronRight, Tooltip as TooltipIcon } from 'lucide-react';
+import { Activity, AlertTriangle, Terminal, Cpu, Database, ChevronRight, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 const JC_COMMANDS = [
