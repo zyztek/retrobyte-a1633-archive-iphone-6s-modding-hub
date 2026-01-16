@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { NANDDoctor } from '@/components/nand-doctor';
-import { FlaskConical, Hammer, Terminal, ShieldAlert, Copy } from 'lucide-react';
+import { FlaskConical, Hammer, Terminal, ShieldAlert, Copy, Database, Zap, Cpu, Battery, Activity } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 export function SystemLabPage() {
   const [patches, setPatches] = useState({
     noLimit: true,
@@ -13,78 +14,77 @@ export function SystemLabPage() {
     kppBypass: true,
     hypervisor: false
   });
-  const handleGenerateManifest = () => {
-    const selectedPatches = Object.entries(patches)
-      .filter(([_, v]) => v)
-      .map(([k]) => k.toUpperCase());
-    toast.success("MANIFEST_GENERATED", {
-      description: `Build manifest for ${selectedPatches.length} patches created successfully.`,
-      style: {
-        background: '#0a0a0a',
-        color: '#facc15',
-        border: '1px solid #facc15'
-      }
-    });
-  };
-  const copyAnalytics = () => {
-    const text = "CPU: APPLE_A9_N71AP\nMEM: LPDDR4_2GB\nFLASH: SKHYNIX_128GB\nTEMP: 42.8°C";
-    navigator.clipboard.writeText(text);
-    toast.info("ANALYTICS_COPIED", {
-      description: "Hardware telemetry copied to clipboard.",
-      style: {
-        background: '#0a0a0a',
-        color: '#00ff41',
-        border: '1px solid #00ff41'
-      }
-    });
-  };
+  const batteryData = [
+    { hour: '00:00', volt: 3.8 }, { hour: '04:00', volt: 3.7 }, { hour: '08:00', volt: 3.9 },
+    { hour: '12:00', volt: 3.6 }, { hour: '16:00', volt: 3.4 }, { hour: '20:00', volt: 3.5 }
+  ];
   return (
     <RetroLayout>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-12">
-          <div className="flex items-center gap-4 mb-8">
-            <FlaskConical className="size-10 text-neon-green" />
-            <div>
-              <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter">System Lab</h1>
-              <p className="text-xs text-neon-green/60 uppercase">Hardware Diagnostics & Kernel Modification</p>
-            </div>
+      <div className="space-y-12">
+        <div className="flex items-center gap-4">
+          <FlaskConical className="size-10 text-neon-green" />
+          <h1 className="text-4xl font-bold retro-glow uppercase tracking-tighter">System Lab</h1>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 space-y-8">
+            <NANDDoctor />
+            <RetroCard title="BATTERY_FORGE" status="LIVE_VOLTAGE">
+              <div className="h-64 w-full mt-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={batteryData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#00ff4120" />
+                    <XAxis dataKey="hour" stroke="#00ff41" fontSize={10} />
+                    <YAxis domain={[3, 4.2]} stroke="#00ff41" fontSize={10} />
+                    <Tooltip contentStyle={{ background: '#000', border: '1px solid #00ff41', color: '#00ff41' }} />
+                    <Area type="monotone" dataKey="volt" stroke="#d209fa" fill="#d209fa20" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="border border-neon-green/30 p-4">
+                  <div className="text-[10px] font-black uppercase opacity-60 mb-2">Powercuff Mixer</div>
+                  <input type="range" className="w-full accent-neon-pink" />
+                </div>
+                <div className="border border-neon-green/30 p-4 flex items-center gap-3">
+                  <Battery className="size-6 text-neon-pink" />
+                  <div>
+                    <div className="text-[10px] font-black uppercase">Health: 84%</div>
+                    <div className="text-[8px] opacity-50">PROJ_LIFESPAN: 14M</div>
+                  </div>
+                </div>
+              </div>
+            </RetroCard>
+            <RetroCard title="HARDWARE_MAPPING" status="BGA110_PROBE">
+              <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+                {Array.from({ length: 32 }).map((_, i) => (
+                  <div key={i} className="aspect-square border border-neon-green/30 flex items-center justify-center text-[8px] hover:bg-neon-green hover:text-black transition-all cursor-crosshair">
+                    P{i.toString(16).toUpperCase()}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 p-3 bg-neon-green/5 border border-neon-green/20 text-[9px] uppercase font-bold italic">
+                Cross-reference BGA110 pinouts with JC-P7 UART commands for raw NAND interaction.
+              </div>
+            </RetroCard>
           </div>
-        </div>
-        <div className="lg:col-span-6 space-y-8">
-          <NANDDoctor />
-          <RetroCard title="KERNEL_ANALYTICS" status="ACTIVE">
-            <div className="space-y-4 font-mono text-[10px] leading-tight text-neon-green/80">
-              <div className="flex justify-between border-b border-neon-green/10 pb-1">
-                <span>CPU_IDENT:</span>
-                <span className="font-bold">APPLE_A9_N71AP</span>
+          <div className="lg:col-span-4 space-y-8">
+            <RetroCard title="ROM_FOUNDRY" variant="warning" status="COMPILING">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-xs font-bold text-yellow-400">
+                  <Hammer className="size-4" /> ISO_BUILDER_v1
+                </div>
+                <div className="space-y-3">
+                  {['PostmarketOS', 'Kali_ARM64', 'Ubuntu_Touch'].map(os => (
+                    <div key={os} className="flex items-center justify-between p-2 border border-yellow-400/20">
+                      <span className="text-[10px] font-bold uppercase">{os}</span>
+                      <button className="p-1 border border-yellow-400 text-yellow-400"><Database className="size-3" /></button>
+                    </div>
+                  ))}
+                </div>
+                <button className="retro-button w-full border-yellow-400 text-yellow-400 shadow-none">START_COMPILATION</button>
               </div>
-              <div className="flex justify-between border-b border-neon-green/10 pb-1">
-                <span>MEM_TYPE:</span>
-                <span className="font-bold">LPDDR4_2GB</span>
-              </div>
-              <div className="flex justify-between border-b border-neon-green/10 pb-1">
-                <span>FLASH_ID:</span>
-                <span className="font-bold">SKHYNIX_128GB</span>
-              </div>
-              <div className="flex justify-between border-b border-neon-green/10 pb-1">
-                <span>TEMP_CORE:</span>
-                <span className="text-neon-pink font-bold">42.8°C</span>
-              </div>
-              <button 
-                onClick={copyAnalytics}
-                className="mt-2 text-[9px] uppercase font-bold flex items-center gap-1 hover:text-neon-pink transition-colors"
-              >
-                <Copy className="size-3" /> COPY_TELEMETRY_LOG
-              </button>
-            </div>
-          </RetroCard>
-        </div>
-        <div className="lg:col-span-6 space-y-8">
-          <RetroCard title="ROM_FORGE" variant="warning" status="DEV">
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 text-sm font-bold uppercase text-yellow-400">
-                <Hammer className="size-4" /> Distro Manifest Builder
-              </div>
+            </RetroCard>
+            <RetroCard title="KERNEL_PATCHER" status="MODIFIED">
               <div className="space-y-4">
                 {(Object.keys(patches) as Array<keyof typeof patches>).map((key) => (
                   <div key={key} className="flex items-center space-x-3">
@@ -92,38 +92,23 @@ export function SystemLabPage() {
                       id={key}
                       checked={patches[key]}
                       onCheckedChange={() => setPatches(p => ({...p, [key]: !patches[key]}))}
-                      className="border-yellow-400 data-[state=checked]:bg-yellow-400 data-[state=checked]:text-black rounded-none"
+                      className="border-neon-green rounded-none"
                     />
-                    <Label htmlFor={key} className="text-[10px] uppercase font-bold cursor-pointer hover:text-yellow-400 transition-colors">
-                      Patch: {key.toUpperCase().replace('_', ' ')}
+                    <Label htmlFor={key} className="text-[10px] uppercase font-black cursor-pointer">
+                      {key.toUpperCase()}
                     </Label>
                   </div>
                 ))}
               </div>
-              <div className="p-3 bg-yellow-400/10 border-2 border-yellow-400/30">
-                <div className="flex gap-2 items-start text-[10px] text-yellow-400 uppercase leading-tight font-bold">
-                  <ShieldAlert className="size-4 shrink-0" />
-                  <span>Experimental patches may lead to permanent bootloops. Verification required before flashing.</span>
-                </div>
+            </RetroCard>
+            <RetroCard title="LIVE_ANALYTICS" variant="danger">
+              <div className="space-y-2 text-[10px] font-mono">
+                <div className="flex justify-between"><span>CPU_LOAD:</span> <span className="text-neon-pink">12.4%</span></div>
+                <div className="flex justify-between"><span>BUS_FREQ:</span> <span className="text-neon-pink">133MHz</span></div>
+                <div className="flex justify-between"><span>THROTTLE:</span> <span className="text-neon-pink">NONE</span></div>
               </div>
-              <button 
-                onClick={handleGenerateManifest}
-                className="retro-button w-full border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black shadow-[4px_4px_0px_rgba(250,204,21,1)]"
-              >
-                GENERATE_MANIFEST.JSON
-              </button>
-            </div>
-          </RetroCard>
-          <RetroCard title="VIRT_STACK_PROBE">
-            <div className="space-y-4">
-              <div className="h-20 bg-black/40 border border-neon-green/20 flex items-center justify-center">
-                 <Terminal className="size-8 text-neon-green/30 animate-pulse" />
-              </div>
-              <p className="text-[10px] leading-relaxed opacity-70 italic uppercase tracking-tighter">
-                Scanning for JIT-enabled hypervisors... No active virtualization instances detected. Awaiting payload.
-              </p>
-            </div>
-          </RetroCard>
+            </RetroCard>
+          </div>
         </div>
       </div>
     </RetroLayout>

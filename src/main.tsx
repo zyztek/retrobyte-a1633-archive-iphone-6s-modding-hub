@@ -31,108 +31,30 @@ import { TestCenterPage } from '@/pages/TestCenterPage'
 import { ExportHubPage } from '@/pages/ExportHubPage'
 import { USBForgePage } from '@/pages/USBForgePage'
 import { RemoteUSBPage } from '@/pages/RemoteUSBPage'
+import { IslandFakeoutPage } from '@/pages/IslandFakeoutPage'
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <HomePage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/script-forge",
-    element: <ScriptGenPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/archives",
-    element: <ArchivesPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/archives/:slug",
-    element: <GuideDetailPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/repo",
-    element: <ModRepoPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/multiboot",
-    element: <MultiBootPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/stores",
-    element: <PackageStoresPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/emuvault",
-    element: <EmuVaultPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/tweak-ai",
-    element: <TweakAIPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/system-lab",
-    element: <SystemLabPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/godmode",
-    element: <GodModePage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/exploit-lab",
-    element: <ExploitLabPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/network-arsenal",
-    element: <NetworkArsenalPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/hack-cam",
-    element: <HackCamPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/academy",
-    element: <AcademyPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/docs-vault",
-    element: <DocsVaultPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/test-center",
-    element: <TestCenterPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/export-hub",
-    element: <ExportHubPage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/usb-forge",
-    element: <USBForgePage />,
-    errorElement: <RouteErrorBoundary />,
-  },
-  {
-    path: "/remote-ops",
-    element: <RemoteUSBPage />,
-    errorElement: <RouteErrorBoundary />,
-  }
+  { path: "/", element: <HomePage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/script-forge", element: <ScriptGenPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/archives", element: <ArchivesPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/archives/:slug", element: <GuideDetailPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/repo", element: <ModRepoPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/multiboot", element: <MultiBootPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/stores", element: <PackageStoresPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/emuvault", element: <EmuVaultPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/tweak-ai", element: <TweakAIPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/system-lab", element: <SystemLabPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/godmode", element: <GodModePage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/exploit-lab", element: <ExploitLabPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/network-arsenal", element: <NetworkArsenalPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/hack-cam", element: <HackCamPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/academy", element: <AcademyPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/docs-vault", element: <DocsVaultPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/test-center", element: <TestCenterPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/export-hub", element: <ExportHubPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/usb-forge", element: <USBForgePage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/remote-ops", element: <RemoteUSBPage />, errorElement: <RouteErrorBoundary /> },
+  { path: "/island-fakeout", element: <IslandFakeoutPage />, errorElement: <RouteErrorBoundary /> }
 ]);
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
