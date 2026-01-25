@@ -19,8 +19,10 @@ export function RetroLayout({ children }: RetroLayoutProps) {
   const isSingularityMode = useUIStore(s => s.isSingularityMode);
   const isEternityMode = useUIStore(s => s.isEternityMode);
   const isOCAbyss = useUIStore(s => s.isOCAbyss);
-  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setIsLargeScreen(window.innerWidth >= 1024);
     const handleResize = () => setIsLargeScreen(window.innerWidth >= 1024);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -105,7 +107,7 @@ export function RetroLayout({ children }: RetroLayoutProps) {
                   <span className={cn("px-12 font-black", isSingularityMode ? "text-neon-pink pink-glow" : "text-neon-green/90")}>{marqueeText}</span>
                 </div>
                 <div className={cn("absolute right-0 h-full bg-retro-black border-l-2 px-6 flex items-center gap-4 z-20", isSingularityMode ? "border-neon-pink shadow-[-20px_0_40px_rgba(210,9,250,0.5)]" : "border-neon-green")}>
-                   <BrandLogo size="sm" showText={false} iconClassName={isSingularityMode ? "text-neon-pink" : "text-neon-pink"} />
+                   <BrandLogo size="sm" showText={false} iconClassName={isSingularityMode ? "text-neon-pink" : "text-neon-green"} />
                    <span className={cn("text-[10px] font-black tracking-widest hidden xs:block", isSingularityMode ? "text-white" : "text-neon-pink")}>SOLUCIONES_646</span>
                 </div>
               </div>

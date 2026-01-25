@@ -1,9 +1,12 @@
 import * as React from "react"
-import { ChevronRight, ChevronDown, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Slot, Slottable } from "@/components/ui/slot"
+
+const Slot = React.forwardRef<any, any>(({ children, ...props }, ref) => {
+  const child = children as React.ReactElement<any>;
+  return React.cloneElement(child, { ref, ...props });
+});
 const SIDEBAR_WIDTH = "17.5rem"
 const SIDEBAR_COLLAPSED_WIDTH = "4rem"
 interface SidebarContextValue {
@@ -12,7 +15,7 @@ interface SidebarContextValue {
   onOpenChange: (open: boolean) => void
   onCollapsedChange?: (collapsed: boolean) => void
   mobileOpen: boolean
-  setMobileOpen: (open: boolean) => void
+  setOpenMobile: (open: boolean) => void
   isMobile: boolean
 }
 const SidebarContext = React.createContext<SidebarContextValue | null>(null)
@@ -69,10 +72,10 @@ const SidebarProvider = React.forwardRef<
     if (isMobile) {
       setMobileOpen(newOpen)
     }
-  }, [isMobile])
+  }, [isMobile, setMobileOpen, setOpen])
   const handleCollapsedChange = React.useCallback((newCollapsed: boolean) => {
     setCollapsed(newCollapsed)
-  }, [])
+  }, [setCollapsed])
   const value: SidebarContextValue = React.useMemo(
     () => ({
       open,
@@ -80,14 +83,14 @@ const SidebarProvider = React.forwardRef<
       onOpenChange: handleOpenChange,
       onCollapsedChange: collapsible === "never" ? undefined : handleCollapsedChange,
       mobileOpen,
-      setMobileOpen,
+      setOpenMobile: setMobileOpen,
       isMobile,
     }),
     [open, collapsed, handleOpenChange, handleCollapsedChange, mobileOpen, isMobile, collapsible]
   )
   return (
     <SidebarContext.Provider value={value}>
-      <Slot ref={ref}>{children}</Slot>
+      <div ref={ref} className="flex min-h-screen">{children}</div>
     </SidebarContext.Provider>
   )
 })
@@ -116,14 +119,14 @@ const SidebarTrigger = React.forwardRef<
   HTMLButtonElement,
   React.HTMLAttributes<HTMLButtonElement>
 >(({ className, children, ...props }, ref) => {
-  const { mobileOpen, setMobileOpen } = useSidebar()
+  const { mobileOpen, setOpenMobile } = useSidebar()
   return (
     <Button
       ref={ref}
       variant="ghost"
       size="icon"
       className={cn("lg:hidden", className)}
-      onClick={() => setMobileOpen(!mobileOpen)}
+      onClick={() => setOpenMobile(!mobileOpen)}
       {...props}
     >
       <svg
@@ -149,7 +152,8 @@ const SidebarTrigger = React.forwardRef<
 SidebarTrigger.displayName = "SidebarTrigger"
 const Sidebar = React.forwardRef<
   HTMLDivElement,
-  Slottable & {
+  React.HTMLAttributes<HTMLDivElement> & {
+    asChild?: boolean
     collapsible?: "icon" | "always" | "never"
   }
 >(({ className, asChild = false, collapsible, children, ...props }, ref) => {
@@ -179,7 +183,7 @@ const SidebarContent = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, ...props }, ref) => {
   return (
-    <ScrollArea className={cn("flex flex-col gap-2 px-3 py-4", className)} ref={ref} {...props}>
+    <ScrollArea ref={ref} className={cn("flex flex-col gap-2 px-3 py-4", className)}>
       {children}
     </ScrollArea>
   )
@@ -229,8 +233,8 @@ const SidebarGroupLabel = React.forwardRef<
 ))
 SidebarGroupLabel.displayName = "SidebarGroupLabel"
 const SidebarMenu = React.forwardRef<
-  HTMLNavElement,
-  React.HTMLAttributes<HTMLNavElement>
+  HTMLElement,
+  React.HTMLAttributes<HTMLElement>
 >(({ className, children, ...props }, ref) => (
   <nav ref={ref} className={cn("flex flex-1 flex-col gap-1 p-2", className)} {...props}>
     {children}
