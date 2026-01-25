@@ -13,8 +13,8 @@ export interface ScriptOptions {
 export function generatePowerShellScript(options: ScriptOptions): string {
   let script = `# RetroByte A1633 - Auto-Modding Setup Script
 # Run this in PowerShell as Administrator
-Write-Host "Initializing RetroByte A1633 Mainframe Environment..." -ForegroundColor Green
 $ErrorActionPreference = "Stop"
+Write-Host "Initializing RetroByte A1633 Mainframe Environment..." -ForegroundColor Green
 # Ensure root modding directory exists
 $modPath = "$HOME\\Desktop\\A1633_Modding"
 if (!(Test-Path $modPath)) {
@@ -33,25 +33,33 @@ Write-Host "    [!] Manual backup target: $backupPath" -ForegroundColor Yellow
   }
   if (options.installiTunes) {
     script += `Write-Host "[+] Installing iTunes (x64) via Winget..." -ForegroundColor Cyan
-winget install Apple.iTunes --silent
+try {
+    winget install Apple.iTunes --silent --accept-package-agreements --accept-source-agreements
+} catch {
+    Write-Host "    [!] Winget failed to install iTunes. Please install manually." -ForegroundColor Red
+}
 \n`;
   }
   if (options.installDrivers) {
     script += `Write-Host "[+] Fetching USBDK Drivers..." -ForegroundColor Cyan
-Invoke-WebRequest -Uri "https://github.com/daynix/UsbDk/releases/download/v1.00-22/UsbDk_1.0.22_x64.msi" -OutFile "UsbDk_Installer.msi"
-Start-Process msiexec.exe -ArgumentList "/i UsbDk_Installer.msi /quiet" -Wait
+try {
+    Invoke-WebRequest -Uri "https://github.com/daynix/UsbDk/releases/download/v1.00-22/UsbDk_1.0.22_x64.msi" -OutFile "UsbDk_Installer.msi"
+    Start-Process msiexec.exe -ArgumentList "/i UsbDk_Installer.msi /quiet" -Wait
+} catch {
+    Write-Host "    [!] Driver installation failed." -ForegroundColor Red
+}
 \n`;
   }
   if (options.downloadPaler1n) {
     script += `Write-Host "[+] Downloading Paler1n (Windows CLI)..." -ForegroundColor Cyan
-Invoke-WebRequest -Uri "https://github.com/palera1n/palera1n/releases/latest/download/palera1n-v2.0.0-beta.7-windows-x86_64.exe" -OutFile "paler1n.exe"
+Invoke-WebRequest -Uri "https://github.com/palera1n/palera1n/releases/latest/download/palera1n-v2.0.0-beta.8-windows-x86_64.exe" -OutFile "paler1n.exe"
 \n`;
   }
   if (options.genGitHubWorkflow) {
     script += `Write-Host "[+] Generating GitHub Pages Deployment Workflow..." -ForegroundColor Magenta
 $workflowDir = Join-Path $modPath ".github\\workflows"
 if (!(Test-Path $workflowDir)) { New-Item -ItemType Directory -Path $workflowDir -Force }
-$workflowYaml = @"
+$workflowYaml = @'
 name: Deploy Archive to GitHub Pages
 on:
   push:
@@ -64,7 +72,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: \${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -78,7 +86,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-"@
+'@
 Set-Content -Path (Join-Path $workflowDir "deploy.yml") -Value $workflowYaml
 \n`;
   }
@@ -86,7 +94,7 @@ Set-Content -Path (Join-Path $workflowDir "deploy.yml") -Value $workflowYaml
     script += `Write-Host "[+] Generating Codespaces DevContainer Config..." -ForegroundColor Magenta
 $containerDir = Join-Path $modPath ".devcontainer"
 if (!(Test-Path $containerDir)) { New-Item -ItemType Directory -Path $containerDir -Force }
-$containerJson = @"
+$containerJson = @'
 {
   "name": "A1633 Cloud Lab",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
@@ -101,13 +109,13 @@ $containerJson = @"
   "forwardPorts": [27015, 3000],
   "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libimobiledevice-utils usbmuxd socat"
 }
-"@
+'@
 Set-Content -Path (Join-Path $containerDir "devcontainer.json") -Value $containerJson
 \n`;
   }
   if (options.includeReadmeGuides) {
     script += `Write-Host "[+] Generating Enhanced README with Tutorial Links..." -ForegroundColor Magenta
-$readmeContent = @"
+$readmeContent = @'
 # A1633 Modding Archive
 Mainframe generated via RetroByte A1633.
 ## Embedded Tutorials
@@ -115,18 +123,18 @@ Mainframe generated via RetroByte A1633.
 - [Video: How to Jailbreak iPhone 6s iOS 15.8.3](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 ## Quick Start
 1. Connect A1633 in DFU mode.
-2. Run \`./paler1n.exe -v\`.
-"@
+2. Run `./paler1n.exe -v`.
+'@
 Set-Content -Path (Join-Path $modPath "README.md") -Value $readmeContent
 \n`;
   }
   if (options.setupCodespaceProxy) {
     script += `Write-Host "[+] Generating Cloud Proxy Bridge (socat)..." -ForegroundColor Magenta
-$proxyScript = @"
+$proxyScript = @'
 # usbmuxd socat bridge for Codespaces
 # Forwarding local usbmuxd port 27015 to remote tunnel
 socat TCP-LISTEN:27015,fork UNIX-CONNECT:/var/run/usbmuxd
-"@
+'@
 Set-Content -Path (Join-Path $modPath "start_cloud_proxy.sh") -Value $proxyScript
 \n`;
   }

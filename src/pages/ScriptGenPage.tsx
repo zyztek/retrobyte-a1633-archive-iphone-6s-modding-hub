@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RetroLayout } from '@/components/layout/RetroLayout';
 import { RetroCard } from '@/components/ui/retro-card';
 import { useScriptStore } from '@/store/script-store';
+import { useUIStore } from '@/store/ui-store';
 import { generatePowerShellScript, ScriptOptions } from '@/lib/script-templates';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -13,27 +14,68 @@ export function ScriptGenPage() {
   const options = useScriptStore(s => s.options);
   const toggleOption = useScriptStore(s => s.toggleOption);
   const setOptions = useScriptStore(s => s.setOptions);
+  const addLog = useUIStore(s => s.addLog);
   const [copied, setCopied] = useState(false);
   const scriptBody = generatePowerShellScript(options);
-  const handleCopy = () => {
-    navigator.clipboard.writeText(scriptBody);
-    setCopied(true);
-    toast.success("CODE_COPIED_TO_CLIPBOARD");
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(scriptBody);
+        setCopied(true);
+        toast.success("CODE_COPIED_TO_CLIPBOARD");
+        addLog("CLIPBOARD: Success via navigator.clipboard");
+        setTimeout(() => setCopied(false), 2000);
+      } else {
+        throw new Error("Clipboard API not available");
+      }
+    } catch (err) {
+      console.warn("Clipboard API failed, trying fallback...", err);
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = scriptBody;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (successful) {
+          setCopied(true);
+          toast.success("CODE_COPIED_TO_CLIPBOARD (FALLBACK)");
+          addLog("CLIPBOARD: Success via execCommand fallback");
+          setTimeout(() => setCopied(false), 2000);
+        } else {
+          throw new Error("execCommand failed");
+        }
+      } catch (fallbackErr) {
+        addLog("CLIPBOARD_ERROR: All methods failed");
+        toast.error("CLIPBOARD_ACCESS_DENIED", {
+          description: "Please select and copy the code manually from the terminal window."
+        });
+      }
+    }
   };
   const handleDownload = () => {
-    const blob = new Blob([scriptBody], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'A1633_Mainframe_Setup.ps1';
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("DOWNLOADING_SETUP_SCRIPT");
+    try {
+      const blob = new Blob([scriptBody], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'A1633_Mainframe_Setup.ps1';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("DOWNLOADING_SETUP_SCRIPT");
+      addLog("FILESYSTEM: Generated A1633_Mainframe_Setup.ps1");
+    } catch (err) {
+      addLog("DOWNLOAD_ERROR: Blob generation failed");
+    }
   };
   const handleLoadPreset = (presetOptions: ScriptOptions) => {
     setOptions(presetOptions);
     toast.info("PRESET_LOADED_SUCCESSFULLY");
+    addLog(`PRESET: Loaded config sector`);
   };
   const toolLabels: Partial<Record<keyof ScriptOptions, string>> = {
     installDrivers: "Install USBDK Drivers",
