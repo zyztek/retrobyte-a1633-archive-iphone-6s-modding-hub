@@ -72,7 +72,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: \${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -123,7 +123,7 @@ Mainframe generated via RetroByte A1633.
 - [Video: How to Jailbreak iPhone 6s iOS 15.8.3](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 ## Quick Start
 1. Connect A1633 in DFU mode.
-2. Run `./paler1n.exe -v`.
+2. Run \`./paler1n.exe -v\`.
 '@
 Set-Content -Path (Join-Path $modPath "README.md") -Value $readmeContent
 \n`;
