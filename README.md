@@ -1,6 +1,6 @@
 # Cloudflare Workers React Template
 
-[![[cloudflarebutton]]](https://deploy.workers.cloudflare.com)
+[![[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zyztek/retrobyte-a1633-archive-iphone-6s-modding-hub)]](https://deploy.workers.cloudflare.com)
 
 A production-ready full-stack application template powered by Cloudflare Workers. Features a modern React frontend with Shadcn/UI components, Tailwind CSS, and a robust backend using Hono, Durable Objects for persistent state, and TypeScript end-to-end.
 
@@ -108,7 +108,7 @@ Deploy to Cloudflare Workers in one command:
 bun run deploy
 ```
 
-Or use the [cloudflarebutton] for instant deployment with your repo.
+Or use the [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zyztek/retrobyte-a1633-archive-iphone-6s-modding-hub) for instant deployment with your repo.
 
 ### Prerequisites
 - Cloudflare account
